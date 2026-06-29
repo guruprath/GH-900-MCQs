@@ -1,79 +1,583 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Sample GitHub Pages Website">
-    <meta name="author" content="Your Name">
-    <title>My GitHub Page</title>
-    
-    <!-- Basic styling -->
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        header {
-            background: #24292e;
-            color: #fff;
-            padding: 1rem;
-            text-align: center;
-        }
-        main {
-            padding: 2rem;
-            max-width: 800px;
-            margin: auto;
-            background: #fff;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background: #24292e;
-            color: #fff;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git & GitHub Basics — 50 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-distributed { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-terminology { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-objects { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-branches { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-github { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>Welcome to My GitHub Page</h1>
-    </header>
+<div class="hero">
+  <div class="hero-badge">Quiz · 50 Questions</div>
+  <h1>Git & GitHub Basics</h1>
+  <p>Multiple Choice Questions with Answers</p>
+</div>
 
-    <main>
-        <h2>About This Page</h2>
-        <p>This is a sample <strong>index.html</strong> file for hosting on GitHub Pages.  
-           You can edit this file to add your own content, styles, and scripts.</p>
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">50</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
 
-        <h3>Features:</h3>
-        <ul>
-            <li>Responsive HTML5 structure</li>
-            <li>Simple CSS styling</li>
-            <li>Easy to customize</li>
-        </ul>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
 
-        <p>Learn more about GitHub Pages: 
-            <a href="https://pages.github.com/" target="_blank">GitHub Pages Documentation</a>
-        </p>
-    </main>
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Distributed VCS',this)">Distributed VCS</button>
+    <button class="filter-btn" onclick="filterCat('Terminology',this)">Terminology</button>
+    <button class="filter-btn" onclick="filterCat('Git Objects',this)">Git Objects</button>
+    <button class="filter-btn" onclick="filterCat('Branches & Remotes',this)">Branches & Remotes</button>
+    <button class="filter-btn" onclick="filterCat('Git vs GitHub',this)">Git vs GitHub</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
 
-    <footer>
-        &copy; 2026 Your Name — Hosted on GitHub Pages
-    </footer>
+<main id="quiz-container"></main>
 
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS (1–10) ────────────────────────────────────────────────
+  { cat: "Basics", q: "What does VCS stand for?", opts: ["Version Control System", "Virtual Computing Server", "Visual Configuration Setup", "Verified Commit Source"], ans: 0, exp: "A version control system (VCS) is a program or set of programs that tracks changes to a collection of files." },
+  { cat: "Basics", q: "What is one primary goal of a version control system?", opts: ["To write code automatically", "To easily recall earlier versions of files", "To host websites", "To prevent all software bugs"], ans: 1, exp: "One goal of a VCS is to easily recall earlier versions of individual files or of the entire project." },
+  { cat: "Basics", q: "What does SCM stand for in the context of version control?", opts: ["Source Control Module", "Software Configuration Management", "System Commit Manager", "Synchronized Code Merge"], ans: 1, exp: "Version control is often discussed as part of software configuration management (SCM)." },
+  { cat: "Basics", q: "Is version control the exact same concept as SCM?", opts: ["Yes, the terms are strictly identical", "No, SCM is just one part of version control", "No, version control is just one practice involved in SCM", "Yes, they both refer exclusively to GitHub"], ans: 2, exp: "Technically, version control is just one of the practices involved in SCM." },
+  { cat: "Basics", q: "Which of the following projects can benefit from a VCS?", opts: ["Software development only", "Only online tutorials", "Software, books, and online tutorials", "Hardware designs only"], ans: 2, exp: "A VCS can be used for projects other than software, including books and online tutorials." },
+  { cat: "Basics", q: "Which feature of a VCS allows for experimental changes without affecting the main project?", opts: ["Branches", "Tags", "Messages", "Hashes"], ans: 0, exp: "You can create branches, where changes can be made experimentally without affecting the main branch." },
+  { cat: "Basics", q: "What is the primary purpose of attaching a tag in a VCS?", opts: ["To compress the repository", "To mark a specific version, such as a new release", "To delete old commits", "To change file permissions"], ans: 1, exp: "You can attach a tag to a version—for example, to mark a new release." },
+  { cat: "Basics", q: "Who is the primary author of Git?", opts: ["Bill Gates", "Linus Torvalds", "Steve Jobs", "Tim Berners-Lee"], ans: 1, exp: "Its primary author is Linus Torvalds, the creator of Linux." },
+  { cat: "Basics", q: "In addition to Git, what else is Linus Torvalds known for creating?", opts: ["Windows", "MacOS", "Linux", "Unix"], ans: 2, exp: "Linus Torvalds is explicitly mentioned in the text as the creator of Linux." },
+  { cat: "Basics", q: "Which of the following is NOT a characteristic of Git mentioned in the text?", opts: ["Fast", "Versatile", "Free", "Centralized"], ans: 3, exp: "Git is described as a fast, versatile, highly scalable, free, open-source distributed VCS. It is not centralized." },
+
+  // ── DISTRIBUTED VCS (11–18) ─────────────────────────────────────────────────
+  { cat: "Distributed VCS", q: "Which of the following is an example of a Centralized VCS?", opts: ["Git", "Mercurial", "Subversion (SVN)", "BitKeeper"], ans: 2, exp: "Centralized VCSes mentioned in the text include CVS, Subversion (SVN), and Perforce." },
+  { cat: "Distributed VCS", q: "What is a major disadvantage of a centralized server in a VCS?", opts: ["It is slower than physical mail", "It requires too much RAM", "It is potentially a single point of failure", "It prevents teams from working together"], ans: 2, exp: "Centralization means that the one server is also potentially a single point of failure." },
+  { cat: "Distributed VCS", q: "How does Git fundamentally differ from centralized systems like CVS?", opts: ["Git is a distributed version control system", "Git does not keep history", "Git requires constant internet access", "Git only works on Linux"], ans: 0, exp: "Git is distributed, meaning a project's complete history is stored on your local computer." },
+  { cat: "Distributed VCS", q: "In a distributed VCS like Git, where is the project's complete history stored?", opts: ["Only on the cloud server", "Only on the developer's local machine", "On your local computer and, when you use one, on a server", "In a hidden system registry"], ans: 2, exp: "A project's complete history is stored on your local computer and, when you use one, on a server." },
+  { cat: "Distributed VCS", q: "True or False: You need an active network connection to commit files in Git.", opts: ["True, Git always requires an internet connection", "False, you can edit and commit files locally", "True, but only for the first commit", "False, but only if you aren't using branches"], ans: 1, exp: "You can edit files without a network connection, commit them locally, and sync with the server later." },
+  { cat: "Distributed VCS", q: "What happens to your workflow if the central Git server goes down?", opts: ["You lose all project history", "You must stop working immediately", "You still have a local copy of the project to work on", "The repository is automatically deleted"], ans: 2, exp: "If a server goes down, you still have a local copy of the project." },
+  { cat: "Distributed VCS", q: "Are hosted remote repositories strictly required to share Git changes?", opts: ["Yes, Git cannot function without them", "No, changes can be passed around in e-mail or removable media", "Yes, unless you use a VPN", "No, but only if you use GitHub Codespaces"], ans: 1, exp: "Technically, you don't even have to have a server. Changes can be passed around in e-mail or shared via removable media." },
+  { cat: "Distributed VCS", q: "Although not strictly required, what do most development teams today use to share their Git changes?", opts: ["USB Flash Drives", "Email attachments", "A hosted remote repository", "FTP servers"], ans: 2, exp: "Although changes can be passed manually, most teams today use a hosted remote repository." },
+
+  // ── TERMINOLOGY (19–28) ─────────────────────────────────────────────
+  { cat: "Terminology", q: "What does the term 'working tree' refer to in Git?", opts: ["The remote server", "The set of nested directories and files containing the current project", "The algorithm used to resolve merges", "The UI tree view in GitHub"], ans: 1, exp: "Working tree: The set of nested directories and files that contain the project that's being worked on." },
+  { cat: "Terminology", q: "What is the name of the hidden directory where Git keeps all the history and metadata for a project?", opts: [".git", ".repo", ".history", ".vcs"], ans: 0, exp: "The repository is contained in a hidden directory named .git at the top level of a working tree." },
+  { cat: "Terminology", q: "What is a 'bare repository'?", opts: ["A repository with no commits", "A repository that isn't part of a working tree, used for sharing or backup", "A repository that is completely public", "A repository containing only text files"], ans: 1, exp: "A bare repository is one that isn't part of a working tree; it's used for sharing or backup." },
+  { cat: "Terminology", q: "What is the standard naming convention for a bare repository directory?", opts: ["Ends with -bare", "Starts with git-", "Ends with .git (e.g., project.git)", "All caps (e.g., PROJECT)"], ans: 2, exp: "A bare repo is usually a directory with a name that ends in .git—for example, project.git." },
+  { cat: "Terminology", q: "What does Git use to represent the contents of a file as a fixed number of digits?", opts: ["A random UUID", "A hash function", "A serial number", "An IP address"], ans: 1, exp: "Hash: A number produced by a hash function that represents the contents of a file or another object." },
+  { cat: "Terminology", q: "How many bits long is the traditional SHA-1 hash used by Git?", opts: ["32 bits", "64 bits", "128 bits", "160 bits"], ans: 3, exp: "Git traditionally uses SHA-1 hashes that are 160 bits long." },
+  { cat: "Terminology", q: "Which newer, longer hash function does modern Git also support?", opts: ["MD5", "SHA-256", "SHA-512", "CRC32"], ans: 1, exp: "Modern versions of Git also support SHA-256 (256 bits)." },
+  { cat: "Terminology", q: "How does Git primarily determine if a file's content has changed?", opts: ["By checking the file's time-and-date stamp", "By checking the file size", "By hashing its contents and comparing the result to the previous hash", "By reading line-by-line using a diff tool every time"], ans: 2, exp: "Git can tell whether a file has changed by hashing its contents and comparing the result to the previous hash." },
+  { cat: "Terminology", q: "If a file's time-and-date stamp changes, but the file hash does NOT change, what does Git conclude?", opts: ["The file contents are corrupted", "The file contents haven’t changed", "The file was deleted", "The file needs to be committed immediately"], ans: 1, exp: "If the file time-and-date stamp is changed, but the file hash isn’t changed, Git knows the file contents aren’t changed." },
+  { cat: "Terminology", q: "How many distinct types of objects does a Git repository contain?", opts: ["Two", "Three", "Four", "Five"], ans: 2, exp: "A Git repo contains four types of objects, each uniquely identified by a hash." },
+
+  // ── GIT OBJECTS (29–36) ─────────────────────────────────────────
+  { cat: "Git Objects", q: "Which type of Git object contains an ordinary file?", opts: ["Tree object", "Blob object", "Commit object", "Tag object"], ans: 1, exp: "A blob object contains an ordinary file." },
+  { cat: "Git Objects", q: "Which type of Git object represents a directory?", opts: ["Tree object", "Blob object", "Commit object", "Tag object"], ans: 0, exp: "A tree object represents a directory." },
+  { cat: "Git Objects", q: "What information does a Git 'tree' object contain?", opts: ["Only the directory name", "File contents and commit messages", "Names, hashes, and permissions", "Author names and dates"], ans: 2, exp: "A tree object represents a directory; it contains names, hashes, and permissions." },
+  { cat: "Git Objects", q: "Which type of Git object represents a specific version of the working tree?", opts: ["Tree object", "Blob object", "Commit object", "Tag object"], ans: 2, exp: "A commit object represents a specific version of the working tree." },
+  { cat: "Git Objects", q: "What does an 'annotated tag object' typically point to?", opts: ["A branch name", "A remote server URL", "A commit", "The working tree"], ans: 2, exp: "An annotated tag object stores metadata... and usually points to a commit." },
+  { cat: "Git Objects", q: "How do 'lightweight tags' differ from annotated tag objects in Git?", opts: ["Lightweight tags are encrypted", "Lightweight tags are references rather than actual Git objects", "Lightweight tags contain more metadata", "Lightweight tags automatically push to GitHub"], ans: 1, exp: "Git also supports lightweight tags, which are references rather than objects." },
+  { cat: "Git Objects", q: "When used as a verb, what does it mean to 'commit' in Git?", opts: ["To delete a file from history", "To push code to a remote server", "To make a commit object, saving changes for others to eventually see", "To resolve a merge conflict"], ans: 2, exp: "Commit (verb) means to make a commit object, committing the changes you have made so others can eventually see them." },
+  { cat: "Git Objects", q: "How is every Git object uniquely identified in the repository?", opts: ["By its file name", "By its chronological timestamp", "By a hash", "By an auto-incrementing ID number"], ans: 2, exp: "A Git repo contains four types of objects, each uniquely identified by a hash." },
+
+  // ── BRANCHES & REMOTES (37–43) ──────────────────────────────────────────────
+  { cat: "Branches & Remotes", q: "In Git terminology, what is a 'branch'?", opts: ["A copy of the repository", "A named series of linked commits", "A physical folder on the hard drive", "A user access role"], ans: 1, exp: "A branch is a named series of linked commits." },
+  { cat: "Branches & Remotes", q: "What is the most recent commit on a branch referred to as?", opts: ["The tail", "The head", "The tip", "The peak"], ans: 1, exp: "The most recent commit on a branch is called the head." },
+  { cat: "Branches & Remotes", q: "What is the name of the default branch created when initializing a repository on GitHub?", opts: ["master", "trunk", "development", "main"], ans: 3, exp: "The default branch... is called main on GitHub and many other platforms." },
+  { cat: "Branches & Remotes", q: "What is the specific, all-caps name for the head of the current active branch?", opts: ["MAIN", "ORIGIN", "HEAD", "TOP"], ans: 2, exp: "The head of the current branch is named HEAD." },
+  { cat: "Branches & Remotes", q: "What is a 'remote' in Git terminology?", opts: ["A network timeout error", "A named reference to another Git repository", "A user without write permissions", "A local branch"], ans: 1, exp: "A remote is a named reference to another Git repository." },
+  { cat: "Branches & Remotes", q: "When you clone a repository, what default name does Git give to the remote repository you cloned from?", opts: ["upstream", "source", "main", "origin"], ans: 3, exp: "When you clone a repo, Git creates a remote named origin that points to the repository you cloned from." },
+  { cat: "Branches & Remotes", q: "In the command 'git diff --staged', what do the double hyphens typically denote?", opts: ["A subcommand", "An option", "A remote name", "A hash"], ans: 1, exp: "Commands frequently are accompanied by options, which use hyphens (-) or double hyphens (--)." },
+
+  // ── GIT VS GITHUB (44–50) ──────────────────────────────────────────────
+  { cat: "Git vs GitHub", q: "What is the structural relationship of a command like 'git push'?", opts: ["'git' is the command, 'push' is the subcommand", "'git' is the option, 'push' is the command", "'git' is the remote, 'push' is the branch", "'git' is the subcommand, 'push' is the command"], ans: 0, exp: "git is the command, and push or pull is the subcommand." },
+  { cat: "Git vs GitHub", q: "Why might a developer who relies solely on a Git GUI occasionally need to use the command line?", opts: ["Because GUIs are paid software", "Because none of the GUIs implement all of Git's functionality", "Because GUIs cannot connect to GitHub", "Because the command line is required to save files"], ans: 1, exp: "None of them implement all of Git's functionality... Developers sometimes find themselves confronted with error messages they can't resolve, and have to resort to the command line." },
+  { cat: "Git vs GitHub", q: "Which of the following best describes the difference between Git and GitHub?", opts: ["Git is a cloud platform; GitHub is the command line tool", "Git is the centralized server; GitHub is the local app", "Git is the core distributed version control system; GitHub is a cloud platform that uses Git", "They are two names for the exact same software"], ans: 2, exp: "Git is a DVCS... GitHub is a cloud platform that uses Git as its core technology." },
+  { cat: "Git vs GitHub", q: "What specific role does GitHub play in the standard Git workflow?", opts: ["It acts as the local working tree", "It acts as the remote repository", "It replaces the .git hidden folder", "It acts as the local hash generator"], ans: 1, exp: "GitHub acts as the remote repository mentioned earlier." },
+  { cat: "Git vs GitHub", q: "Which of the following features is provided by GitHub, rather than the core Git system?", opts: ["Branches", "Pull requests", "Commits", "Hashes"], ans: 1, exp: "Key features provided by GitHub include: ... Pull requests" },
+  { cat: "Git vs GitHub", q: "Which of these is a GitHub-specific feature used to discuss specific changes before merging them?", opts: ["git push", "Tags", "Pull requests", "Bare repositories"], ans: 2, exp: "Pull requests are listed specifically as a GitHub feature used to collaborate on projects." },
+  { cat: "Git vs GitHub", q: "Which list contains ONLY features provided by GitHub?", opts: ["Branches, Commits, Tags", "Issues, Actions, Codespaces", "Working tree, Hash, Remotes", "Blob, Tree, Commit objects"], ans: 1, exp: "Key features provided by GitHub include: Issues, Discussions, Pull requests, Notifications, Labels, Actions, Forks, Projects, Copilot, Codespaces." },
+];
+
+const catColorMap = { 
+  "Basics": "cat-basics",
+  "Distributed VCS": "cat-distributed",
+  "Terminology": "cat-terminology",
+  "Git Objects": "cat-objects",
+  "Branches & Remotes": "cat-branches",
+  "Git vs GitHub": "cat-github" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
 </body>
 </html>
-
