@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Metered Usage & Billing — 50 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-actions { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-packages { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-enterprise { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-ghas { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-copilot { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-lfs { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 50 Questions</div>
+  <h1>GitHub Metered Usage & Billing</h1>
+  <p>Comprehensive MCQs on Actions, Packages, GHAS, Copilot, and LFS.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">50</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Actions',this)">Actions</button>
+    <button class="filter-btn" onclick="filterCat('Packages',this)">Packages</button>
+    <button class="filter-btn" onclick="filterCat('Enterprise',this)">Enterprise</button>
+    <button class="filter-btn" onclick="filterCat('GHAS',this)">GHAS</button>
+    <button class="filter-btn" onclick="filterCat('Copilot',this)">Copilot</button>
+    <button class="filter-btn" onclick="filterCat('LFS',this)">LFS</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── ACTIONS (1-10) ────────────────────────────────────────────────
+  { cat: "Actions", q: "Where do GitHub Actions workflows run?", opts: ["Only on self-hosted servers", "On virtual machines", "On the developer's local machine", "Directly in the web browser"], ans: 1, exp: "GitHub Actions is a CI/CD automation tool where workflows run on virtual machines." },
+  { cat: "Actions", q: "Which three factors determine how GitHub Actions minutes are metered?", opts: ["Repository size, commit count, and branch count", "Repository type, runner type, and usage", "Code language, file size, and OS type", "Developer tier, region, and bandwidth"], ans: 1, exp: "The minutes consumed in these workflows are metered based on repository type, runner type, and usage." },
+  { cat: "Actions", q: "Where can you track the consumption of GitHub Actions minutes?", opts: ["Settings → Developer settings", "Settings → Billing", "Settings → Actions", "Settings → CI/CD"], ans: 1, exp: "Navigate to Settings → Billing in your GitHub organization or account." },
+  { cat: "Actions", q: "How many free Actions minutes per month are provided for a public repository?", opts: ["2,000", "3,000", "50,000", "Unlimited"], ans: 3, exp: "Public repositories get unlimited free minutes." },
+  { cat: "Actions", q: "How many free Actions minutes per month does a private repository on the GitHub Free plan receive?", opts: ["1,000", "2,000", "3,000", "5,000"], ans: 1, exp: "GitHub Free: 2,000 minutes/month." },
+  { cat: "Actions", q: "How many free Actions minutes per month does the GitHub Enterprise plan provide?", opts: ["3,000", "10,000", "50,000", "Unlimited"], ans: 2, exp: "GitHub Enterprise: 50,000 minutes/month." },
+  { cat: "Actions", q: "As of 2024, which runner type is the most expensive per minute?", opts: ["Linux", "Windows", "macOS", "Ubuntu"], ans: 2, exp: "macOS costs $0.08 per minute, compared to Linux ($0.008) and Windows ($0.016)." },
+  { cat: "Actions", q: "What is a recommended strategy to reduce costs for high-volume workflows?", opts: ["Switching exclusively to macOS runners", "Using self-hosted runners", "Making all repositories private", "Running workflows on every single commit branch"], ans: 1, exp: "Use self-hosted runners for high-volume workflows to reduce costs." },
+  { cat: "Actions", q: "Which of the following is a way to optimize workflow scripts?", opts: ["Disabling caching entirely", "Running redundant jobs", "Caching dependencies", "Using only macOS runners"], ans: 2, exp: "Optimize workflow scripts by caching dependencies and reducing redundant jobs." },
+  { cat: "Actions", q: "How can you limit when workflows trigger to save minutes?", opts: ["Only trigger on push to main branch", "Trigger on every pull request draft", "Trigger continuously in a loop", "Trigger on repository creation only"], ans: 0, exp: "Limit workflows to only trigger when necessary (e.g., push to main branch only)." },
+
+  // ── PACKAGES (11-18) ──────────────────────────────────────────────
+  { cat: "Packages", q: "What is GitHub Packages used for?", opts: ["Storing wiki pages", "Storing artifacts, container images, and dependencies", "Hosting virtual machines", "Running CI/CD pipelines"], ans: 1, exp: "GitHub Packages allows storing artifacts, container images, and dependencies." },
+  { cat: "Packages", q: "How is GitHub Packages storage metered?", opts: ["By the number of downloads only", "Based on the volume of stored data and data transfer usage", "By the number of packages published", "By the type of programming language used"], ans: 1, exp: "Storage is metered based on the volume of stored data and data transfer usage." },
+  { cat: "Packages", q: "Where do you navigate to view GitHub Packages storage usage?", opts: ["Settings → Packages", "Settings → Billing → GitHub Packages", "Settings → Repositories → Storage", "Profile → Billing"], ans: 1, exp: "Navigate to Settings → Billing → GitHub Packages to view storage usage." },
+  { cat: "Packages", q: "What is the free storage allocation for public repositories in GitHub Packages?", opts: ["2GB", "10GB", "Free storage and bandwidth", "No free storage"], ans: 2, exp: "Public repositories: Free storage and bandwidth." },
+  { cat: "Packages", q: "What is the free storage allocation limit for private repositories in GitHub Packages?", opts: ["1GB", "2GB", "5GB", "Unlimited"], ans: 1, exp: "Private repositories: Storage up to 2GB." },
+  { cat: "Packages", q: "What is the free data transfer allocation limit per month for private repositories in GitHub Packages?", opts: ["1GB", "2GB", "5GB", "10GB"], ans: 0, exp: "Private repositories: ... Data transfer up to 1GB per month." },
+  { cat: "Packages", q: "Which of the following is an optimization strategy for GitHub Packages?", opts: ["Regularly delete unused packages or enable retention policies", "Store everything in uncompressed formats", "Duplicate images across multiple registries", "Upload images manually via FTP"], ans: 0, exp: "Regularly delete unused packages or enable retention policies." },
+  { cat: "Packages", q: "How can you reduce storage consumption regarding file formats in GitHub Packages?", opts: ["Use uncompressed formats", "Use compressed formats", "Convert all packages to text files", "Split packages into 1MB chunks"], ans: 1, exp: "Use compressed formats to reduce storage consumption." },
+
+  // ── ENTERPRISE LICENSES (19-25) ───────────────────────────────────
+  { cat: "Enterprise", q: "What determines license consumption in GitHub Enterprise?", opts: ["Number of repositories", "Total lines of code", "Number of active users", "Amount of storage used"], ans: 2, exp: "The number of active users determines license consumption." },
+  { cat: "Enterprise", q: "Where do you go to view license usage reports for GitHub Enterprise?", opts: ["Enterprise Settings → Users", "Enterprise Settings → Billing", "Organization Settings → Billing", "Profile → Subscriptions"], ans: 1, exp: "Go to Enterprise Settings → Billing to view license usage reports." },
+  { cat: "Enterprise", q: "Under the pricing model, which type of access consumes a license?", opts: ["Access to public repositories only", "Access to private repositories", "Read-only access to gists", "Viewing GitHub Pages"], ans: 1, exp: "Each user with access to private repositories consumes one license." },
+  { cat: "Enterprise", q: "How do organizations pay for GitHub Enterprise licenses?", opts: ["Per repository", "Per user annually or monthly", "Per gigabyte of data", "Per GitHub Actions minute"], ans: 1, exp: "Organizations pay per user annually or monthly." },
+  { cat: "Enterprise", q: "What happens to a license if an admin removes a user?", opts: ["It is immediately refunded", "It is permanently lost", "It remains assigned for the billing period but can be reallocated", "It is locked for 90 days"], ans: 2, exp: "If an admin removes a user, the license remains assigned for the billing period but can be reallocated." },
+  { cat: "Enterprise", q: "What should admins do to free up licenses?", opts: ["Delete public repositories", "Audit inactive users and revoke access", "Upgrade the billing plan", "Purchase more licenses"], ans: 1, exp: "Audit inactive users and revoke access to free up licenses." },
+  { cat: "Enterprise", q: "What technologies can be used to automate user management and optimize licenses?", opts: ["REST and GraphQL APIs", "SSO and SCIM provisioning", "Docker and Kubernetes", "CI/CD and Actions"], ans: 1, exp: "Use SSO and SCIM provisioning to automate user management." },
+
+  // ── GHAS (26-34) ──────────────────────────────────────────────────
+  { cat: "GHAS", q: "What features are offered by GitHub Advanced Security (GHAS)?", opts: ["CI/CD pipelines and hosting", "Code scanning, secret scanning, and dependency review", "Copilot code generation", "Large File Storage and bandwidth"], ans: 1, exp: "GitHub Advanced Security (GHAS) offers code scanning, secret scanning, and dependency review for enhanced security." },
+  { cat: "GHAS", q: "Where do you navigate to view GHAS usage?", opts: ["Settings → Security", "Enterprises → [Enterprise Name] → Billing → Advanced Security", "Organization Settings → Actions", "Profile → GHAS Dashboard"], ans: 1, exp: "To view GitHub Advanced Security (GHAS) usage, on GitHub.com, select Enterprises from the side navigation, select your enterprise from the list, then navigate to Billing → Advanced Security." },
+  { cat: "GHAS", q: "How is an 'active committer' defined for GHAS billing?", opts: ["Anyone who opened an issue in the last 30 days", "Anyone who has pushed at least one commit to a GHAS-enabled repository within the last 90 days", "Anyone who merged a pull request in the last year", "Any user registered in the enterprise account"], ans: 1, exp: "An active committer is anyone who has pushed at least one commit to a repository with GitHub Advanced Security (GHAS) enabled within the last 90 days..." },
+  { cat: "GHAS", q: "Does the date when the commit was originally authored affect whether someone is an active committer?", opts: ["Yes, it must be within the 90 days", "No, it is based on when it was pushed, regardless of when it was authored", "Yes, if the commit is older than 1 year, it doesn't count", "No, it depends on when the PR was opened"], ans: 1, exp: "...within the last 90 days, regardless of when the commit was originally authored." },
+  { cat: "GHAS", q: "On what metric is GHAS billing based?", opts: ["Number of repositories", "Number of unique active committers per billing period", "Number of lines of code scanned", "Number of vulnerabilities found"], ans: 1, exp: "GHAS billing is based on the number of unique active committers per billing period." },
+  { cat: "GHAS", q: "If a committer contributes to multiple repositories with GHAS enabled, how are they charged?", opts: ["Once per repository", "They only count once", "Once per commit", "They are charged a multiplier rate"], ans: 1, exp: "If a committer contributes to multiple repositories, they only count once." },
+  { cat: "GHAS", q: "Is there a Free Tier available for GHAS on private repositories?", opts: ["Yes, for up to 5 users", "Yes, up to 2GB", "No, it is not available (only for public repositories)", "Yes, for students only"], ans: 2, exp: "Free Tier: Not available (only for public repositories)." },
+  { cat: "GHAS", q: "What is a recommended strategy to optimize GHAS costs?", opts: ["Enable it on every single repository", "Restrict GHAS to repositories that truly need advanced security", "Delete commit history regularly", "Use multiple GitHub accounts"], ans: 1, exp: "Restrict GHAS to repositories that truly need advanced security." },
+  { cat: "GHAS", q: "How can you limit unnecessary scans on feature branches to optimize GHAS usage?", opts: ["Delete the branches after merging", "Use branch protections", "Disable CI/CD", "Run scans locally instead"], ans: 1, exp: "Use branch protections to limit unnecessary scans on feature branches." },
+
+  // ── COPILOT (35-42) ───────────────────────────────────────────────
+  { cat: "Copilot", q: "What does GitHub Copilot provide?", opts: ["Automated CI/CD pipelines", "AI-driven code completion and suggestions", "Security vulnerability scanning", "Large file hosting"], ans: 1, exp: "GitHub Copilot provides AI-driven code completion and suggestions..." },
+  { cat: "Copilot", q: "How is GitHub Copilot billed?", opts: ["Per repository", "Per line of code generated", "Per user", "Per month globally"], ans: 2, exp: "...billed per user." },
+  { cat: "Copilot", q: "Where can admins track Copilot usage in organization settings?", opts: ["Billing → Copilot", "Settings → Developer settings", "Security → Copilot", "Actions → Copilot"], ans: 0, exp: "Admins can track Copilot usage under Billing → Copilot in organization settings." },
+  { cat: "Copilot", q: "What information does the Copilot usage report show?", opts: ["Exact code generated", "Active users and monthly billing estimates", "API request latency", "Number of autocomplete accepted"], ans: 1, exp: "The report shows active users and monthly billing estimates." },
+  { cat: "Copilot", q: "Who is eligible for free access to GitHub Copilot?", opts: ["Any personal account", "Students and verified open-source maintainers", "Enterprise accounts automatically", "Non-profit organizations only"], ans: 1, exp: "Free for students and verified open-source maintainers." },
+  { cat: "Copilot", q: "Can enterprise customers access Copilot for free?", opts: ["Yes, permanently", "Yes, but only on a trial-based select basis", "No, never", "Yes, up to 10 users"], ans: 1, exp: "Free for select enterprise customers (trial-based)." },
+  { cat: "Copilot", q: "What is an optimization strategy for managing Copilot costs?", opts: ["Regularly review and deactivate Copilot for users who don’t need it", "Only use it on weekends", "Limit the number of files open in the IDE", "Use it offline only"], ans: 0, exp: "Regularly review and deactivate Copilot for users who don’t need it." },
+  { cat: "Copilot", q: "In what types of projects should developers be encouraged to disable Copilot?", opts: ["Projects written in Python", "Projects where AI-generated code is unnecessary", "Open-source projects", "Private repositories"], ans: 1, exp: "Encourage developers to disable Copilot in projects where AI-generated code is unnecessary." },
+
+  // ── LFS (43-50) ───────────────────────────────────────────────────
+  { cat: "LFS", q: "What is GitHub LFS used for?", opts: ["Storing large text files", "Storing large binary files separately from Git repositories", "Speeding up small file transfers", "Hosting static websites"], ans: 1, exp: "GitHub LFS is used for storing large binary files separately from Git repositories." },
+  { cat: "LFS", q: "Where do you view LFS usage?", opts: ["Settings → Actions", "Billing → LFS Usage", "Billing → Packages", "Repositories → Large Files"], ans: 1, exp: "View LFS usage in Billing → LFS Usage." },
+  { cat: "LFS", q: "What metrics are included in the LFS usage report?", opts: ["Lines of code and commit size", "Storage (GB) and bandwidth usage (GB)", "Download count and uploader IP", "Repository size and user count"], ans: 1, exp: "Report includes storage (GB) and bandwidth usage (GB)." },
+  { cat: "LFS", q: "What is the Free Tier limit for LFS storage per account per month?", opts: ["500MB", "1GB", "2GB", "5GB"], ans: 1, exp: "Free Tier: 1GB of storage per account per month." },
+  { cat: "LFS", q: "What is the Free Tier limit for LFS bandwidth usage per month?", opts: ["500MB", "1GB", "2GB", "5GB"], ans: 1, exp: "Free Tier: ... 1GB of bandwidth usage per month." },
+  { cat: "LFS", q: "If your organization needs to store many massive files, what optimization strategy is suggested instead of using LFS exclusively?", opts: ["Compress them into a single zip file", "Use external storage services (e.g., AWS S3, Azure Blob Storage)", "Delete the repository", "Upgrade to GitHub Enterprise"], ans: 1, exp: "Use external storage services (e.g., AWS S3, Azure Blob Storage) for large files." },
+  { cat: "LFS", q: "What should you do with unused large files in LFS?", opts: ["Ignore them", "Delete unused large files to optimize storage", "Move them to standard Git tracking", "Archive the repository"], ans: 1, exp: "Delete unused large files to optimize storage." },
+  { cat: "LFS", q: "What feature should be enabled to remove unreferenced LFS objects?", opts: ["Garbage collection", "Git LFS file pruning", "Branch deletion", "Commit squashing"], ans: 1, exp: "Enable Git LFS file pruning to remove unreferenced objects." }
+];
+
+const catColorMap = {
+  "Actions": "cat-actions",
+  "Packages": "cat-packages",
+  "Enterprise": "cat-enterprise",
+  "GHAS": "cat-ghas",
+  "Copilot": "cat-copilot",
+  "LFS": "cat-lfs"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-actions';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

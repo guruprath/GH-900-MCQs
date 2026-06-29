@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Code Scanning Configuration — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-workflow { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-frequency { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-prscans { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-severities { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-advanced { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 60 Questions</div>
+  <h1>Configure Code Scanning</h1>
+  <p>GitHub Advanced Setup & Workflow Configuration</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Workflow Editing',this)">Workflow Editing</button>
+    <button class="filter-btn" onclick="filterCat('Frequency',this)">Frequency</button>
+    <button class="filter-btn" onclick="filterCat('PR Scans',this)">PR Scans</button>
+    <button class="filter-btn" onclick="filterCat('Severities',this)">Severities</button>
+    <button class="filter-btn" onclick="filterCat('Advanced',this)">Advanced</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS (1–10) ────────────────────────────────────────────────
+  { cat: "Basics", q: "What is a primary benefit of choosing your own configuration for code scanning?", opts: ["It eliminates all vulnerabilities automatically.", "You save time and decide the best frequency for your project.", "It allows you to bypass GitHub's billing limits.", "It guarantees a successful pull request merge."], ans: 1, exp: "When you choose your own configuration, you save time and decide the best frequency of code scanning for your project." },
+  { cat: "Basics", q: "Which of the following is an option for running code scanning as discussed in the text?", opts: ["Only on external CI systems", "Only using GitHub Actions", "On GitHub, using GitHub Actions, or from your CI system", "Locally on developer machines only"], ans: 2, exp: "You can run code scanning on GitHub, using GitHub Actions, or from your continuous integration (CI) system." },
+  { cat: "Basics", q: "What does selecting the 'Advanced setup' option on GitHub generate?", opts: ["A static PDF report", "A customizable workflow file", "A new repository branch", "An automated pull request"], ans: 1, exp: "Selecting the Advanced setup option on GitHub generates a customizable workflow file that you can then commit directly to your repository." },
+  { cat: "Basics", q: "How often do you usually need to edit the generated customizable workflow file?", opts: ["Every time you commit", "You usually don't need to edit this workflow", "Once a day", "Only when creating a new branch"], ans: 1, exp: "You usually don't need to edit this workflow. However, if necessary, you can customize some of the settings." },
+  { cat: "Basics", q: "Which of the following is a setting you can edit in GitHub's CodeQL analysis workflow?", opts: ["The repository visibility", "The languages or directories to scan", "The GitHub billing cycle", "The repository owner"], ans: 1, exp: "For example, you can edit GitHub's CodeQL analysis workflow to specify the frequency of scans, the languages or directories to scan..." },
+  { cat: "Basics", q: "Besides languages and directories, what else can you specify in the CodeQL analysis workflow?", opts: ["What CodeQL code scanning looks for in your code", "The exact number of developers allowed to push", "The UI theme of GitHub", "The programming language of GitHub Actions"], ans: 0, exp: "...and what CodeQL code scanning looks for in your code." },
+  { cat: "Basics", q: "Under what specific condition might you need to edit the CodeQL analysis workflow regarding compilation?", opts: ["If your code doesn't compile", "If you use a specific set of commands to compile your code", "If you compile to WebAssembly", "If you don't use compiled languages"], ans: 1, exp: "You might also need to edit the CodeQL analysis workflow if you use a specific set of commands to compile your code." },
+  { cat: "Basics", q: "Is CodeQL analysis the only type of code scanning you can perform in GitHub?", opts: ["Yes, GitHub only supports CodeQL", "No, it is just one type of code scanning", "Yes, unless you use external CI tools", "No, but other tools cost extra automatically"], ans: 1, exp: "CodeQL analysis is just one type of code scanning you can perform in GitHub." },
+  { cat: "Basics", q: "Where can you find other code scanning workflows besides CodeQL?", opts: ["GitHub Wiki", "GitHub Community Forum", "GitHub Marketplace", "GitHub Gists"], ans: 2, exp: "The GitHub Marketplace contains several other code scanning workflows." },
+  { cat: "Basics", q: "What is the overarching goal of adjusting the code scanning frequency and schedule?", opts: ["To best fit your repository and development needs", "To satisfy external auditors", "To speed up the GitHub UI", "To reduce repository storage space"], ans: 0, exp: "You'll also learn how to configure the frequency of scans and schedule them to best fit your repository and development needs." },
+
+  // ── WORKFLOW EDITING (11–20) ────────────────────────────────────────────────
+  { cat: "Workflow Editing", q: "If you are using the default setup method, where do you navigate to switch to Advanced setup?", opts: ["Settings > Code security and analysis", "Actions > Workflows", "Security > Code scanning alerts", "Pull requests > Checks"], ans: 0, exp: "Navigate to the Code scanning section under Settings > Code security and analysis..." },
+  { cat: "Workflow Editing", q: "Which icon do you click in the Code scanning section to find the 'Switch to advanced' option?", opts: ["The gear icon", "The three dots overflow icon (...)", "The pencil icon", "The plus icon (+)"], ans: 1, exp: "...and then select the three dots overflow icon (...)." },
+  { cat: "Workflow Editing", q: "After selecting 'Switch to advanced', what prompts must you follow?", opts: ["Delete the repository and fork it", "Disable CodeQL, and re-enable it with the advanced setup's generated workflow file", "Upgrade your billing plan", "Archive all old alerts"], ans: 1, exp: "Then, follow the prompts to disable CodeQL, and re-enable it with the advanced setup's generated workflow file." },
+  { cat: "Workflow Editing", q: "In which directory does GitHub save workflow files?", opts: [".github/actions", ".github/workflows", "workflows/github", ".config/workflows"], ans: 1, exp: "GitHub saves workflow files in the .github/workflows directory of your repository." },
+  { cat: "Workflow Editing", q: "How can you find a specific workflow you have added?", opts: ["By running a CLI command", "By searching for its file name", "By asking GitHub Support", "It is always pinned to the repository root"], ans: 1, exp: "You can find a workflow you have added by searching for its file name." },
+  { cat: "Workflow Editing", q: "What is the default file name for the CodeQL code scanning workflow?", opts: ["code-scan.yml", "codeql-analysis.yml", "github-codeql.yml", "security-scan.yml"], ans: 1, exp: "For example, by default, the workflow file for CodeQL code scanning is called codeql-analysis.yml." },
+  { cat: "Workflow Editing", q: "How do you open the workflow editor for a workflow file on GitHub?", opts: ["Select the Edit icon in the upper-right corner of the file view", "Download the file and edit it locally", "Type 'edit' in the command palette", "Select 'Modify' from the repository settings"], ans: 0, exp: "To open the workflow editor, select the Edit icon in the upper-right corner of the file view." },
+  { cat: "Workflow Editing", q: "After making edits to the workflow file in the editor, what is the next step?", opts: ["Select 'Save draft'", "Select 'Commit changes' and complete the form", "Close the browser tab", "Run the workflow manually"], ans: 1, exp: "After you have edited the file, select Commit changes and complete the Commit changes form." },
+  { cat: "Workflow Editing", q: "When committing changes to the workflow, what branch options do you have?", opts: ["Only commit to a new branch", "Only commit to the current branch", "Commit directly to the current branch, or create a new branch and start a pull request", "Commit to the 'gh-pages' branch only"], ans: 2, exp: "You can choose to commit directly to the current branch, or create a new branch and start a pull request." },
+  { cat: "Workflow Editing", q: "What happens if you switch to advanced setup but fail to commit the generated workflow file?", opts: ["Code scanning runs via default settings", "CodeQL analysis will not be re-enabled properly", "GitHub automatically commits it for you", "Your repository is locked"], ans: 1, exp: "You must follow the prompts to disable CodeQL, and re-enable it with the advanced setup's generated workflow file (which requires committing it)." },
+
+  // ── FREQUENCY (21–30) ────────────────────────────────────────────────
+  { cat: "Frequency", q: "What is a common edit made to the workflow file regarding scan execution?", opts: ["Changing the UI theme", "Adjusting the frequency with which code scanning occurs", "Deleting the file", "Renaming the action"], ans: 1, exp: "A common edit to the workflow file is to adjust the frequency with which code scanning occurs." },
+  { cat: "Frequency", q: "The CodeQL analysis workflow can be configured to scan code in which two primary ways?", opts: ["On a schedule or when specific events occur", "Only manually or via API", "Only on branch creation or deletion", "On release or on fork"], ans: 0, exp: "You can configure the CodeQL analysis workflow to scan code on a schedule or when specific events occur in a repository." },
+  { cat: "Frequency", q: "Which two specific developer actions are commonly used to trigger a scan?", opts: ["Starring a repo and forking", "Pushing a change and creating a pull request", "Creating an issue and adding a label", "Merging and rebasing"], ans: 1, exp: "You can also edit the workflow file to scan code when someone pushes a change and whenever a pull request is created." },
+  { cat: "Frequency", q: "What is the primary benefit of adjusting the scan frequency to trigger on developer actions?", opts: ["It saves CI/CD minutes", "It prevents developers from introducing new vulnerabilities and errors into the code", "It automatically fixes the code", "It formats the codebase"], ans: 1, exp: "Adjusting this frequency prevents developers from introducing new vulnerabilities and errors into the code." },
+  { cat: "Frequency", q: "What specific benefit does scanning code on a schedule provide?", opts: ["It informs you about the latest vulnerabilities discovered by GitHub, security researchers, and the community", "It runs tests faster", "It prevents pushes during the weekend", "It deletes old branches automatically"], ans: 0, exp: "Scanning code on a schedule informs you about the latest vulnerabilities and errors that GitHub, security researchers, and the community discover." },
+  { cat: "Frequency", q: "Will scheduled scans run even if developers aren't actively maintaining the repository?", opts: ["No, they require active commits", "Yes, even when developers aren't actively maintaining the repository", "Only if the repository is public", "Only if a bot triggers them"], ans: 1, exp: "Even when developers aren't actively maintaining the repository." },
+  { cat: "Frequency", q: "By default, the `on:push` event triggers a code scan on which branches?", opts: ["All branches", "Feature branches only", "The default branch of the repository and any protected branches", "Only branches starting with 'fix/'"], ans: 2, exp: "By default, the CodeQL analysis workflow uses the on:push event to trigger a code scan on every push to the default branch of the repository and any protected branches." },
+  { cat: "Frequency", q: "What is required for code scanning to be triggered on a specified branch?", opts: ["The branch must be public", "The workflow must exist in that branch", "The branch must have an open PR", "The branch must be named 'main'"], ans: 1, exp: "For code scanning to be triggered on a specified branch, the workflow must exist in that branch." },
+  { cat: "Frequency", q: "If you scan on push, where do the results appear?", opts: ["In the Actions log only", "In the Security tab for your repository", "In an email to the repository owner", "In a dedicated GitHub Issue"], ans: 1, exp: "If you scan on push, the results appear in the Security tab for your repository." },
+  { cat: "Frequency", q: "When an `on:push` scan returns a result that maps to an open pull request, where does it appear?", opts: ["It is hidden until merged", "It automatically appears on a pull request in the same place as other pull request alerts", "It appears as a new comment on the PR", "It causes the PR to close automatically"], ans: 1, exp: "Additionally, when an on:push scan returns a result that can be mapped to an open pull request, these alerts automatically appear on a pull request..." },
+
+  // ── PR SCANS (31–40) ────────────────────────────────────────────────
+  { cat: "PR Scans", q: "How does code scanning identify alerts mapped to a pull request during an `on:push` scan?", opts: ["By matching exact line numbers", "By comparing the existing analysis of the head of the branch to the analysis for the target branch", "By checking the commit message", "By asking the developer to confirm"], ans: 1, exp: "The alerts are identified by comparing the existing analysis of the head of the branch to the analysis for the target branch." },
+  { cat: "PR Scans", q: "The default CodeQL analysis workflow uses the `pull_request` event targeted against which branch?", opts: ["Any branch", "The default branch", "Protected branches only", "Release branches"], ans: 1, exp: "The default CodeQL analysis workflow uses the pull_request event to trigger a code scan on pull requests targeted against the default branch." },
+  { cat: "PR Scans", q: "If a pull request is from a private fork, the `pull_request` event is only triggered if which option is selected?", opts: ["Allow all actions", "Run workflows from fork pull requests", "Enable private forks", "Bypass branch protections"], ans: 1, exp: "If a pull request is from a private fork, the pull_request event is only triggered if you've selected the 'Run workflows from fork pull requests' option..." },
+  { cat: "PR Scans", q: "If you scan pull requests, how do the results appear?", opts: ["As issues in the repo", "As alerts in a pull-request check", "As direct messages to the author", "In the Wiki"], ans: 1, exp: "If you scan pull requests, the results appear as alerts in a pull-request check." },
+  { cat: "PR Scans", q: "Which commit is it more efficient and accurate to scan using the `pull_request` trigger?", opts: ["The branch head commit", "The initial branch commit", "The pull request's merge commit", "The latest commit on main"], ans: 2, exp: "If you use the pull_request trigger, configured to scan the pull request's merge commit rather than the head commit, it produces more efficient and accurate results..." },
+  { cat: "PR Scans", q: "Why might scanning the merge commit be preferred over the branch head on each push?", opts: ["It skips the code scanning entirely", "It produces more efficient and accurate results", "It uses zero GitHub Action minutes", "It prevents merge conflicts"], ans: 1, exp: "...it produces more efficient and accurate results than scanning the branch head on each push." },
+  { cat: "PR Scans", q: "If your CI/CD system can't trigger on pull requests, what trigger can you use to still map results to open PRs?", opts: ["on:schedule", "on:release", "on:push", "on:issue"], ans: 2, exp: "However, if you use a CI/CD system that can't be configured to trigger on pull requests, you can still use the on:push trigger so that code scanning maps the results..." },
+  { cat: "PR Scans", q: "When using `on:push` as a fallback for PRs, how are alerts added to the pull request?", opts: ["As blocking reviews", "As annotations on a pull request", "As merged commits", "As labels on the PR"], ans: 1, exp: "...and adds the alerts as annotations on a pull request." },
+  { cat: "PR Scans", q: "Where is the 'Run workflows from fork pull requests' option located?", opts: ["In the workflow file", "In the repository settings", "In the user profile settings", "In the branch protection rules"], ans: 1, exp: "...if you've selected the 'Run workflows from fork pull requests' option in the repository settings." },
+  { cat: "PR Scans", q: "When a PR targets a branch other than the default branch, does the default CodeQL workflow scan it?", opts: ["Yes, always", "No, the default workflow targets pull requests against the default branch", "Only if it has conflicts", "Only if manually triggered"], ans: 1, exp: "The default CodeQL analysis workflow uses the pull_request event to trigger a code scan on pull requests targeted against the default branch." },
+
+  // ── SEVERITIES (41–50) ────────────────────────────────────────────────
+  { cat: "Severities", q: "By default, what alert severity level causes a pull-request check failure?", opts: ["Warning", "Note", "Error", "Critical"], ans: 2, exp: "By default, only alerts with the severity level of Error or security severity level of Critical or High cause a pull-request check failure." },
+  { cat: "Severities", q: "By default, what security severity levels cause a pull-request check failure?", opts: ["Low or Medium", "Medium or High", "Critical or High", "Only Critical"], ans: 2, exp: "...or security severity level of Critical or High cause a pull-request check failure." },
+  { cat: "Severities", q: "Do pull-request check failures stop a code scan from completing?", opts: ["Yes, immediately", "No, they don't stop a code scan", "Yes, but only on protected branches", "Only if configured in the workflow file"], ans: 1, exp: "Pull-request failures don't stop a code scan..." },
+  { cat: "Severities", q: "What is the consequence of a pull-request check failure?", opts: ["The repository is locked", "It represents a blocker when trying to merge code", "The PR is automatically closed", "The developer's access is revoked"], ans: 1, exp: "...but represent a blocker when trying to merge code." },
+  { cat: "Severities", q: "Where can you find the list of pull-request failures?", opts: ["In the Actions tab", "In the Code scanning alerts tab under your repository's Security", "In the repository Wiki", "In the Settings > Billing page"], ans: 1, exp: "You can find the list of pull-request failures in the Code scanning alerts tab under your repository's Security." },
+  { cat: "Severities", q: "Can you change the severity levels that cause a pull request check failure?", opts: ["No, they are hardcoded by GitHub", "Yes, in your repository settings", "Yes, but only by editing the CodeQL source code", "Yes, by emailing GitHub Support"], ans: 1, exp: "In your repository settings, you can change the levels of alert severities and of security severities that cause a pull request check failure." },
+  { cat: "Severities", q: "To change severity failure levels on GitHub.com, where do you navigate first?", opts: ["The repository main page > Settings", "Your user profile > Settings", "The Organization page > Security", "The Pull Request page > Edit"], ans: 0, exp: "On GitHub.com, navigate to the repository main page. Under your repository name, select Settings." },
+  { cat: "Severities", q: "After selecting Settings to change severity failures, which option do you select in the left sidebar?", opts: ["Branches", "Webhooks", "Code security and analysis", "Actions"], ans: 2, exp: "In the left sidebar, select Code security and analysis." },
+  { cat: "Severities", q: "Under which section in 'Code security and analysis' do you find the severity drop-down menu?", opts: ["Dependabot alerts", "Secret scanning", "Code scanning section under Protection rules", "Security Advisories"], ans: 2, exp: "In the Code scanning section under Protection rules, use the drop-down menu to select the severity level..." },
+  { cat: "Severities", q: "What UI element is used to select the severity level for a pull request check failure?", opts: ["A radio button", "A checkbox list", "A drop-down menu", "A text input field"], ans: 2, exp: "...use the drop-down menu to select the severity level you would like to trigger a pull request check failure." },
+
+  // ── ADVANCED (51–60) ────────────────────────────────────────────────
+  { cat: "Advanced", q: "Why might you use `paths-ignore` or `paths` in your workflow?", opts: ["To delete specific files", "To avoid unnecessary scans of pull requests based on which files changed", "To hide files from the repository", "To encrypt sensitive paths"], ans: 1, exp: "You might want to avoid a code scan being triggered on specific pull requests... You can configure this setting by specifying on:pull_request:paths-ignore or on:pull_request:paths..." },
+  { cat: "Advanced", q: "If the only changes in a PR are to documentation files like `.md` and `.txt`, how can you avoid scanning?", opts: ["By manually canceling the run", "By using a `paths-ignore` array in the workflow", "By disabling Advanced setup", "By changing the alert severity to None"], ans: 1, exp: "For example, if the only changes in a pull request are to files with the file extensions .md or .txt you can use the following paths-ignore array." },
+  { cat: "Advanced", q: "In the example workflow, what does `- '**/*.md'` signify under `paths-ignore`?", opts: ["Scan all markdown files", "Ignore changes to any markdown file in any directory", "Delete all markdown files", "Only scan markdown files"], ans: 1, exp: "paths-ignore: - '**/*.md' ensures that PRs modifying only markdown files do not trigger a scan." },
+  { cat: "Advanced", q: "Which YAML key pairs with `pull_request` to specify paths to skip?", opts: ["branches-ignore", "paths-skip", "paths-ignore", "ignore-files"], ans: 2, exp: "on:pull_request:paths-ignore" },
+  { cat: "Advanced", q: "If you use the default CodeQL analysis workflow without edits, how often does a scheduled scan occur?", opts: ["Every night at midnight", "Once a week at a randomly generated day and time", "Once a month on the 1st", "Every hour"], ans: 1, exp: "If you use the default CodeQL analysis workflow, the workflow scans the code in your repository once a week at a randomly generated day and time..." },
+  { cat: "Advanced", q: "How do you adjust the random schedule generated by the default workflow?", opts: ["Edit the `cron` value in the workflow", "Click 'Reschedule' in the Settings tab", "You cannot change the schedule", "Change your repository's timezone"], ans: 0, exp: "To adjust this schedule, edit the cron value in the workflow." },
+  { cat: "Advanced", q: "In the example provided, what does the cron value `'20 14 * * 1'` represent?", opts: ["Every day at 14:20 UTC", "Monday at 14:20 UTC", "Tuesday at 20:14 UTC", "The 1st of the month at 14:20 UTC"], ans: 1, exp: "- cron: '20 14 * * 1' translates to: The default branch every Monday at 14:20 UTC." },
+  { cat: "Advanced", q: "In the example workflow, which branches are specified under `on: push: branches:`?", opts: ["[main]", "[main, protected]", "[*]", "['releases/*']"], ans: 1, exp: "push: branches: [main, protected]" },
+  { cat: "Advanced", q: "In the example workflow, which branches are specified under `on: pull_request: branches:`?", opts: ["[main, protected]", "[main]", "[all]", "[develop]"], ans: 1, exp: "pull_request: branches: [main]" },
+  { cat: "Advanced", q: "Based on the example workflow provided, what triggers a code scan?", opts: ["Only pushes to main", "Every push to main/protected, every PR to main, and the weekly cron schedule", "Pushes to any branch and PRs to protected", "Only the cron schedule"], ans: 1, exp: "This workflow scans: Every push to the default branch and the protected branch, Every pull request to the default branch, The default branch every Monday at 14:20 UTC." }
+];
+
+const catColorMap = {
+  "Basics": "cat-basics",
+  "Workflow Editing": "cat-workflow",
+  "Frequency": "cat-frequency",
+  "PR Scans": "cat-prscans",
+  "Severities": "cat-severities",
+  "Advanced": "cat-advanced"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

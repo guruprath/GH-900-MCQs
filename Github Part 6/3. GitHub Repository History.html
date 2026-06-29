@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Repository History & Search — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-search-methods { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-filters { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-milestones { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-labels { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-git-blame { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-saved-replies-templates { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+  .cat-linking-assigning { color: #ff7b72; border-color: rgba(255,123,114,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 60 Questions</div>
+  <h1>GitHub Repository History</h1>
+  <p>Search, Filters, Blame, Milestones & Templates</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Search Methods',this)">Search Methods</button>
+    <button class="filter-btn" onclick="filterCat('Filters',this)">Filters</button>
+    <button class="filter-btn" onclick="filterCat('Milestones',this)">Milestones</button>
+    <button class="filter-btn" onclick="filterCat('Labels',this)">Labels</button>
+    <button class="filter-btn" onclick="filterCat('Git Blame',this)">Git Blame</button>
+    <button class="filter-btn" onclick="filterCat('Saved Replies & Templates',this)">Replies & Templates</button>
+    <button class="filter-btn" onclick="filterCat('Linking & Assigning',this)">Linking & Assigning</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── SEARCH METHODS (1–11) ────────────────────────────────────────────────
+  { cat: "Search Methods", q: "Why might a new developer need to search a repository's history when assigned a bug?", opts: ["To delete old comments","To acquire background knowledge and context not present in the current code","To bypass the pull request review process","To assign the bug to someone else"], ans: 1, exp: "You also haven't been part of the planning discussions... You'll first need to acquire that background knowledge to best determine the right fix." },
+  { cat: "Search Methods", q: "What are the two search methods available on GitHub mentioned in the text?", opts: ["Global search and Context search","Advanced search and Simple search","Regex search and Boolean search","Commit search and Issue search"], ans: 0, exp: "There are two search methods available on GitHub: the global search at the top of the page and the scoped search [context search] available on certain repository tabs." },
+  { cat: "Search Methods", q: "Where is the global search located on GitHub?", opts: ["At the bottom of the repository page","Inside the Settings tab","At the top of the page","In the pull request right sidebar"], ans: 2, exp: "There are two search methods available on GitHub: the global search at the top of the page..." },
+  { cat: "Search Methods", q: "What is a key feature of the global search?", opts: ["It only searches your local machine","It lets you use the complete search syntax to search across all of GitHub","It is restricted to searching only closed issues","It automatically deletes duplicated search queries"], ans: 1, exp: "The global search lets you use the complete search syntax to search across all of GitHub." },
+  { cat: "Search Methods", q: "Which of the following is included in global search results?", opts: ["Only source code","Code, issues, the Marketplace, and users","Only open pull requests","Only external repositories"], ans: 1, exp: "The search results are comprehensive and include everything from code to issues to the Marketplace (and even users)." },
+  { cat: "Search Methods", q: "To craft a complex global search, what specific feature should you try?", opts: ["The advanced search","The context search","The git blame view","The autocomplete dropdown"], ans: 0, exp: "To craft a complex global search, try the advanced search." },
+  { cat: "Search Methods", q: "Where are context searches available?", opts: ["Only on the main user profile page","On the GitHub homepage","On certain tabs, such as Issues and Pull requests","Inside the code editor only"], ans: 2, exp: "Context searches are available on certain tabs, such as Issues and Pull requests." },
+  { cat: "Search Methods", q: "How is a context search scoped?", opts: ["It searches all repositories owned by your organization","It searches across the entire GitHub network","It is scoped into the current repository and only returns results of that type","It searches only the files you have recently edited"], ans: 2, exp: "These searches are scoped into the current repository and only return results of that type." },
+  { cat: "Search Methods", q: "What is a major benefit of the scoping provided by context searches?", opts: ["It runs faster than global search","It allows the user interface to expose known type-specific filters like authors and labels","It automatically merges your pull requests","It prevents unauthorized users from searching"], ans: 1, exp: "The benefit to this scoping is that it allows the user interface to expose known type-specific filters such as authors, labels, projects, and more." },
+  { cat: "Search Methods", q: "When is using the context search the preferred option?", opts: ["When you are looking for external libraries","When you want to search all of GitHub","When you're looking for something in the current repository","When you are searching for user profiles"], ans: 2, exp: "Using the context search is the preferred option when you're looking for something in the current repository." },
+  { cat: "Search Methods", q: "In the scenario of fixing the sidebar, why might global search be slightly less ideal for issues/PRs than context search?", opts: ["It doesn't search issues or PRs at all","They're not as easy to filter further in the global search results view","It deletes the issues automatically","It only returns code results"], ans: 1, exp: "You'll also likely get hits for issues and pull requests, although they're not as easy to filter further in the global search results view." },
+
+  // ── FILTERS (12–20) ────────────────────────────────────────────────
+  { cat: "Filters", q: "What does the filter clause 'is:pr' do?", opts: ["It only returns projects","It filters out issues returned from the issues/pull requests store","It searches for private repositories","It assigns the PR to you"], ans: 1, exp: "The filter clause is:pr filters out issues returned from the issues/pull requests store." },
+  { cat: "Filters", q: "How does the code-search provider handle the 'is:pr' clause?", opts: ["It crashes the search","It returns only PR code","It ignores it and returns the same code results either way","It converts it to 'is:issue'"], ans: 2, exp: "For example, the code-search provider doesn't support that clause, so it will ignore it and return the same code results either way." },
+  { cat: "Filters", q: "What does the query 'is:open is:issue assignee:@me' return?", opts: ["Open pull requests assigned to you","Closed issues assigned to you","Open issues assigned to the current user (@me)","All issues in the repository"], ans: 2, exp: "Query: is:open is:issue assignee:@me. Explanation: Open issues assigned to the current user (@me)." },
+  { cat: "Filters", q: "Which query finds closed pull requests created by a user named 'contoso'?", opts: ["is:closed is:pr author:contoso","is:open is:pr assignee:contoso","is:closed is:issue author:contoso","is:merged is:pr label:contoso"], ans: 0, exp: "Query: is:closed is:pr author:contoso. Explanation: Closed pull requests created by @contoso." },
+  { cat: "Filters", q: "If you want to find pull requests where 'sidebar' is mentioned specifically in the comments, which query should you use?", opts: ["is:pr sidebar in:body","is:pr sidebar in:comments","is:issue sidebar in:title","is:pr sidebar in:code"], ans: 1, exp: "Query: is:pr sidebar in:comments. Explanation: Pull requests where \"sidebar\" is mentioned in the comments." },
+  { cat: "Filters", q: "What does the filter '-linked:pr' do in a search query?", opts: ["Finds issues with a linked pull request","Excludes issues that do not have a linked pull request","Finds issues that do not have a linked pull request","Automatically links a PR to the issue"], ans: 2, exp: "-linked:pr is explained as returning items 'that do not have a linked pull request'." },
+  { cat: "Filters", q: "Which search query finds open issues labeled as bugs that DO NOT have a linked pull request?", opts: ["is:open is:issue label:bug linked:pr","is:open is:issue label:bug -linked:pr","is:closed is:issue label:bug -linked:pr","is:open is:pr label:bug -linked:issue"], ans: 1, exp: "Query: is:open is:issue label:bug -linked:pr. Explanation: Open issues labeled as bugs that do not have a linked pull request." },
+  { cat: "Filters", q: "Where can you often find common search filters without typing them directly?", opts: ["In the repository's README","From context search dropdowns","In the global settings menu","By emailing GitHub Support"], ans: 1, exp: "While these are often available from context search dropdowns, it's sometimes more convenient to type them in directly." },
+  { cat: "Filters", q: "If you want to quickly find items assigned to yourself or others, which filter keyword should you use?", opts: ["user:","author:","assignee:","owner:"], ans: 2, exp: "Use the assignee: filter in your searches to find items assigned to yourself or others." },
+
+  // ── MILESTONES (21–29) ────────────────────────────────────────────────
+  { cat: "Milestones", q: "What do milestones let you group issues and pull requests into?", opts: ["Unrelated categories","Shared goals, like a sprint, a product release, or a project phase","Code repositories","Different programming languages"], ans: 1, exp: "Milestones let you group issues and pull requests into shared goals, like a sprint, a product release, or a project phase." },
+  { cat: "Milestones", q: "How do milestones help teams tracking progress?", opts: ["By automatically writing code","By tracking progress automatically, showing how many issues/PRs are complete and how many remain","By deleting incomplete issues","By enforcing strict deadlines that lock the repository"], ans: 1, exp: "Progress towards each milestone is tracked automatically—GitHub shows how many issues or PRs are complete and how many remain." },
+  { cat: "Milestones", q: "Can milestones be ordered?", opts: ["No, they are strictly alphabetical","Yes, making it easy to set priorities and visualize which are most important","Only if you have an Enterprise account","Only by creation date"], ans: 1, exp: "Milestones can be ordered (just like projects), making it easy to set priorities and visualize which milestones are most important." },
+  { cat: "Milestones", q: "Where do you navigate first to create a milestone?", opts: ["The Settings tab","The Actions tab","The Issues tab of your repository","The Pull requests tab"], ans: 2, exp: "Navigate to the Issues tab of your repository. Select Milestones from the top menu." },
+  { cat: "Milestones", q: "When creating a milestone, which of the following is an optional field?", opts: ["The repository name","A due date","The creator's username","The base branch"], ans: 1, exp: "Enter a title, description, and optionally a due date." },
+  { cat: "Milestones", q: "How do you assign a milestone to an issue or pull request?", opts: ["By typing the milestone name in the comments","In the right sidebar, select Milestone and choose from the list","By creating a new branch named after the milestone","By using the git command line"], ans: 1, exp: "Open any issue or PR. In the right sidebar, select Milestone. Choose from the list..." },
+  { cat: "Milestones", q: "How can milestones be used within GitHub Projects?", opts: ["They cannot be used in GitHub Projects","You can add milestones as a column layout or display a milestone as a card","They automatically create a new project board","They replace project boards entirely"], ans: 1, exp: "You can also add milestones as a column to your GitHub Projects layout or display a milestone as a card on a GitHub Projects board." },
+  { cat: "Milestones", q: "What query filters for open pull requests in the milestone 'Release v1.0'?", opts: ["is:open is:pr milestone:\"Release v1.0\"","is:pr label:\"Release v1.0\"","milestone:open pr:\"Release v1.0\"","is:open is:issue milestone:\"Release v1.0\""], ans: 0, exp: "You can filter by milestone... with advanced search queries like: is:open is:pr milestone:\"Release v1.0\"" },
+  { cat: "Milestones", q: "When searching with the 'milestone:' keyword, what happens if you don't use 'milestone:*'?", opts: ["It returns all milestones, open and closed","It returns an error","Only open milestones will match","Only closed milestones will match"], ans: 2, exp: "Only open milestones will match unless you include closed ones by searching with milestone:*." },
+
+  // ── LABELS (30–34) ────────────────────────────────────────────────
+  { cat: "Labels", q: "According to the text, what type of tools are labels and milestones?", opts: ["Code formatting tools","Metadata tools that help teams organize issues and PRs","Continuous integration tools","Debugging tools"], ans: 1, exp: "Labels and milestones are metadata tools that help teams organize issues and pull requests." },
+  { cat: "Labels", q: "What is a primary benefit of using labels and milestones regarding searches?", opts: ["They automatically execute searches for you","They improve the accuracy of search queries","They hide secret files from searches","They increase the speed of the global search engine"], ans: 1, exp: "They also improve the accuracy of search queries." },
+  { cat: "Labels", q: "What does the query 'is:open is:issue label:bug' return?", opts: ["All open and closed bugs","All open issues labeled as 'bug'","All pull requests labeled as 'bug'","Code files containing the word 'bug'"], ans: 1, exp: "This returns all open issues labeled as \"bug.\"" },
+  { cat: "Labels", q: "What kinds of information can a label reflect, according to the text?", opts: ["Issue type, priority, team, or workflow status","Only the severity of a bug","The programming language used","The exact time an issue was created"], ans: 0, exp: "Labels can reflect issue type, priority, team, or workflow status." },
+  { cat: "Labels", q: "Can labels be combined with other filters for precise queries?", opts: ["No, you can only use one filter at a time","Yes, such as 'is:pr label:\"ready for review\" author:@me'","Yes, but only in global search","No, labels overwrite other filters"], ans: 1, exp: "You can combine labels with other filters for precise queries, such as: is:pr label:\"ready for review\" author:@me" },
+
+  // ── GIT BLAME (35–41) ────────────────────────────────────────────────
+  { cat: "Git Blame", q: "Despite its ominous name, what does the 'git blame' command actually display?", opts: ["A list of errors in your code","The commit history for a file","The users who have been banned from the repository","The branches that have merge conflicts"], ans: 1, exp: "Despite its ominous name, git blame is a command that displays the commit history for a file." },
+  { cat: "Git Blame", q: "What does git blame make it easy to see?", opts: ["The exact time the repository was created","Who made what changes and when","How many lines of code are in the project","Which programming languages are used most"], ans: 1, exp: "It makes it easy for you to see who made what changes and when." },
+  { cat: "Git Blame", q: "Why is git blame helpful when you are working on an unfamiliar file?", opts: ["It automatically rewrites bad code","It helps you track down other people who worked on the file to seek their input","It prevents other people from changing the file","It hides your changes from other developers"], ans: 1, exp: "This makes it much easier to track down other people who have worked on a file in order to seek out their input or participation." },
+  { cat: "Git Blame", q: "What alias do some Git systems use for git blame to avoid the implication of judgment?", opts: ["git credit","git author","git praise","git history"], ans: 2, exp: "Some Git systems alias git praise onto git blame to avoid the implication of judgment." },
+  { cat: "Git Blame", q: "How does GitHub's version of blame compare to basic git blame?", opts: ["It is exactly the same text-based output","It extends the basic functionality with a more robust user interface","It limits the history to the last 10 commits","It is only available to administrators"], ans: 1, exp: "GitHub extends the basic git blame functionality with a more robust user interface." },
+  { cat: "Git Blame", q: "If you found some sidebar code using global search, how could you see who worked on it last?", opts: ["By running a continuous integration test","By selecting the Blame option","By creating a new milestone","By adding a label to the code"], ans: 1, exp: "You might've found some sidebar code from the global search and selected the Blame option to see who worked on it last..." },
+  { cat: "Git Blame", q: "According to the text, the blame view is an effective way to locate what?", opts: ["A subject matter expert for the task at hand","A duplicate issue","A saved reply","A milestone due date"], ans: 0, exp: "However you got here, the blame view is an effective way to locate a subject matter expert for the task at hand." },
+
+  // ── SAVED REPLIES & TEMPLATES (42–52) ────────────────────────────────────────────────
+  { cat: "Saved Replies & Templates", q: "What do saved replies allow you to do?", opts: ["Automatically merge pull requests","Quickly respond to issues and pull requests with prewritten messages","Save your code to the local machine","Translate comments into other languages"], ans: 1, exp: "Saved replies let you quickly respond to issues and pull requests with prewritten messages." },
+  { cat: "Saved Replies & Templates", q: "Who are saved replies especially helpful for?", opts: ["New users learning to code","Project maintainers who often give the same feedback or instructions","Automated bots","Users who want to write long, unique essays"], ans: 1, exp: "They’re especially helpful for project maintainers who often give the same feedback or instructions." },
+  { cat: "Saved Replies & Templates", q: "Where do you navigate to create or edit a saved reply?", opts: ["Repository Settings > Issue Templates","Profile photo > Settings > Saved replies","Global search > Saved replies","The main page of the repository"], ans: 1, exp: "Click your profile photo in the top right corner and select Settings. In the left sidebar, click Saved replies." },
+  { cat: "Saved Replies & Templates", q: "What information must you enter to create a new saved reply?", opts: ["A target repository and a message","A title and your message","A label and a milestone","An assignee and a due date"], ans: 1, exp: "Enter a title and your message." },
+  { cat: "Saved Replies & Templates", q: "How do you insert a saved reply when writing a comment?", opts: ["Type /savedreply","Click the Insert a saved reply icon (speech bubble with lines)","Press CTRL+S","Drag and drop it from the sidebar"], ans: 1, exp: "Select the Insert a saved reply icon (speech bubble with lines)." },
+  { cat: "Saved Replies & Templates", q: "Can you modify a saved reply's text after inserting it into the comment box?", opts: ["Yes, you can modify the text if needed before clicking Comment","No, it submits automatically","Only if you are a project maintainer","Only if it is an issue template"], ans: 0, exp: "Modify the text if needed, then click Comment." },
+  { cat: "Saved Replies & Templates", q: "Why are issue templates considered a 'better way' for creating new issues than saved replies?", opts: ["They are cheaper to use","They make sure contributors provide all the necessary information up front","They automatically fix the bugs reported","They prevent users from submitting feature requests"], ans: 1, exp: "Issue templates are a better way to make sure contributors provide all the necessary information when creating new issues." },
+  { cat: "Saved Replies & Templates", q: "What do issue templates prompt users to do?", opts: ["Upload their entire codebase","Fill in specific fields or answer certain questions up front","Provide their credit card information","Close the issue immediately"], ans: 1, exp: "Issue templates prompt users to fill in specific fields or answer certain questions up front..." },
+  { cat: "Saved Replies & Templates", q: "What specific problem do templates help maintainers avoid by collecting structured info early?", opts: ["Merge conflicts","Server downtime","\"Lost data\"","Spam from bots"], ans: 2, exp: "Templates help maintainers avoid “lost data” by collecting structured information before an issue is even submitted." },
+  { cat: "Saved Replies & Templates", q: "Where do you go to set up issue templates?", opts: ["Profile photo > Settings","Repository’s Settings > Issues > Set up templates","Global Search > Issues","Issues tab > New Milestone"], ans: 1, exp: "To set up issue templates, go to your repository’s Settings > Issues > Set up templates." },
+  { cat: "Saved Replies & Templates", q: "What is the stated best practice for combining issue templates and saved replies?", opts: ["Use templates for required details up front, and saved replies for routine responses later","Use saved replies for new issues, and templates for PR reviews","Never use them together","Only use templates for feature requests and saved replies for bugs"], ans: 0, exp: "Best practice: Use issue templates to capture required details... Use saved replies for routine responses and instructions after issues or pull requests are submitted." },
+
+  // ── LINKING & ASSIGNING (53–60) ────────────────────────────────────────────────
+  { cat: "Linking & Assigning", q: "What does adding an assignee to an issue or PR show?", opts: ["Who created the repository","Who’s responsible for working on it","Who the subject matter expert is globally","Who approved the pull request"], ans: 1, exp: "You can assign one or more people to an issue or pull request to show who’s responsible for working on it." },
+  { cat: "Linking & Assigning", q: "How do you add an assignee from an open issue's page?", opts: ["In the left sidebar, click Contributors","In the right sidebar, click Assignees and select from the dropdown","Type 'assign:@username' in the title","Click the 'Assign to me' button at the bottom"], ans: 1, exp: "In the right sidebar, click Assignees. Select one or more users from the dropdown." },
+  { cat: "Linking & Assigning", q: "How can you assign people directly from the issue list view?", opts: ["You cannot do this from the list view","By right-clicking the issue title","Using checkboxes beside each issue and selecting Assign from the top bar","By dragging their profile picture onto the issue"], ans: 2, exp: "You can also assign people directly from the list view using the checkboxes beside each issue and selecting Assign from the top bar." },
+  { cat: "Linking & Assigning", q: "How does GitHub automatically cross-link an issue when you leave a comment?", opts: ["You must provide the full URL","By using a shorthand syntax, such as #8","By typing the exact title of the issue","It is not possible to cross-link automatically"], ans: 1, exp: "GitHub offers a shorthand syntax. For example, if you leave a comment like Duplicate of #8, GitHub will recognize that #8 is an issue and create the appropriate link." },
+  { cat: "Linking & Assigning", q: "How many characters of a commit ID must you paste for GitHub to automatically link it?", opts: ["The exact full 40-character SHA","The first three characters","The first seven or more characters","You must paste the branch name instead"], ans: 2, exp: "GitHub also links commits for you if you paste in the first seven or more characters of its ID." },
+  { cat: "Linking & Assigning", q: "Why is it valuable to link issues and commits in discussions (like linking a JavaScript dependency issue to the sidebar)?", opts: ["It increases your GitHub rating","It saves time for others ramping up by providing necessary context later","It automatically closes the related issues","It prevents the dependency from breaking"], ans: 1, exp: "However, if someone had thought ahead to link the issue in the discussion, then it could save you a lot of time now. Keep that in mind the next time you're documenting..." },
+  { cat: "Linking & Assigning", q: "What is the easiest way to loop users into a discussion?", opts: ["Sending them a direct email","Using an @mention","Adding them as a repository admin","Creating a new milestone for them"], ans: 1, exp: "The easiest way to do this is by using an @mention." },
+  { cat: "Linking & Assigning", q: "Aside from notifying them immediately, what is another benefit of using an @mention in an issue?", opts: ["It automatically assigns the issue to them","It is a good way to identify people associated with issues long after they have been closed","It gives them write access to the repository","It adds them as a reviewer on all future pull requests"], ans: 1, exp: "It's also a good way to identify people associated with issues long after they have been closed." }
+];
+
+const catColorMap = { 
+  "Search Methods": "cat-search-methods",
+  "Filters": "cat-filters",
+  "Milestones": "cat-milestones",
+  "Labels": "cat-labels",
+  "Git Blame": "cat-git-blame",
+  "Saved Replies & Templates": "cat-saved-replies-templates",
+  "Linking & Assigning": "cat-linking-assigning" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-search-methods';
+  const letters = ['A','B','C','D'];
+
+  const escapeHTML = str => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${escapeHTML(q.q)}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${escapeHTML(opt)}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${escapeHTML(q.opts[q.ans])}</strong><br>${escapeHTML(q.exp)}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

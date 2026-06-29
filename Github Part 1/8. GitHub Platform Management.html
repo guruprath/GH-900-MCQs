@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Platform Management — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-mgmt { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-subs { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-mentions { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-watch { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-pages { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-workflow { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 60 Questions</div>
+  <h1>GitHub Platform Management</h1>
+  <p>Comprehensive Multiple Choice Questions & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Platform Management',this)">Platform Management</button>
+    <button class="filter-btn" onclick="filterCat('Subscriptions',this)">Subscriptions</button>
+    <button class="filter-btn" onclick="filterCat('Mentions & Settings',this)">Mentions & Settings</button>
+    <button class="filter-btn" onclick="filterCat('Watch Options',this)">Watch Options</button>
+    <button class="filter-btn" onclick="filterCat('GitHub Pages',this)">GitHub Pages</button>
+    <button class="filter-btn" onclick="filterCat('Workflow & Exercise',this)">Workflow & Exercise</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- PLATFORM MANAGEMENT (1-10) ---
+  { cat: "Platform Management", q: "What is the primary purpose of GitHub notifications?", opts: ["To track repository billing", "To help you stay up to date on important activity across your repositories and teams", "To deploy applications automatically", "To monitor server uptime"], ans: 1, exp: "Notifications help you stay up to date on important activity across your repositories and teams." },
+  { cat: "Platform Management", q: "What does properly managing your subscriptions ensure?", opts: ["You receive an email for every single code commit globally", "You only get updates for the work that matters most to you", "You are automatically assigned to all open issues", "Your account cannot be suspended"], ans: 1, exp: "Managing your subscriptions ensures you only get updates for the work that matters most to you." },
+  { cat: "Platform Management", q: "Which of the following specific items can you subscribe to for notifications?", opts: ["Private passwords", "Credit card updates", "Specific issues, pull requests, or gists", "Unpublished local drafts"], ans: 2, exp: "You can subscribe to notifications for: Specific issues, pull requests, or gists." },
+  { cat: "Platform Management", q: "Can you subscribe to workflow statuses on GitHub?", opts: ["Yes, for repositories using GitHub Actions", "No, workflows cannot trigger notifications", "Yes, but only for third-party tools like Jenkins", "No, workflows are invisible to users"], ans: 0, exp: "You can subscribe to notifications for: Workflow statuses for repositories using GitHub Actions." },
+  { cat: "Platform Management", q: "Which GitHub feature drives the workflow statuses you can subscribe to?", opts: ["GitHub Pages", "GitHub Actions", "GitHub Discussions", "GitHub Copilot"], ans: 1, exp: "Workflow statuses for repositories using GitHub Actions." },
+  { cat: "Platform Management", q: "Is it possible to subscribe to ALL activity across an entire repository?", opts: ["Yes", "No, you must pick individual issues", "Only for repository owners", "Only if the repository is private"], ans: 0, exp: "You can subscribe to notifications for: All activity across a repository." },
+  { cat: "Platform Management", q: "Which of the following is considered 'repository activity' that you can subscribe to?", opts: ["Issues, pull requests, releases, or discussions", "User profile changes", "Billing cycle renewals", "Local IDE updates"], ans: 0, exp: "Repository activity like issues, pull requests, releases, or discussions." },
+  { cat: "Platform Management", q: "Why might someone want to manage their subscriptions manually?", opts: ["To receive notifications for every user on GitHub", "Because they want to stop using GitHub", "If they want to customize the types of notifications they receive or unwatch a repo", "To delete the repository"], ans: 2, exp: "If you're no longer interested in receiving updates, you can unsubscribe, unwatch, or customize the types of notifications you receive." },
+  { cat: "Platform Management", q: "True or False: You can only be notified about pull requests, not discussions.", opts: ["True, discussions do not have notifications", "False, you can be notified for repository activity like issues, pull requests, releases, or discussions", "True, discussions are fully private", "False, you can only be notified about gists"], ans: 1, exp: "Repository activity like issues, pull requests, releases, or discussions." },
+  { cat: "Platform Management", q: "Notifications generally help you monitor activity across:", opts: ["Your local machine", "External social media", "Your repositories and teams", "All public GitHub repositories globally"], ans: 2, exp: "Notifications help you stay up to date on important activity across your repositories and teams." },
+
+  // --- SUBSCRIPTIONS (11-20) ---
+  { cat: "Subscriptions", q: "When are you automatically subscribed to a conversation on GitHub?", opts: ["When you interact with it (e.g., commenting, opening an issue, being assigned)", "When you log into GitHub", "When you star a repository", "When you fork a repository"], ans: 0, exp: "You're automatically subscribed when you interact with conversations (commenting, opening an issue, being assigned)." },
+  { cat: "Subscriptions", q: "If you comment on an issue, what happens to your notification status for that issue?", opts: ["You are blocked from the issue", "You are automatically subscribed to it", "Nothing happens", "You are automatically unsubscribed"], ans: 1, exp: "You're automatically subscribed when you interact with conversations (commenting...)." },
+  { cat: "Subscriptions", q: "If someone assigns you to a pull request, what happens to your subscription?", opts: ["You must manually subscribe to see updates", "You are automatically subscribed", "You receive a text message automatically", "Your subscription is paused"], ans: 1, exp: "You're automatically subscribed when you interact with conversations (...being assigned)." },
+  { cat: "Subscriptions", q: "If you are no longer interested in receiving updates for an issue, what can you do?", opts: ["Delete the issue", "Unsubscribe", "Report the issue as spam", "Change your username"], ans: 1, exp: "If you're no longer interested in receiving updates, you can unsubscribe, unwatch, or customize..." },
+  { cat: "Subscriptions", q: "What action can you take if you don't want ANY notifications from a specific repository anymore?", opts: ["Unwatch", "Delete", "Fork", "Clone"], ans: 0, exp: "If you're no longer interested in receiving updates, you can unsubscribe, unwatch..." },
+  { cat: "Subscriptions", q: "Are you limited to automatic subscriptions, or can you manage them manually?", opts: ["Only automatic", "You can manually manage subscriptions as needed", "Only organization admins can manage them manually", "Manual management requires a premium account"], ans: 1, exp: "you can also manually manage subscriptions as needed." },
+  { cat: "Subscriptions", q: "Can you subscribe to a thread (like an issue) even if you weren't originally part of the conversation?", opts: ["No, you must be invited", "Yes, you can subscribe to it", "Only if you are a repository admin", "Only if you comment on it first"], ans: 1, exp: "you can subscribe to it—even if you weren’t originally part of the conversation." },
+  { cat: "Subscriptions", q: "Where do you click to manually subscribe to an issue or pull request?", opts: ["The repository settings", "Selecting Subscribe on the right-hand sidebar", "The 'Watch' button at the top", "The footer of the webpage"], ans: 1, exp: "Selecting Subscribe on the right-hand sidebar of an issue, pull request, or discussion." },
+  { cat: "Subscriptions", q: "What type of conversation can you subscribe to via the right-hand sidebar?", opts: ["An issue, pull request, or discussion", "A user's profile", "A commit message", "A specific line of code"], ans: 0, exp: "Selecting Subscribe on the right-hand sidebar of an issue, pull request, or discussion." },
+  { cat: "Subscriptions", q: "Opening an issue triggers what kind of subscription?", opts: ["A manual subscription", "An automatic subscription", "An ignored subscription", "A custom subscription"], ans: 1, exp: "You're automatically subscribed when you interact with conversations (commenting, opening an issue...)." },
+
+  // --- MENTIONS & SETTINGS (21-30) ---
+  { cat: "Mentions & Settings", q: "Where can you access detailed notification settings?", opts: ["Repository settings", "GitHub user settings under 'Notifications'", "The command line only", "The main dashboard"], ans: 1, exp: "You can also access detailed notification settings by navigating to your GitHub user settings and choosing 'Notifications'." },
+  { cat: "Mentions & Settings", q: "Which of the following delivery channels can you configure for your notifications?", opts: ["Email, web, and mobile", "Fax and SMS", "Slack and Discord only", "WhatsApp and Telegram"], ans: 0, exp: "configure delivery channels such as email, web, and mobile." },
+  { cat: "Mentions & Settings", q: "What search qualifier do you use to find issues or pull requests where you were specifically tagged?", opts: ["tagged:<username>", "mentions:<username>", "user:<username>", "target:<username>"], ans: 1, exp: "Use the search qualifier mentions:<username> in the GitHub search bar to locate issues and pull requests where you were @mentioned." },
+  { cat: "Mentions & Settings", q: "If your username is 'dev123', what exactly do you type in the search bar to find where you've been mentioned?", opts: ["@dev123", "find:dev123", "mentions:dev123", "tagged:dev123"], ans: 2, exp: "Use the search qualifier mentions:<username>..." },
+  { cat: "Mentions & Settings", q: "Where do you enter the `mentions:<username>` qualifier?", opts: ["In the URL bar", "In the GitHub search bar", "In the terminal", "In a commit message"], ans: 1, exp: "Use the search qualifier mentions:<username> in the GitHub search bar." },
+  { cat: "Mentions & Settings", q: "Why would you use the `mentions:` search qualifier?", opts: ["To find repositories you own", "To find users with similar names", "To locate issues and pull requests where you were @mentioned", "To delete old comments"], ans: 2, exp: "to locate issues and pull requests where you were @mentioned. This way, you won’t miss any conversations that need your attention." },
+  { cat: "Mentions & Settings", q: "What does configuring the 'Email' notification delivery channel do?", opts: ["Sends a physical letter", "Notifications delivered to your registered email address", "Sends a weekly summary only", "Replaces web notifications entirely"], ans: 1, exp: "Email: Notifications delivered to your registered email address." },
+  { cat: "Mentions & Settings", q: "What does configuring the 'Web' notification delivery channel do?", opts: ["Pops up a browser alert on all websites", "Notifications viewed directly in your GitHub dashboard", "Sends a webhook payload", "Downloads a PDF of notifications"], ans: 1, exp: "Web: Notifications viewed directly in your GitHub dashboard." },
+  { cat: "Mentions & Settings", q: "How are notifications delivered via the 'Mobile' channel?", opts: ["As SMS text messages", "Push notifications using the GitHub mobile app", "Via automated phone calls", "They are sent to your mobile browser email"], ans: 1, exp: "Mobile: Push notifications using the GitHub mobile app." },
+  { cat: "Mentions & Settings", q: "What do 'Custom notifications' allow you to do regarding delivery channels?", opts: ["Use third-party apps automatically", "Configure specific event types for different channels", "Change the color of the notification bell", "Forward notifications to other users"], ans: 1, exp: "Custom notifications: Configure specific event types for different channels." },
+
+  // --- WATCH OPTIONS (31-40) ---
+  { cat: "Watch Options", q: "What feature allows you to filter notifications at the repository level?", opts: ["Watch settings", "Star settings", "Fork settings", "Clone settings"], ans: 0, exp: "GitHub allows you to filter notifications using watch settings." },
+  { cat: "Watch Options", q: "Where do you manage watch settings for a repository?", opts: ["At the bottom of the repository page", "By selecting Watch at the top of a repository page", "In your global user settings only", "In the repository's code tab"], ans: 1, exp: "You can manage watch settings by selecting Watch at the top of a repository page." },
+  { cat: "Watch Options", q: "If you select the 'Watching' option for a repository, what notifications will you receive?", opts: ["Only releases", "Notifications for all activity", "No notifications at all", "Only @mentions"], ans: 1, exp: "Watching: Receive notifications for all activity." },
+  { cat: "Watch Options", q: "If you select the 'Not watching' option, when will you receive notifications?", opts: ["For all activity", "Only when you're participating or @mentioned", "Never", "Only for closed issues"], ans: 1, exp: "Not watching: Receive notifications only when you're participating or @mentioned." },
+  { cat: "Watch Options", q: "What does the 'Ignore' watch setting do?", opts: ["Sends a digest email weekly", "Mutes notifications for 24 hours", "No notifications at all for a repository", "Automatically closes issues assigned to you"], ans: 2, exp: "Ignore: No notifications at all for a repository." },
+  { cat: "Watch Options", q: "Which watch setting should you use if you want to fine-tune exactly what types of activity trigger notifications?", opts: ["Watching", "Not watching", "Ignore", "Custom"], ans: 3, exp: "Custom: Fine-tune what types of activity (like pull requests, issues, or discussions) trigger notifications." },
+  { cat: "Watch Options", q: "If you only want notifications for 'pull requests' in a repository, which watch setting should you select?", opts: ["Watching", "Custom", "Not watching", "Ignore"], ans: 1, exp: "Custom: Fine-tune what types of activity (like pull requests, issues, or discussions) trigger notifications." },
+  { cat: "Watch Options", q: "If you set a repository to 'Not watching', will you be notified if someone @mentions you?", opts: ["Yes", "No", "Only if you are an admin", "Only via email"], ans: 0, exp: "Not watching: Receive notifications only when you're participating or @mentioned." },
+  { cat: "Watch Options", q: "If a developer wants absolute silence from a repository and doesn't want to be notified even if tagged, what setting is best?", opts: ["Not watching", "Custom", "Ignore", "Watching"], ans: 2, exp: "Ignore: No notifications at all for a repository." },
+  { cat: "Watch Options", q: "By default, when you interact with a repository, which level of watch participation are you typically engaging in?", opts: ["Ignore", "Participating (Not watching)", "Watching all", "Custom"], ans: 1, exp: "Not watching: Receive notifications only when you're participating or @mentioned. (This aligns with the automatic subscription for interactions)." },
+
+  // --- GITHUB PAGES (41-50) ---
+  { cat: "GitHub Pages", q: "What is GitHub Pages?", opts: ["A premium code editor", "A static site-hosting service", "A database management tool", "A server-side rendering framework"], ans: 1, exp: "GitHub Pages is a static site-hosting service." },
+  { cat: "GitHub Pages", q: "What can you use GitHub Pages to do?", opts: ["Host a dynamic backend application", "Publicize and host a website about yourself, your organization, or your project", "Run heavy machine learning models", "Store private databases"], ans: 1, exp: "You can use GitHub Pages to publicize and host a website about yourself, your organization, or your project directly from a repository." },
+  { cat: "GitHub Pages", q: "From where does GitHub Pages take its files to publish the website?", opts: ["Straight from a repository on GitHub.com", "From an external FTP server", "From your local hard drive automatically", "From a connected AWS S3 bucket"], ans: 0, exp: "takes HTML, CSS, and JavaScript files straight from a repository on GitHub." },
+  { cat: "GitHub Pages", q: "Which of the following file types are explicitly mentioned as being used by GitHub Pages?", opts: ["PHP, Python, Ruby", "SQL, JSON, XML", "HTML, CSS, and JavaScript", "C++, C#, Java"], ans: 2, exp: "takes HTML, CSS, and JavaScript files straight from a repository." },
+  { cat: "GitHub Pages", q: "Does GitHub Pages support running files through a build process before publishing?", opts: ["No, it only hosts raw files", "Yes, optionally you can run the files through a build process", "Only if you pay for Enterprise", "Only for JavaScript files"], ans: 1, exp: "Optionally, you can run the files through a build process and publish a website." },
+  { cat: "GitHub Pages", q: "What two configuration elements can you specify for your GitHub Pages site source?", opts: ["The server location and IP address", "A source branch and folder", "The database credentials and port", "The domain registrar and nameserver"], ans: 1, exp: "You can specify a source branch and folder (e.g., /docs) for your Pages site." },
+  { cat: "GitHub Pages", q: "What is given as an example of a specific folder you can specify for your Pages site?", opts: ["/src", "/public", "/docs", "/build"], ans: 2, exp: "You can specify a source branch and folder (e.g., /docs) for your Pages site." },
+  { cat: "GitHub Pages", q: "How is the content hosted once GitHub Pages is set up?", opts: ["It is hosted privately for contributors only", "It is hosted publicly", "It is only available on localhost", "It is hosted temporarily for 24 hours"], ans: 1, exp: "and GitHub will host the content publicly." },
+  { cat: "GitHub Pages", q: "Can an organization host a website using GitHub Pages?", opts: ["Yes, about themselves, their organization, or a project", "No, it is strictly for individual users", "Only if they use a custom domain", "Only if the repository is private"], ans: 0, exp: "website about yourself, your organization, or your project." },
+  { cat: "GitHub Pages", q: "Because GitHub pages is a 'static' site-hosting service, it does NOT natively support:", opts: ["HTML", "CSS", "JavaScript", "Server-side scripts like PHP or database queries"], ans: 3, exp: "It is a 'static site-hosting service' taking HTML, CSS, and JS. It does not run dynamic server-side languages." },
+
+  // --- WORKFLOW & EXERCISE (51-60) ---
+  { cat: "Workflow & Exercise", q: "According to the upcoming exercise mentioned in the text, what is the very first step?", opts: ["Create a new branch", "Commit a file", "Create a new repository", "Open a pull request"], ans: 2, exp: "In the next exercise, you'll: Create a new repository." },
+  { cat: "Workflow & Exercise", q: "After creating a new repository in the upcoming exercise, what is the next step?", opts: ["Create a new branch", "Merge a pull request", "Delete the repository", "Open an issue"], ans: 0, exp: "Create a new repository. Create a new branch." },
+  { cat: "Workflow & Exercise", q: "Once you have created a new branch in the exercise, what will you do next?", opts: ["Open a pull request immediately", "Commit a file", "Delete the branch", "Create a GitHub Page"], ans: 1, exp: "Create a new branch. Commit a file." },
+  { cat: "Workflow & Exercise", q: "What step directly follows 'Commit a file' in the upcoming hands-on activity?", opts: ["Merge a pull request", "Open a pull request", "Create a new repository", "Subscribe to the thread"], ans: 1, exp: "Commit a file. Open a pull request." },
+  { cat: "Workflow & Exercise", q: "What is the final step listed in the upcoming hands-on activity?", opts: ["Close the issue", "Merge a pull request", "Configure notifications", "Create a release"], ans: 1, exp: "And merge a pull request." },
+  { cat: "Workflow & Exercise", q: "What overarching workflow do these steps (Repo -> Branch -> Commit -> PR -> Merge) represent?", opts: ["The Git Flow", "The GitHub flow", "Agile methodology", "Waterfall development"], ans: 1, exp: "These steps (Branch, Commit, PR, Merge) are the fundamental components of the GitHub flow." },
+  { cat: "Workflow & Exercise", q: "Why is opening a pull request placed before merging in the workflow?", opts: ["To execute code in production", "To allow for review and discussion before the code is merged", "To delete the branch", "To notify the public"], ans: 1, exp: "A pull request is meant for review and collaboration before finalizing the merge." },
+  { cat: "Workflow & Exercise", q: "What is the primary goal of the upcoming hands-on activity?", opts: ["To configure a billing account", "To reinforce key GitHub skills", "To deploy a database", "To build a mobile app"], ans: 1, exp: "Next, you'll complete a hands-on activity to reinforce key GitHub skills." },
+  { cat: "Workflow & Exercise", q: "If you execute the upcoming exercise steps, you are actively practicing:", opts: ["Platform management and notifications", "Version control and collaboration workflows", "Static site generation", "Mobile push notifications"], ans: 1, exp: "Creating branches, committing files, opening and merging PRs are the core version control and collaboration steps." },
+  { cat: "Workflow & Exercise", q: "Which step in the upcoming exercise bridges your isolated changes back into the main project?", opts: ["Create a new repository", "Create a new branch", "Commit a file", "Merge a pull request"], ans: 3, exp: "Merging a pull request is the step that integrates the isolated changes (branch) back into the main line." }
+];
+
+const catColorMap = {
+  "Platform Management": "cat-mgmt",
+  "Subscriptions": "cat-subs",
+  "Mentions & Settings": "cat-mentions",
+  "Watch Options": "cat-watch",
+  "GitHub Pages": "cat-pages",
+  "Workflow & Exercise": "cat-workflow"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-mgmt';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

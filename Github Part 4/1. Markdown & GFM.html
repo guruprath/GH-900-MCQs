@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markdown & GFM — 75 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-formatting { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-links { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-lists { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-code { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-github { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 75 Questions</div>
+  <h1>Markdown & GFM</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">75</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Formatting',this)">Formatting</button>
+    <button class="filter-btn" onclick="filterCat('Links & Media',this)">Links & Media</button>
+    <button class="filter-btn" onclick="filterCat('Lists & Tables',this)">Lists & Tables</button>
+    <button class="filter-btn" onclick="filterCat('Code',this)">Code</button>
+    <button class="filter-btn" onclick="filterCat('GitHub Specifics',this)">GitHub Specifics</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+// Using \x60 for backticks in strings to prevent markdown parser breaks
+const questions = [
+  // ── BASICS (1-9) ────────────────────────────────────────────────
+  { cat: "Basics", q: "What is Markdown primarily defined as in the text?", opts: ["A programming language","A database schema","A markup language","An operating system tool"], ans: 2, exp: "Markdown is a markup language that offers a lean approach to content editing." },
+  { cat: "Basics", q: "What does Markdown aim to shield content creators from?", opts: ["The overhead of HTML","Version control conflicts","CSS stylesheets","JavaScript errors"], ans: 0, exp: "Markdown offers a lean approach to content editing by shielding content creators from the overhead of HTML." },
+  { cat: "Basics", q: "What is HTML described as being 'great for'?", opts: ["Database management","Rendering content exactly how it was intended","Writing backend logic","Minimizing file sizes"], ans: 1, exp: "The text notes that HTML is great for rendering content exactly how it was intended." },
+  { cat: "Basics", q: "What is the primary drawback of HTML mentioned in the text?", opts: ["It does not support images","It cannot be version controlled","It takes up a lot of space and can be unwieldy to work with","It requires a paid license"], ans: 2, exp: "HTML takes up a lot of space and can be unwieldy to work with, even in small doses." },
+  { cat: "Basics", q: "Markdown is described as an effective compromise between:", opts: ["Ruby and Python","The power of HTML and the ease of plain text","Git and Subversion","Windows and Linux"], ans: 1, exp: "Markdown offers an effective compromise between the power of HTML for content description and the ease of plain text for editing." },
+  { cat: "Basics", q: "What does GFM stand for?", opts: ["GitHub-Flavored Markdown","General Format Markup","Graphical File Manager","Global Function Method"], ans: 0, exp: "GFM stands for GitHub-Flavored Markdown, which includes extensions for GitHub features." },
+  { cat: "Basics", q: "What do GFM extensions integrate into your content?", opts: ["Operating system commands","Cloud storage backups","GitHub features","Database schemas"], ans: 2, exp: "GFM extensions integrate GitHub features into your content." },
+  { cat: "Basics", q: "Is Markdown intended to be a full replacement for HTML?", opts: ["Yes, completely","No, it is a compromise approach","Only on GitHub","Yes, but only for emails"], ans: 1, exp: "Markdown is not a full replacement, but an 'effective compromise' between HTML's power and plain text's ease." },
+  { cat: "Basics", q: "Why might someone avoid using pure HTML for small content writing tasks?", opts: ["It lacks styling options","It is unwieldy and takes up a lot of space","It does not render well on GitHub","It cannot display images"], ans: 1, exp: "The text notes HTML can be unwieldy to work with and takes up a lot of space, even in small doses." },
+
+  // ── FORMATTING (10-25) ─────────────────────────────────────────────────
+  { cat: "Formatting", q: "How do you create italic text in Markdown?", opts: ["Surrounding text with single asterisks or single underscores","Surrounding text with double asterisks","Surrounding text with tildes","Using the <i> tag"], ans: 0, exp: "Using italics in text is as easy as surrounding the target text with single asterisks (*) or single underscores (_)." },
+  { cat: "Formatting", q: "Which of the following creates bold text?", opts: ["*bold*","_bold_","**bold**","~bold~"], ans: 2, exp: "Create bold text by using two asterisks (**) or two underscores (__)." },
+  { cat: "Formatting", q: "What is the rule when opening and closing an emphasis?", opts: ["You can mix any symbols","Close an emphasis with the same character used to open it","Always use asterisks at the end","Underscores always close asterisks"], ans: 1, exp: "Just be sure to close an emphasis with the same character you used to open it." },
+  { cat: "Formatting", q: "Which of the following successfully mixes bold and italic text?", opts: ["_This is **italic and bold** text_","*This is *italic and bold* text*","__This is __italic and bold__ text__","This is italic and bold text"], ans: 0, exp: "_This is **italic and bold** text_ mixes emphases using a single underscore for italic and double asterisks for bold." },
+  { cat: "Formatting", q: "To display a literal asterisk as plain text, what should you do?", opts: ["Wrap it in quotes","Precede it with an escape character","Capitalize the text","Use three asterisks"], ans: 1, exp: "To use a literal asterisk, precede it with an escape character." },
+  { cat: "Formatting", q: "What is the escape character in GitHub-Flavored Markdown (GFM)?", opts: ["Forward slash (/)","Backslash (\\)","Tilde (~)","Ampersand (&)"], ans: 1, exp: "In GFM, the escape character is a backslash (\\)." },
+  { cat: "Formatting", q: "How would you write plain text surrounded by double asterisks without it becoming bold?", opts: ["\\*\\*plain\\*\\*","**plain**","//**plain**//","~~**plain**~~"], ans: 0, exp: "By escaping each asterisk: \\_This is all \\*\\*plain\\*\\* text\\_ will display the asterisks as plain text." },
+  { cat: "Formatting", q: "What symbol is used to declare headings in Markdown?", opts: ["!","<","#","="], ans: 2, exp: "HTML provides content headings such as the <h1> tag. In Markdown, this is supported via the # symbol." },
+  { cat: "Formatting", q: "How do you declare an H1 heading?", opts: ["## Heading","# Heading","### Heading","Heading="], ans: 1, exp: "Use one # for each heading level from 1 to 6. An H1 uses a single #." },
+  { cat: "Formatting", q: "Which syntax creates an H6 heading?", opts: ["#6 text","###### text","<h6/> text","------ text"], ans: 1, exp: "###### This is H6 text creates a level 6 heading." },
+  { cat: "Formatting", q: "What is the maximum heading level supported by the # symbol in Markdown?", opts: ["3","5","6","10"], ans: 2, exp: "You can use one # for each heading level from 1 to 6." },
+  { cat: "Formatting", q: "Which syntax will incorrectly render emphasis?", opts: ["*text*","_text_","*text_","**text**"], ans: 2, exp: "You must close an emphasis with the same character you used to open it. Opening with * and closing with _ is incorrect." },
+  { cat: "Formatting", q: "Can you combine single underscores and double asterisks to create bold and italic text simultaneously?", opts: ["No, it causes an error","Yes, as long as they are nested correctly","Only in pure HTML","Only if you use an escape character"], ans: 1, exp: "You can mix different emphases, such as using single underscores for italic enclosing double asterisks for bold." },
+  { cat: "Formatting", q: "If you type '\\_Hello\\_', how will it render?", opts: ["Italicized Hello","_Hello_ (plain text)","Bold Hello","It will cause a rendering error"], ans: 1, exp: "The backslash escapes the underscore, causing it to render as plain text rather than acting as a formatting mark." },
+  { cat: "Formatting", q: "What does the text imply is the most important part of communication on GitHub?", opts: ["Images","The text itself","Code blocks","Tables"], ans: 1, exp: "The text states: 'The most important part of any communication on GitHub is usually the text itself'." },
+  { cat: "Formatting", q: "If you want to italicize part of a word, which character is generally safer to avoid confusion with bold text?", opts: ["Asterisk (*)","Underscore (_)","Tilde (~)","Dash (-)"], ans: 0, exp: "While both * and _ work for italics, using a single asterisk avoids confusion when mixing emphases." },
+
+  // ── LINKS & MEDIA (26-33) ────────────────────────────────────────────────
+  { cat: "Links & Media", q: "What is the correct syntax for an image link?", opts: ["[alt](url)","![alt](url)","<img src='url'>","{alt}(url)"], ans: 1, exp: "An image link uses an exclamation mark followed by brackets and parentheses: ![Link an image.](/path/to/image.png)." },
+  { cat: "Links & Media", q: "What distinguishes an image syntax from a standard site link syntax in Markdown?", opts: ["The site link uses curly braces","The image syntax begins with an exclamation mark (!)","The site link does not use parentheses","Image links require HTML tags"], ans: 1, exp: "Images begin with an exclamation mark: ![Image text](url), whereas standard links do not: [Link text](url)." },
+  { cat: "Links & Media", q: "How do you format a hyperlink to Microsoft Training?", opts: ["![Link to Microsoft Training](/training)","(Link to Microsoft Training)[/training]","[Link to Microsoft Training](/training)","<Link to Microsoft Training>(/training)"], ans: 2, exp: "Site links are formatted with square brackets for the text and parentheses for the URL: [Link to Microsoft Training](/training)." },
+  { cat: "Links & Media", q: "In the markdown '[Click here](https://example.com)', what does 'Click here' represent?", opts: ["The URL destination","The visible link text","An image alt text","A CSS class"], ans: 1, exp: "The text inside the square brackets is the clickable, visible text of the link." },
+  { cat: "Links & Media", q: "In the markdown '![Logo](/logo.png)', what does '/logo.png' represent?", opts: ["The alternative text","The file path or URL of the image","The image's CSS style","The page to link to when clicked"], ans: 1, exp: "The text inside the parentheses is the URL or file path pointing to the image source." },
+  { cat: "Links & Media", q: "True or False: Image and site links use a completely different, unrelated structure.", opts: ["True","False","Only in GFM","Only in standard Markdown"], ans: 1, exp: "The text explicitly states: 'Image and site links follow a similar structure.'" },
+  { cat: "Links & Media", q: "If you omit the exclamation mark (!) before an image markdown syntax, what happens?", opts: ["It renders as a clickable text link","It throws an error","It still renders the image perfectly","It crashes the GitHub interface"], ans: 0, exp: "Without the !, the syntax [alt text](url) is interpreted as a standard hyperlink, not an image." },
+  { cat: "Links & Media", q: "Can the alt text in an image link contain spaces?", opts: ["No","Yes","Only if escaped","Only if using dashes"], ans: 1, exp: "Yes, standard Markdown allows spaces inside the square brackets for alt text: ![Link an image.]" },
+
+  // ── LISTS & TABLES (34-45) ───────────────────────────────────────────────
+  { cat: "Lists & Tables", q: "How do you start an ordered list in Markdown?", opts: ["With asterisks (*)","With dashes (-)","With numbers followed by periods (e.g., 1.)","With letters (A., B.)"], ans: 2, exp: "Ordered lists start with numbers." },
+  { cat: "Lists & Tables", q: "What symbols can be used to create an unordered list?", opts: ["Numbers and letters","Asterisks (*) or dashes (-)","Plus (+) and Equals (=)","Hash (#) and At (@)"], ans: 1, exp: "Unordered lists can use asterisks or dashes (-)." },
+  { cat: "Lists & Tables", q: "How do you create nested items within a list?", opts: ["By using a different list symbol","Through indentation","By wrapping them in HTML tags","By using quotes"], ans: 1, exp: "You can create nested items through indentation." },
+  { cat: "Lists & Tables", q: "If you type '1. First', followed by '1. Second' and '1. Third' on new lines, how does it render?", opts: ["As 1. First, 1. Second, 1. Third","As an unordered list","As an ordered list numbered 1, 2, 3","It causes a numbering error"], ans: 2, exp: "Markdown automatically numbers ordered lists sequentially in the rendered output, even if you write '1.' repeatedly." },
+  { cat: "Lists & Tables", q: "What character is used to create column breaks in a Markdown table?", opts: ["Dash (-)","Pipe (|)","Comma (,)","Colon (:)"], ans: 1, exp: "You construct tables using a combination of pipes (|) for column breaks." },
+  { cat: "Lists & Tables", q: "What character is used to designate the prior row as a table header?", opts: ["Pipe (|)","Dash (-)","Equal sign (=)","Underscore (_)"], ans: 1, exp: "Use dashes (-) below the header row to designate it as the header." },
+  { cat: "Lists & Tables", q: "What does the syntax '-|-' signify in a table?", opts: ["A two-column table header divider","A blank row","A cell containing a dash","A column break"], ans: 0, exp: "It designates a two-column row as the table header (the pipes separate the columns, the dashes define the header)." },
+  { cat: "Lists & Tables", q: "Which character creates a blockquote in Markdown?", opts: ["<",">","/","|"], ans: 1, exp: "You can create blockquotes using the greater than (>) character." },
+  { cat: "Lists & Tables", q: "How does the text '> This is quoted text.' render?", opts: ["As bold text","As an inline code snippet","As a blockquote","As a heading"], ans: 2, exp: "The '>' character renders the text following it as a blockquote." },
+  { cat: "Lists & Tables", q: "What should you do if you encounter an HTML scenario not supported by Markdown?", opts: ["It is impossible to achieve","Write a Python script to convert it","Use that HTML inline","Switch entirely to a different platform"], ans: 2, exp: "If you come across an HTML scenario not supported by Markdown, you can use that HTML inline." },
+  { cat: "Lists & Tables", q: "What does the text use as an example of inline HTML?", opts: ["<p> tag","<br /> tag for a line break","<img> tag","<a> tag"], ans: 1, exp: "The text provides the example: 'Here is a<br />line break'." },
+  { cat: "Lists & Tables", q: "Which of the following is NOT a valid way to start an unordered list?", opts: ["* Item","- Item","1. Item","Both * and - are valid"], ans: 2, exp: "Numbers are used for ordered lists, not unordered lists. Unordered lists use asterisks or dashes." },
+
+  // ── CODE (46-55) ─────────────────────────────────────────────────────────
+  { cat: "Code", q: "What character is used to delimit inline code blocks?", opts: ["Single quote (')","Tilde (~)","Backtick (\\x60)","Double quotes (\")"], ans: 2, exp: "Markdown provides default behavior for working with inline code blocks delimited by the backtick (\\x60) character." },
+  { cat: "Code", q: "How do you create a fenced code block spanning multiple lines?", opts: ["Use triple asterisks (***)","Use three backticks (\\x60\\x60\\x60) before and after","Indent every line by 2 spaces","Use single backticks on every line"], ans: 1, exp: "If you have a code segment spanning multiple lines, you can use three backticks (\\x60\\x60\\x60) before and after to create a fenced code block." },
+  { cat: "Code", q: "What specific enhancement does GitHub-Flavored Markdown (GFM) bring to fenced code blocks?", opts: ["Auto-execution of code","Syntax highlighting for popular languages","Code minification","Automatic unit testing"], ans: 1, exp: "GFM extends support with syntax highlighting for popular languages." },
+  { cat: "Code", q: "How do you specify the language for syntax highlighting in a fenced code block?", opts: ["Add a comment inside the block","Specify the language as part of the first tick sequence","It is detected automatically, no action needed","Use the /language command"], ans: 1, exp: "Specify the language as part of the first tick sequence (e.g., \\x60\\x60\\x60javascript)." },
+  { cat: "Code", q: "Which syntax will correctly apply JavaScript syntax highlighting?", opts: ["\\x60\\x60\\x60javascript","\\x60javascript\\x60","***javascript","[javascript]\\x60\\x60\\x60"], ans: 0, exp: "Placing the language name immediately after the opening three backticks (\\x60\\x60\\x60javascript) enables syntax highlighting." },
+  { cat: "Code", q: "What is the primary purpose of wrapping text in single backticks?", opts: ["To create a heading","To render it as inline code","To hide the text","To bold the text"], ans: 1, exp: "Wrapping text in single backticks renders it as inline code." },
+  { cat: "Code", q: "Are fenced code blocks limited to a single line?", opts: ["Yes","No, they are used for code segments spanning multiple lines","Yes, unless you use HTML tags","No, but they can only hold numbers"], ans: 1, exp: "Fenced code blocks (using three backticks) are specifically noted for 'code segments spanning multiple lines'." },
+  { cat: "Code", q: "If you type 'This is \\x60code\\x60.', how does the word 'code' render?", opts: ["As a blockquote","As bold text","As inline code","As an HTML table"], ans: 2, exp: "The single backticks wrap the word and render it as an inline code block." },
+  { cat: "Code", q: "What happens if you do not specify a language on a fenced code block in GFM?", opts: ["It will not render the code block","It will render as a blockquote","It will render as a standard code block without specific syntax highlighting","It throws an error"], ans: 2, exp: "Syntax highlighting is an *extension* of support; omitting the language just yields a standard fenced code block." },
+  { cat: "Code", q: "What is the result of using triple backticks around code?", opts: ["It deletes the code","It executes the code","It creates a fenced code block","It converts it to an image"], ans: 2, exp: "You can use three backticks before and after to create a fenced code block." },
+
+  // ── GITHUB SPECIFICS (56-75) ─────────────────────────────────────────────
+  { cat: "GitHub Specifics", q: "What is the easiest way to cross-link an issue or pull request in GFM?", opts: ["Using the full URL","Using the format #ID (e.g., #3602)","Typing the title of the issue","Using the @ symbol"], ans: 1, exp: "The easiest way to do this is to use the format #ID, such as #3602." },
+  { cat: "GitHub Specifics", q: "What does GitHub do if you paste a long URL for an issue or pull request?", opts: ["Throws a formatting error","Automatically adjusts it to the #ID short format","Embeds the issue contents as a blockquote","Hides the link"], ans: 1, exp: "GitHub automatically adjusts longer links to this format if you paste them in." },
+  { cat: "GitHub Specifics", q: "If you type 'GH-3602', what does it link to?", opts: ["A GitHub user named 3602","Issue or pull request #3602","Commit 3602","A repository named GH-3602"], ans: 1, exp: "GH- and issue or PR number (e.g., GH-3602) acts as a short link to that specific issue/PR." },
+  { cat: "GitHub Specifics", q: "How do you cross-link an issue in a specific repository, such as 'desktop'?", opts: ["desktop/desktop#3602","desktop@3602","#3602/desktop","desktop-3602"], ans: 0, exp: "The format Username/Repository# and issue number (e.g., desktop/desktop#3602) links to a specific repository's issue." },
+  { cat: "GitHub Specifics", q: "How can you link to a specific commit?", opts: ["Only by its full URL","By its ID/SHA","By typing '#commit'","Commits cannot be linked in Markdown"], ans: 1, exp: "You can link to a commit by either pasting in its ID or simply using its secure hash algorithm (SHA)." },
+  { cat: "GitHub Specifics", q: "What does SHA stand for in the context of Git commits?", opts: ["Secure Hash Algorithm","Standard Hash Authorization","Simple Host Access","Secure Host Authentication"], ans: 0, exp: "SHA stands for Secure Hash Algorithm, which is used as the commit ID." },
+  { cat: "GitHub Specifics", q: "If you have a commit SHA '8304e9c271...', how long is the short link format automatically generated by GitHub?", opts: ["4 characters","7 characters (e.g., 8304e9c)","10 characters","The full SHA is required"], ans: 1, exp: "The table shows the raw reference '8304e9c271a5e5ab4fda797304cd7bcca7158c87' resolving to the short link '8304e9c' (7 characters)." },
+  { cat: "GitHub Specifics", q: "What syntax is used to mention a specific user or team on GitHub?", opts: ["#username","@username","!username","/username"], ans: 1, exp: "Typing an @ symbol followed by a GitHub username sends a notification to that person (@mention)." },
+  { cat: "GitHub Specifics", q: "What happens when you use an '@mention'?", opts: ["It assigns an issue to them","It sends a notification to that person or team about the comment","It emails them the entire repository code","It blocks the user"], ans: 1, exp: "This is called an '@mention', and highlights the user or team, sending them a notification." },
+  { cat: "GitHub Specifics", q: "How do you create an incomplete item in a task list?", opts: ["- [ ] Task","- [x] Task","* Task","[Task]"], ans: 0, exp: "'- [ ] Third task' renders as an unchecked/incomplete task box." },
+  { cat: "GitHub Specifics", q: "How do you create a completed item in a task list?", opts: ["- [ ] Task","- [x] Task","* [done] Task","~Task~"], ans: 1, exp: "'- [x] First task' renders as a checked/completed task box." },
+  { cat: "GitHub Specifics", q: "Where can task lists be especially helpful to track progress?", opts: ["In email subjects","In the body of an issue or pull request","Inside inline code blocks","Inside URLs"], ans: 1, exp: "These can be helpful to track progress when used in the body of an issue or pull request." },
+  { cat: "GitHub Specifics", q: "What feature reduces typing required to create structured content on GitHub?", opts: ["Task lists","Slash commands","Inline HTML","Fenced code blocks"], ans: 1, exp: "Slash commands can save you time by reducing the typing required to create structured content." },
+  { cat: "GitHub Specifics", q: "Where can you use slash commands?", opts: ["Any description or comment field in issues, PRs, or discussions (where supported)","Only in the repository README","Only in commit messages","Only in the command line interface"], ans: 0, exp: "You can use slash commands in any description or comment field in issues, pull requests, or discussions where supported." },
+  { cat: "GitHub Specifics", q: "Which slash command inserts a Markdown code block?", opts: ["/block","/code","/insert-code","/snippet"], ans: 1, exp: "The '/code' command inserts a Markdown code block, allowing you to choose the language." },
+  { cat: "GitHub Specifics", q: "What does the '/details' slash command do?", opts: ["Shows file metadata","Inserts a collapsible detail area","Explains Markdown syntax","Retrieves user information"], ans: 1, exp: "The '/details' command inserts a collapsible detail area where you choose the title and content." },
+  { cat: "GitHub Specifics", q: "Which command inserts a pre-written reply from your user account?", opts: ["/reply","/auto-reply","/saved-replies","/template"], ans: 2, exp: "The '/saved-replies' command inserts a saved reply chosen from your user account." },
+  { cat: "GitHub Specifics", q: "In a saved reply, what happens if you add '%cursor%'?", opts: ["It deletes the cursor","It places the cursor in that specific location after insertion","It changes the cursor icon","It highlights the text"], ans: 1, exp: "If you add %cursor% to your saved reply, the slash command places the cursor in that location." },
+  { cat: "GitHub Specifics", q: "How do you quickly insert a Markdown table with a specific number of columns and rows using slash commands?", opts: ["/grid","/table","/matrix","/columns"], ans: 1, exp: "The '/table' command inserts a Markdown table where you choose the number of columns and rows." },
+  { cat: "GitHub Specifics", q: "Which slash command is restricted to working ONLY in an issue description?", opts: ["/code","/table","/tasklist","/details"], ans: 2, exp: "The '/tasklist' command inserts a tasklist and *only* works in an issue description." }
+];
+
+const catColorMap = { "Basics":"cat-basics","Formatting":"cat-formatting","Links & Media":"cat-links","Lists & Tables":"cat-lists","Code":"cat-code","GitHub Specifics":"cat-github" };
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

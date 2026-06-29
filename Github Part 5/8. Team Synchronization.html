@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Synchronization Quiz — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-emus { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-ghes { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-scim { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-limits { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Administration Quiz · 40 Questions</div>
+  <h1>Team Synchronization<br>& SCIM Provisioning</h1>
+  <p>Test your knowledge on GitHub Teams, EMUs, GHES, and IdP integrations.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Team Sync Basics',this)">Team Sync Basics</button>
+    <button class="filter-btn" onclick="filterCat('EMUs & GHE',this)">EMUs & GHE</button>
+    <button class="filter-btn" onclick="filterCat('GHES Sync & Setup',this)">GHES Sync & Setup</button>
+    <button class="filter-btn" onclick="filterCat('SCIM vs Sync',this)">SCIM vs Sync</button>
+    <button class="filter-btn" onclick="filterCat('Limits & Rules',this)">Limits & Rules</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── TEAM SYNC BASICS (1-8) ──────────────────────────────────────────────
+  { cat: "Team Sync Basics", q: "Which identity providers (IdPs) are explicitly mentioned in the text for managing GitHub team membership through team synchronization?", opts: ["AWS IAM and Google Workspace", "Microsoft Entra ID or Okta", "Ping Identity and Auth0", "LDAP and OpenID"], ans: 1, exp: "If your company uses Microsoft Entra ID or Okta as your identity provider (IdP), you can manage GitHub team membership through team synchronization." },
+  { cat: "Team Sync Basics", q: "What is a primary benefit of enabling team synchronization?", opts: ["It eliminates GitHub billing entirely", "It creates repositories automatically based on user roles", "It automatically reflects changes in IdP groups on GitHub, reducing the need for manual updates", "It allows non-members to view private code"], ans: 2, exp: "When enabled, team sync automatically reflects changes in IdP groups on GitHub—reducing the need for manual updates or custom scripts." },
+  { cat: "Team Sync Basics", q: "Which feature of team synchronization keeps GitHub Teams aligned with IdP group membership?", opts: ["Dynamic Config", "Custom Team Mapping", "Sync Users", "Sync on New Team"], ans: 2, exp: "Feature: Sync Users - Keep GitHub Teams aligned with IdP (for example, Active Directory) group membership." },
+  { cat: "Team Sync Basics", q: "What does the 'Sync on New Team' feature do?", opts: ["Automates the creation of GitHub organizations", "Deletes empty teams", "Automatically populates teams at creation", "Invites users to the enterprise automatically"], ans: 2, exp: "Feature: Sync on New Team - Automatically populate teams at creation." },
+  { cat: "Team Sync Basics", q: "Which file is used to define custom mappings between team slugs and group names for 'Custom Team Mapping'?", opts: ["config.yml", "syncmap.yml", "mapping.json", "teamsync.xml"], ans: 1, exp: "Feature: Custom Team Mapping - Use syncmap.yml to define custom mappings between team slugs and group names." },
+  { cat: "Team Sync Basics", q: "What does the 'Dynamic Config' feature allow administrators to do?", opts: ["Use a settings file to derive sync settings from your directory structure", "Automatically upgrade user billing tiers", "Provision SCIM configurations", "Delete outdated repositories"], ans: 0, exp: "Feature: Dynamic Config - Use a settings file to derive sync settings from your directory structure." },
+  { cat: "Team Sync Basics", q: "Which of the following is an ideal use case for team synchronization?", opts: ["Hosting static websites", "Adjusting access as users move between teams", "Writing code automatically with AI", "Bypassing Two-Factor Authentication"], ans: 1, exp: "Team Synchronization Use Cases: ... Adjusting access as users move between teams." },
+  { cat: "Team Sync Basics", q: "Before using team sync, what MUST your IdP admin enable?", opts: ["Only SAML SSO", "SAML SSO and SCIM", "OAuth and Webhooks", "SSH and Deploy Keys"], ans: 1, exp: "⚠️ To use team sync, your IdP admin must enable SAML SSO and SCIM." },
+
+  // ── EMUs & GHE (9-15) ──────────────────────────────────────────────────
+  { cat: "EMUs & GHE", q: "What does EMUs stand for?", opts: ["Enterprise Managed Users", "External Management Utilities", "Encrypted Main Users", "Extended Modular Units"], ans: 0, exp: "Enterprise Managed Users (EMUs) are a GitHub Enterprise Cloud feature..." },
+  { cat: "EMUs & GHE", q: "How do users sign up for GitHub when Enterprise Managed Users (EMUs) are deployed?", opts: ["They use their personal email addresses", "They manually sign up on the GitHub homepage", "They do not sign up manually; provisioning is automated through the enterprise's IdP", "They generate an SSH key and invite themselves"], ans: 2, exp: "This means users do not sign up for GitHub manually—all user provisioning, access, and offboarding is automated through tools like Microsoft Entra ID or Okta." },
+  { cat: "EMUs & GHE", q: "Which types of organizations are EMUs ideal for?", opts: ["Open source communities with unverified users", "Organizations with strict compliance, audit, or user governance needs", "Small teams of 2 to 3 independent contractors", "Organizations that want all code to be strictly public"], ans: 1, exp: "EMUs are ideal for organizations with strict compliance, audit, or user governance needs." },
+  { cat: "EMUs & GHE", q: "Who owns the accounts created under the EMU model?", opts: ["The individual users", "The open-source community", "The enterprise", "GitHub Support"], ans: 2, exp: "They help ensure that: All accounts are owned by the enterprise." },
+  { cat: "EMUs & GHE", q: "What restriction applies to managed users (EMUs) regarding external collaboration?", opts: ["They can only collaborate externally on weekends", "They cannot push code to or fork repositories outside the enterprise", "They can fork external repos but cannot push to them", "They have full access to public GitHub.com features"], ans: 1, exp: "When using EMUs: Managed users cannot push code to or fork repositories outside the enterprise." },
+  { cat: "EMUs & GHE", q: "What does GHE.com (or GHES) offer organizations with requirements around self-hosting or specific regional regulations?", opts: ["An on-premises solution to maintain full control of the GitHub environment", "A completely serverless SaaS architecture", "A way to disable all identity providers", "A public-only code hosting plan"], ans: 0, exp: "...GitHub Enterprise Server (GHE.com) offers an on-premises solution that allows you to maintain full control of your GitHub environment." },
+  { cat: "EMUs & GHE", q: "Can you manage EMU-based organization and team membership using groups in your IdP?", opts: ["No, EMUs do not support IdP groups", "Yes, and you can optionally integrate team synchronization to automate group-to-team mapping", "Only if the user manually accepts an invite", "Yes, but only via CSV uploads"], ans: 1, exp: "You can manage EMU-based organization and team membership using groups in your IdP, and optionally integrate team synchronization to automate group-to-team mapping." },
+
+  // ── GHES SYNC & SETUP (16-23) ──────────────────────────────────────────
+  { cat: "GHES Sync & Setup", q: "In GitHub Enterprise Server (GHES), what does team synchronization link together?", opts: ["GitHub issues and pull requests", "GitHub teams with groups in your Identity Provider (IdP)", "Public repositories with private forks", "SCIM protocols and OAuth apps"], ans: 1, exp: "Team synchronization allows you to link GitHub teams with groups in your Identity Provider (IdP)." },
+  { cat: "GHES Sync & Setup", q: "Is team synchronization in GHES considered a user provisioning service?", opts: ["Yes, it provisions accounts automatically", "No, it isn't a user provisioning service and doesn't invite non-members", "Yes, but only for outside collaborators", "No, it only provisions billing managers"], ans: 1, exp: "However, it's important to note that team synchronization isn't a user provisioning service and doesn't invite non-members to join organizations..." },
+  { cat: "GHES Sync & Setup", q: "In order for a user to be successfully added to a team via team sync in GHES, what must already be true?", opts: ["They must be an enterprise owner", "They must have administrative access to the IdP", "They must already be a GitHub organization member", "They must have a valid SSH key uploaded"], ans: 2, exp: "Therefore, a user will only be successfully added to a team if they're already an organization member." },
+  { cat: "GHES Sync & Setup", q: "In the scenario where Alice is added to the IdP group 'DevOps Engineers' mapped to GitHub team 'DevOps', what happens when she leaves the IdP group?", opts: ["She retains read-only access to the team", "She must manually leave the GitHub team", "She is automatically removed from the team", "Her GitHub account is deleted"], ans: 2, exp: "When she leaves the group → automatically removed from the team." },
+  { cat: "GHES Sync & Setup", q: "To enable team synchronization, what is the first step required in your IdP?", opts: ["Disable multi-factor authentication", "Enable SAML Single Sign-On (SSO) and SCIM", "Upload a profile picture for all users", "Map custom IP addresses"], ans: 1, exp: "Enable team synchronization: 1. Enable Security Assertion Markup Language(SAML) Single Sign-On(SSO) and SCIM in your IdP." },
+  { cat: "GHES Sync & Setup", q: "What specific permissions does Microsoft Entra ID require to be a supported IdP for team sync?", opts: ["Permissions to delete repositories", "Permissions for profile reading and directory access", "Permissions to change billing information", "Permissions to generate SSH keys"], ans: 1, exp: "Microsoft Entra ID: Requires permissions for profile reading and directory access." },
+  { cat: "GHES Sync & Setup", q: "Which token is specifically required when using Okta as a supported IdP for team sync?", opts: ["OAuth Bearer Token", "Single Sign-on for Web Systems(SSWS) token with read-only admin access", "GitHub Personal Access Token (PAT)", "JWT session token"], ans: 1, exp: "Okta: Requires SAML SSO, SCIM, tenant URL, and Single Sign-on for Web Systems(SSWS) token with read-only admin access." },
+  { cat: "GHES Sync & Setup", q: "What happens to users who were added to teams via IdP mapping if you disable team synchronization?", opts: ["They are instantly promoted to organization owners", "They are removed from those teams", "Their GitHub accounts are deleted", "They remain on the teams indefinitely"], ans: 1, exp: "Note: Disabling sync removes users from teams if they were added via IdP mapping." },
+
+  // ── SCIM VS SYNC (24-35) ───────────────────────────────────────────────
+  { cat: "SCIM vs Sync", q: "What is SCIM designed to do?", opts: ["Encrypt passwords in transit", "Automate the exchange of user identity information between identity domains and IT systems", "Block malicious IP addresses", "Manage billing limits across enterprise accounts"], ans: 1, exp: "SCIM is an open standard protocol designed to automate the exchange of user identity information between identity domains and IT systems." },
+  { cat: "SCIM vs Sync", q: "In GHES, what does SCIM enable administrators to do through the GitHub API?", opts: ["Provision, update, and deprovision user accounts directly", "Automatically merge pull requests", "Write continuous integration scripts", "Back up repositories to local storage"], ans: 0, exp: "In the context of GHES, SCIM enables administrators to provision, update, and deprovision user accounts directly through the GitHub API." },
+  { cat: "SCIM vs Sync", q: "In the scenario where Bob is added to Okta with SCIM integration, what happens automatically?", opts: ["He is assigned as a billing manager", "His GitHub account is provisioned", "He is added to the 'DevOps' team only", "He is emailed a password reset link"], ans: 1, exp: "Bob is added to Okta → GitHub account is provisioned." },
+  { cat: "SCIM vs Sync", q: "What is the key benefit of SCIM?", opts: ["Team-level mapping only", "Full automation for account lifecycle management", "Bypassing enterprise compliance", "It does not require an IdP"], ans: 1, exp: "Key Benefit: Full automation for account lifecycle management." },
+  { cat: "SCIM vs Sync", q: "Between the two primary identity integration approaches, what is 'Team Sync' focused on?", opts: ["Full lifecycle management of users", "User and group provisioning", "Syncing group membership to GitHub teams", "Generating access tokens"], ans: 2, exp: "Team Sync: Focused on syncing group membership to GitHub teams." },
+  { cat: "SCIM vs Sync", q: "What is 'Group SCIM' focused on?", opts: ["Manual group-to-team mapping", "Full lifecycle management of users and groups", "Classic identity models only", "Removing SAML requirements"], ans: 1, exp: "Group SCIM: Focused on full lifecycle management of users and groups." },
+  { cat: "SCIM vs Sync", q: "How is setup handled for Team Sync compared to Group SCIM?", opts: ["Team Sync is automated via IdP config; SCIM is manual", "Team Sync requires manual group-to-team mapping; SCIM is automated via IdP SCIM config", "Both are completely manual", "Both are completely automated"], ans: 1, exp: "Feature -> Setup: Team Sync = Manual group-to-team mapping. Group SCIM = Automated via IdP SCIM config." },
+  { cat: "SCIM vs Sync", q: "What is the level of automation for Group SCIM?", opts: ["Syncs group membership only", "Full lifecycle automation", "Manual intervention required for updates", "Automates billing only"], ans: 1, exp: "Feature -> Automation Level: Group SCIM = Full lifecycle automation." },
+  { cat: "SCIM vs Sync", q: "For which ideal use case is Team Sync recommended?", opts: ["Large orgs with high user turnover", "GitHub Teams management", "When full IdP-based governance is needed", "Automating user lifecycles"], ans: 1, exp: "Feature -> Ideal Use Case: Team Sync = GitHub Teams management." },
+  { cat: "SCIM vs Sync", q: "How is deprovisioning handled in Group SCIM?", opts: ["Manual", "IdP-group dependent", "Fully automated", "Not supported"], ans: 2, exp: "Feature -> Deprovisioning: Group SCIM = Fully automated." },
+  { cat: "SCIM vs Sync", q: "Which identity model does Team Sync utilize?", opts: ["Managed Users", "Classic", "Enterprise-Only", "Federated"], ans: 1, exp: "Feature -> Identity Model: Team Sync = Classic." },
+  { cat: "SCIM vs Sync", q: "If your organization's primary need is to 'Automate user lifecycle', which approach should you choose?", opts: ["Team Sync", "Group SCIM", "Both simultaneously", "Neither"], ans: 1, exp: "Use Case -> Automate user lifecycle = Recommended Solution: Group SCIM." },
+
+  // ── LIMITS & RULES (36-40) ─────────────────────────────────────────────
+  { cat: "Limits & Rules", q: "When using team synchronization, what is the maximum number of members allowed per team?", opts: ["1,500", "5,000", "10,000", "Unlimited"], ans: 1, exp: "Usage Limits: Max members per team: 5,000." },
+  { cat: "Limits & Rules", q: "When using team synchronization, what is the maximum number of members allowed per organization?", opts: ["1,500", "5,000", "10,000", "50,000"], ans: 2, exp: "Usage Limits: Max members per organization: 10,000." },
+  { cat: "Limits & Rules", q: "When using team synchronization, what is the maximum number of teams allowed per organization?", opts: ["500", "1,000", "1,500", "5,000"], ans: 2, exp: "Usage Limits: Max teams per organization: 1,500." },
+  { cat: "Limits & Rules", q: "What may result if you exceed the stated usage limits for team synchronization?", opts: ["Automatic upgrade to a higher billing tier", "Performance issues or sync failures", "Immediate deletion of the organization", "GitHub support will manually map the teams"], ans: 1, exp: "Exceeding these may result in performance issues or sync failures." },
+  { cat: "Limits & Rules", q: "If your workflow requires managing repository access strictly by teams without full IdP-based governance, which solution is recommended?", opts: ["Group SCIM", "Team Sync", "Manual CSV imports", "Disabling SAML SSO"], ans: 1, exp: "Use Case -> Manage repository access by teams = Recommended Solution: Team Sync." }
+];
+
+const catColorMap = { 
+  "Team Sync Basics":"cat-basics",
+  "EMUs & GHE":"cat-emus",
+  "GHES Sync & Setup":"cat-ghes",
+  "SCIM vs Sync":"cat-scim",
+  "Limits & Rules":"cat-limits"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

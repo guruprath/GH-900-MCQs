@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Authorization & SCIM Quiz — 50 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-auth { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-scim { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-keys { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-api { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-idp { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-membership { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Administration Quiz · 50 Questions</div>
+  <h1>User Authorization<br>& SCIM Provisioning</h1>
+  <p>Test your knowledge on GitHub SCIM, SAML SSO, PATs, and Identity Providers.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">50</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Authorization',this)">Authorization</button>
+    <button class="filter-btn" onclick="filterCat('SCIM',this)">SCIM & Provisioning</button>
+    <button class="filter-btn" onclick="filterCat('Keys & PATs',this)">Keys & PATs</button>
+    <button class="filter-btn" onclick="filterCat('SCIM API',this)">SCIM API</button>
+    <button class="filter-btn" onclick="filterCat('IdP Integration',this)">IdP Integration</button>
+    <button class="filter-btn" onclick="filterCat('Membership',this)">Membership & Auditing</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── AUTHORIZATION (1-5) ──────────────────────────────────────────────
+  { cat: "Authorization", q: "What is the next critical step after a user successfully authenticates through your IdP by using SAML SSO?", opts: ["Encrypting the database", "Authorization", "Creating a new repository", "Deleting old accounts"], ans: 1, exp: "After a user successfully authenticates... the next critical step is authorization." },
+  { cat: "Authorization", q: "In this context, what does authorization grant tools the ability to do?", opts: ["Change the billing plan", "Access organization resources", "Deploy code directly to production", "Reset user passwords"], ans: 1, exp: "Authorization—granting tools like personal access tokens (PATs), SSH keys, or OAuth apps with the ability to access organization resources." },
+  { cat: "Authorization", q: "Which tools are explicitly mentioned as needing authorization to access organization resources?", opts: ["Docker and Kubernetes", "PATs, SSH keys, or OAuth apps", "Webhooks and Actions", "Subversion and CVS"], ans: 1, exp: "granting tools like personal access tokens (PATs), SSH keys, or OAuth apps with the ability to access organization resources." },
+  { cat: "Authorization", q: "What enables enterprise and organization owners to control access to resources like repositories, issues, and pull requests?", opts: ["IP Allowlisting", "SCIM 1.0", "Security assertion markup language (SAML) SSO", "GitHub Advanced Security"], ans: 2, exp: "Security assertion markup language (SAML) SSO enables enterprise and organization owners to control access to GitHub resources." },
+  { cat: "Authorization", q: "Which acronym represents the system used to enhance access control by automating user provisioning and deprovisioning?", opts: ["SAML", "SCIM", "OAuth", "LDAP"], ans: 1, exp: "Integrating SCIM (System for Cross-domain Identity Management) enhances access control by automating user provisioning and deprovisioning." },
+
+  // ── SCIM & PROVISIONING (6-16) ───────────────────────────────────────
+  { cat: "SCIM", q: "What does SCIM stand for?", opts: ["Security Credential Integration Module", "System for Cross-domain Identity Management", "Standard Configuration for Identity Mapping", "Secure Cloud Identity Mechanism"], ans: 1, exp: "SCIM (System for Cross-domain Identity Management)" },
+  { cat: "SCIM", q: "What is the primary benefit of adding SCIM alongside SAML SSO for new employees?", opts: ["It grants them administrative rights automatically", "They are granted access to GitHub automatically", "They bypass the need for a password", "It assigns them to all available repositories"], ans: 1, exp: "With SCIM, new employees added to your IdP are granted access to GitHub automatically." },
+  { cat: "SCIM", q: "Does SAML SSO alone support automatic deprovisioning of organization members?", opts: ["Yes, natively", "No, it requires SCIM", "Only for Enterprise Owners", "Yes, but only after 30 days"], ans: 1, exp: "Without SCIM, SAML SSO alone doesn't support automatic deprovisioning of organization members." },
+  { cat: "SCIM", q: "What does SCIM do to stale tokens after a session ends?", opts: ["It encrypts them", "It emails them to the admin", "It revokes them", "It archives them for 90 days"], ans: 2, exp: "SCIM also revokes stale tokens after a session ends, reducing security risks." },
+  { cat: "SCIM", q: "Without SCIM, how must stale tokens be revoked?", opts: ["Automatically by GitHub", "By deleting the user's account", "Manually", "By resetting the IdP"], ans: 2, exp: "Without SCIM, revoking stale tokens must be done manually." },
+  { cat: "SCIM", q: "In a SCIM-based management setup, how are access deactivations handled?", opts: ["Delayed revocations", "Manual intervention", "Timely deactivation of access", "Deactivations are ignored"], ans: 2, exp: "SCIM-Based Management -> Security -> Timely deactivation of access." },
+  { cat: "SCIM", q: "Compared to manual management, how does SCIM handle data consistency?", opts: ["It causes risk of inconsistencies", "It standardizes user data across systems", "It ignores user metadata", "It requires daily manual syncing"], ans: 1, exp: "SCIM-Based Management -> Consistency -> Standardized user data across systems." },
+  { cat: "SCIM", q: "Which management approach is described as 'Cumbersome at scale'?", opts: ["SCIM-Based Management", "Manual Management", "OAuth App Management", "API-Driven Provisioning"], ans: 1, exp: "Manual Management -> Scalability -> Cumbersome at scale." },
+  { cat: "SCIM", q: "How does SCIM assist with compliance?", opts: ["By making reports harder to track", "By bypassing audit requirements", "By helping meet policy and audit requirements", "By deleting audit logs to save space"], ans: 2, exp: "SCIM-Based Management -> Compliance -> Helps meet policy and audit requirements." },
+  { cat: "SCIM", q: "What does SCIM automate regarding user roles and departments?", opts: ["It automatically creates new departments", "Updates: Synchronize roles and departments", "It ignores department changes", "It restricts role changes completely"], ans: 1, exp: "Key Benefits of SCIM Integration -> Updates: Synchronize roles and departments." },
+  { cat: "SCIM", q: "What is a key benefit of SCIM integration regarding departing users?", opts: ["They retain read-only access", "Deprovisioning: Remove access promptly upon user exit", "They must delete their own account", "Their access is revoked after 7 days"], ans: 1, exp: "Deprovisioning: Remove access promptly upon user exit." },
+
+  // ── KEYS & PATS (17-22) ──────────────────────────────────────────────
+  { cat: "Keys & PATs", q: "To support cohesion between SAML SSO and SCIM, which two fields must match between the SAML IdP and SCIM client?", opts: ["email and sso_id", "NameID and userName", "firstName and lastName", "userPrincipalName and UUID"], ans: 1, exp: "NameID and userName must match between the SAML IdP and SCIM client." },
+  { cat: "Keys & PATs", q: "What triggers SCIM updates in GitHub?", opts: ["Group changes in your IdP", "Creating a new repository", "Pushing code to main", "Logging into GitHub.com"], ans: 0, exp: "Group changes in your IdP trigger SCIM updates in GitHub." },
+  { cat: "Keys & PATs", q: "When users access APIs or Git, what must they use?", opts: ["A username and password", "An authorized PAT or SSH key", "A temporary SAML token", "Their IdP admin credentials"], ans: 1, exp: "Users accessing APIs or Git must use an authorized PAT or SSH key." },
+  { cat: "Keys & PATs", q: "Are authorized PATs and SSH keys securely tied to SAML SSO and auditable?", opts: ["No, they are anonymous", "Yes, they are auditable and securely tied to SAML SSO", "Only PATs are auditable", "Only SSH keys are tied to SAML SSO"], ans: 1, exp: "These methods are auditable and securely tied to SAML SSO." },
+  { cat: "Keys & PATs", q: "What URL format should you use to simplify user onboarding in your IdP dashboard?", opts: ["https://github.com/login", "https://github.com/orgs/ORGANIZATION/sso/sign_up", "https://scim.github.com/register", "https://github.com/enterprise/sso"], ans: 1, exp: "To simplify onboarding, provision users using: https://github.com/orgs/ORGANIZATION/sso/sign_up." },
+  { cat: "Keys & PATs", q: "What must happen to PATs and SSH keys for them to access organization resources securely?", opts: ["They must be shared with all team members", "They must be explicitly authorized and linked to IdP identities", "They must be renewed daily", "They must bypass SAML SSO"], ans: 1, exp: "Credential Management: PATs and SSH keys must be explicitly authorized and linked to IdP identities to access organization resources securely." },
+
+  // ── SCIM API (23-30) ─────────────────────────────────────────────────
+  { cat: "SCIM API", q: "If your IdP isn't natively supported, what should you use to build custom integrations?", opts: ["GitHub's GraphQL API", "GitHub's SCIM API", "GitHub Webhooks", "OAuth Apps"], ans: 1, exp: "If your IdP isn't natively supported, use GitHub’s SCIM API to build custom integrations." },
+  { cat: "SCIM API", q: "Which version of the SCIM API does GitHub utilize?", opts: ["SCIM 1.0", "SCIM 1.1", "SCIM 2.0", "SCIM 3.0"], ans: 2, exp: "The SCIM 2.0 API allows you to..." },
+  { cat: "SCIM API", q: "What allows you to create, update, and delete users, as well as manage groups in custom integrations?", opts: ["The SCIM 2.0 API", "The GitHub UI only", "The SAML metadata file", "The IdP dashboard"], ans: 0, exp: "The SCIM 2.0 API allows you to: Create, update, and delete users; Manage groups." },
+  { cat: "SCIM API", q: "What HTTP method is used in the example request to provision a user via the SCIM API?", opts: ["GET", "PUT", "POST", "PATCH"], ans: 2, exp: "HTTP POST /scim/v2/Users" },
+  { cat: "SCIM API", q: "What is the endpoint path used to provision a user in the SCIM API example?", opts: ["/api/v3/users", "/scim/v2/Users", "/orgs/users/provision", "/saml/v1/identities"], ans: 1, exp: "POST /scim/v2/Users" },
+  { cat: "SCIM API", q: "What Content-Type is required for the SCIM API request to provision a user?", opts: ["application/xml", "text/plain", "application/json", "application/x-www-form-urlencoded"], ans: 2, exp: "Content-Type: application/json" },
+  { cat: "SCIM API", q: "In the SCIM API example, how is the user's primary email designated in the JSON payload?", opts: ["\"isPrimary\": \"yes\"", "\"primary\": true", "\"default\": 1", "\"status\": \"primary\""], ans: 1, exp: "\"emails\": [ { \"value\": \"jdoe@example.com\", \"primary\": true } ]" },
+  { cat: "SCIM API", q: "When configuring a Custom IdP, what do you use to authenticate to GitHub's SCIM REST API?", opts: ["A PAT", "A username and password", "An SSH key", "An OAuth client secret"], ans: 0, exp: "For Custom IdPs... Authenticate with a PAT." },
+
+  // ── IDP INTEGRATION (31-42) ──────────────────────────────────────────
+  { cat: "IdP Integration", q: "Which of the following is a natively supported SCIM provider in GitHub?", opts: ["Auth0", "Microsoft Entra ID", "Firebase", "Amazon Cognito"], ans: 1, exp: "GitHub natively supports: Okta, Microsoft Entra ID, OneLogin, Ping Identity, Google Workspace." },
+  { cat: "IdP Integration", q: "Is Google Workspace natively supported as a SCIM provider by GitHub?", opts: ["Yes", "No", "Only for Enterprise Server", "Only for Free accounts"], ans: 0, exp: "GitHub natively supports: ... Google Workspace." },
+  { cat: "IdP Integration", q: "What is the first step to get started with a Supported SCIM Provider?", opts: ["Sign in to your IdP admin console", "Write a custom API script", "Generate a new SSH key", "Delete your existing users"], ans: 0, exp: "For Supported Providers: 1. Sign in to your IdP admin console." },
+  { cat: "IdP Integration", q: "What two credentials must be provided in the IdP admin console to configure supported SCIM provisioning?", opts: ["Client ID and Client Secret", "GitHub’s SCIM base URL and bearer token", "SAML SSO URL and X.509 certificate", "Admin username and password"], ans: 1, exp: "Provide GitHub’s SCIM base URL and bearer token." },
+  { cat: "IdP Integration", q: "What SAML version is required to bring your own IdP?", opts: ["SAML 1.0", "SAML 1.1", "SAML 2.0", "SAML 3.0"], ans: 2, exp: "Bring your own IdP requires SAML 2.0 support." },
+  { cat: "IdP Integration", q: "What is the primary advantage of bringing your own IdP?", opts: ["It requires no setup", "It provides full flexibility", "It is fully managed by GitHub", "It is entirely free"], ans: 1, exp: "It has the advantage of allowing for full flexibility." },
+  { cat: "IdP Integration", q: "Which IdP integration path is described as having a 'Guided setup'?", opts: ["Bring Your Own IdP", "Paved Path", "Custom API", "Manual Provisioning"], ans: 1, exp: "Comparing IdP Integration Paths -> Feature: Setup Process -> Paved Path: Guided setup." },
+  { cat: "IdP Integration", q: "Which IdP integration path is described as 'Organization-managed' for maintenance?", opts: ["Paved Path", "Bring Your Own IdP", "GitHub Native", "Okta Integration"], ans: 1, exp: "Feature: Maintenance -> Bring Your Own IdP: Organization-managed." },
+  { cat: "IdP Integration", q: "When using the Paved Path, who handles the Support & Updates?", opts: ["The Organization", "GitHub", "A third-party consultant", "The open-source community"], ans: 1, exp: "Feature: Support & Updates -> Paved Path: GitHub-supported." },
+  { cat: "IdP Integration", q: "In the integration steps for a Custom IdP, what must you enter in the security settings?", opts: ["SAML metadata", "A Python script", "The billing credit card", "The SCIM base URL"], ans: 0, exp: "Custom IdP: ... 3. Enter SAML metadata." },
+  { cat: "IdP Integration", q: "What is an advantage of using Supported (Paved Path) IdPs?", opts: ["Full customization of the codebase", "Lower setup effort and seamless integration", "Ability to use SAML 1.0", "No need for an identity provider"], ans: 1, exp: "Some advantages of using the supported IdPs are: Seamless integration, GitHub-supported, Lower setup effort." },
+  { cat: "IdP Integration", q: "What is a disadvantage (marked with ⚠️) of the Paved Path regarding flexibility?", opts: ["It is fully customizable", "It is limited to listed IdPs", "It allows any SAML 2.0 IdP", "It requires custom scripting"], ans: 1, exp: "Feature: Flexibility -> Paved Path: ⚠️ Limited to listed IdPs." },
+
+  // ── MEMBERSHIP & AUDITING (43-50) ────────────────────────────────────
+  { cat: "Membership", q: "To configure SAML SSO, what must you provide along with the SAML SSO URL?", opts: ["The SCIM token", "Your public certificate and IdP metadata", "Your SSH private key", "Your billing address"], ans: 1, exp: "SAML SSO Configuration: Configure your SAML SSO URL. Provide your public certificate. Add IdP metadata." },
+  { cat: "Membership", q: "Where can administrators view active SAML sessions?", opts: ["In the repository code", "In settings", "In the IdP billing portal", "On the public GitHub profile"], ans: 1, exp: "Auditing SAML Sessions: View active sessions in settings." },
+  { cat: "Membership", q: "Can administrators revoke individual SAML sessions as needed?", opts: ["No, only all sessions at once", "Yes, they can revoke individual sessions as needed", "Only for custom IdPs", "Only with GitHub Support's help"], ans: 1, exp: "Auditing SAML Sessions: ... Revoke individual sessions as needed." },
+  { cat: "Membership", q: "What is a characteristic of 'GitHub Instance Membership'?", opts: ["Role-based internal access", "Access to public repositories and creation of personal projects", "Complex permission and billing", "Invisible public profile"], ans: 1, exp: "GitHub Instance Membership: Access to public repositories, Create personal projects, Public profile visibility." },
+  { cat: "Membership", q: "Which membership type includes 'Role-based internal access'?", opts: ["GitHub Instance Membership", "Organization Membership", "Anonymous Visitor", "External App Access"], ans: 1, exp: "Organization Membership: Role-based internal access." },
+  { cat: "Membership", q: "In 'Organization Membership', who is the user's profile visible to?", opts: ["No one", "Only themselves", "Org admins", "The entire internet regardless of settings"], ans: 2, exp: "Organization Membership: ... Profile visible to org admins." },
+  { cat: "Membership", q: "Which type of membership is noted to potentially 'affect billing'?", opts: ["GitHub Instance Membership", "Organization Membership", "Following a user", "Starring a repository"], ans: 1, exp: "Organization Membership: ... Might affect billing." },
+  { cat: "Membership", q: "What is a consideration of 'Multiple Organization Memberships'?", opts: ["Users have the exact same role in every org", "Requires strict governance due to complex permissions and billing", "It restricts access to personal projects", "It hides the public profile completely"], ans: 1, exp: "Multiple Organization Memberships: ... Complex permission and billing, Requires strict governance." }
+];
+
+const catColorMap = { 
+  "Authorization":"cat-auth",
+  "SCIM":"cat-scim",
+  "Keys & PATs":"cat-keys",
+  "SCIM API":"cat-api",
+  "IdP Integration":"cat-idp",
+  "Membership":"cat-membership"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-auth';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

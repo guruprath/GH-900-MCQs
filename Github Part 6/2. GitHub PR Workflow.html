@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub PR Workflow — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-pr-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-opening-prs { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-assignees { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-reviews { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-review-best-practices { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-suggesting-changes { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+  .cat-merging { color: #ff7b72; border-color: rgba(255,123,114,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 60 Questions</div>
+  <h1>GitHub PR Workflow</h1>
+  <p>Assignments, Reviews, Suggestions, and Merging</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('PR Basics',this)">PR Basics</button>
+    <button class="filter-btn" onclick="filterCat('Opening PRs',this)">Opening PRs</button>
+    <button class="filter-btn" onclick="filterCat('Assignees',this)">Assignees</button>
+    <button class="filter-btn" onclick="filterCat('Reviews',this)">Reviews</button>
+    <button class="filter-btn" onclick="filterCat('Review Best Practices',this)">Best Practices</button>
+    <button class="filter-btn" onclick="filterCat('Suggesting Changes',this)">Suggestions</button>
+    <button class="filter-btn" onclick="filterCat('Merging',this)">Merging</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── PR BASICS (1–10) ────────────────────────────────────────────────
+  { cat: "PR Basics", q: "According to the text, what is a pull request?", opts: ["A tool for deleting branches directly","A collaboration area where work in one branch is reviewed before merging it into another","A script that automatically tests your code","A log of all the errors in your repository"], ans: 1, exp: "A pull request is a collaboration area where work in one branch is reviewed before merging it into another branch." },
+  { cat: "PR Basics", q: "Which tab provides a general log of the pull request activity?", opts: ["Commits","Checks","Files Changed","Conversation"], ans: 3, exp: "Conversation - A general log of the pull request activity." },
+  { cat: "PR Basics", q: "What is the purpose of the Conversation tab in a pull request?", opts: ["To only view the code differences","To run automated checks","To provide an open space for collaborators and the community to provide ideas, suggestions, and feedback","To permanently lock the branch"], ans: 2, exp: "It also provides an open space for fellow collaborators and the community to provide ideas, suggestions, and general feedback." },
+  { cat: "PR Basics", q: "Which tab lists only the commits unique to the proposed branch?", opts: ["Conversation","Commits","Checks","Files Changed"], ans: 1, exp: "Commits - A list of only the commits unique to the proposed branch." },
+  { cat: "PR Basics", q: "Where can you find the results of any automations applied using GitHub Actions?", opts: ["In the Commits tab","In the Checks tab","In the Files Changed tab","In the Assignees section"], ans: 1, exp: "Checks - The results of any automations applied to the pull request using GitHub Actions." },
+  { cat: "PR Basics", q: "What does the 'Files Changed' tab display?", opts: ["A list of all users in the repository","The results of GitHub Actions","A Diff view that easily shows the proposed changes in a before/after view","A history of all merged branches"], ans: 2, exp: "Files Changed - A Diff view that easily shows the proposed changes in a before/after view." },
+  { cat: "PR Basics", q: "In which tab can you easily add comments and reviews in context?", opts: ["Checks","Commits","Conversation","Files Changed"], ans: 3, exp: "Files Changed... It also has options to add comments and reviews in context." },
+  { cat: "PR Basics", q: "What is a primary benefit of creating a draft pull request?", opts: ["It merges the code automatically after 24 hours","It helps avoid accidental merges or premature reviews","It deletes the branch automatically","It prevents anyone from seeing your code"], ans: 1, exp: "You can create a draft pull request for unfinished work. This can help avoid accidental merges or premature reviews." },
+  { cat: "PR Basics", q: "When should you typically use a draft pull request?", opts: ["When the work is completely finished and ready to merge","When the repository is public","For unfinished work","When you want to bypass automated checks"], ans: 2, exp: "You can create a draft pull request for unfinished work." },
+  { cat: "PR Basics", q: "Which of the following is NOT one of the pull request tabs explicitly listed in the text?", opts: ["Conversation","Commits","Security","Files Changed"], ans: 2, exp: "The listed tabs are Conversation, Commits, Checks, and Files Changed. 'Security' is not listed." },
+
+  // ── OPENING PRs (11–18) ────────────────────────────────────────────────
+  { cat: "Opening PRs", q: "In the activity to open a PR, which tab must you select in the top navigation first?", opts: ["Issues","Pull requests","Actions","Projects"], ans: 1, exp: "In the top navigation, select the Pull requests tab." },
+  { cat: "Opening PRs", q: "What button do you click on the right side to start creating a new PR?", opts: ["New issue","Compare changes","New pull request","Create draft"], ans: 2, exp: "On the right, click the New pull request button." },
+  { cat: "Opening PRs", q: "Under which area do you select the base and compare branches?", opts: ["The Reviewers area","The Compare changes area","The Actions area","The Branch protection area"], ans: 1, exp: "Under the Compare changes area, select the following options..." },
+  { cat: "Opening PRs", q: "In the provided activity, what is the 'base' branch set to?", opts: ["update-game","main","master","dev"], ans: 1, exp: "base: main" },
+  { cat: "Opening PRs", q: "In the provided activity, what is the 'compare' branch set to?", opts: ["update-game","main","feature-fix","patch-1"], ans: 0, exp: "compare: update-game" },
+  { cat: "Opening PRs", q: "What was the title of the pull request created in the activity?", opts: ["Fix the game over bug","Update game over message","Add a new game level","Change the game mechanics"], ans: 1, exp: "Set the title and description to the following: Update game over message" },
+  { cat: "Opening PRs", q: "What action finalized the creation of the PR in the activity?", opts: ["Clicking 'Save draft'","Clicking 'Merge pull request'","Clicking 'Create pull request'","Clicking 'Assign yourself'"], ans: 2, exp: "Click Create pull request." },
+  { cat: "Opening PRs", q: "Who will check your progress and share the next steps after the PR is created?", opts: ["The repository owner","GitHub Support","Mona","A randomly assigned reviewer"], ans: 2, exp: "With the pull request created, Mona will check your progress and share the next steps." },
+
+  // ── ASSIGNEES (19–24) ────────────────────────────────────────────────
+  { cat: "Assignees", q: "According to the text, who is a pull request assignee?", opts: ["The repository administrator","The person who approves the PR automatically","The person (or persons) most familiar with the proposed changes","The user who reported the issue"], ans: 2, exp: "A pull request assignee is the person (or persons) most familiar with the proposed changes." },
+  { cat: "Assignees", q: "What is the primary purpose of assigning someone to a pull request?", opts: ["To restrict who can view the code","To enforce branch protection rules","It's a simple mechanism for keeping track of who to contact for questions","To ensure the code is automatically deployed"], ans: 2, exp: "It's a simple mechanism for keeping track of who to contact for questions." },
+  { cat: "Assignees", q: "Where is the 'Assignees' section located on the pull request page?", opts: ["At the very bottom","On the left side","On the right side","Inside the Conversation log"], ans: 2, exp: "On the right side, under Assignees..." },
+  { cat: "Assignees", q: "What specific text do you click to assign yourself to a pull request?", opts: ["add assignee","assign yourself","me","claim PR"], ans: 1, exp: "On the right side, under Assignees, click the assign yourself text." },
+  { cat: "Assignees", q: "Can multiple people be assigned to a single pull request?", opts: ["No, only one person can be assigned","Yes, the text says 'person (or persons)'","Only if they are administrators","Only if the repository is private"], ans: 1, exp: "A pull request assignee is the person (or persons) most familiar..." },
+  { cat: "Assignees", q: "According to the text, what happens after you successfully assign yourself?", opts: ["The PR is merged automatically","Mona will check your progress and share the next steps","The branch is deleted","A new code review is generated"], ans: 1, exp: "After assigning yourself, Mona will check your progress and share the next steps." },
+
+  // ── REVIEWS (25–36) ────────────────────────────────────────────────
+  { cat: "Reviews", q: "What is the definition of a pull request review?", opts: ["An automated code formatting check","Feedback from other collaborators or community members on the proposed changes","A meeting scheduled with the development team","A final sign-off from the CEO"], ans: 1, exp: "A pull request review is feedback from other collaborators or community members on the proposed changes." },
+  { cat: "Reviews", q: "What are two main benefits of pull request reviews mentioned in the text?", opts: ["They automatically fix bugs and deploy code","They help ensure quality and project momentum","They guarantee zero downtime and faster load times","They prevent forks and reduce repository size"], ans: 1, exp: "It helps ensure quality and project momentum." },
+  { cat: "Reviews", q: "How does reviewing a pull request help you grow as a developer?", opts: ["By earning you points on GitHub","By seeing how others approach the problem","By allowing you to skip writing code yourself","By automatically adding their commits to your profile"], ans: 1, exp: "Even more importantly, it's an awesome opportunity to learn more about the project and grow as a developer by seeing how others approach the problem." },
+  { cat: "Reviews", q: "What is the most natural way to get a review on your pull request?", opts: ["To wait until someone notices it","To ask for one by assigning a reviewer","To merge it immediately and see if anyone complains","To leave it as a draft indefinitely"], ans: 1, exp: "Naturally, the best way to get a review is to ask for one. By assigning a reviewer..." },
+  { cat: "Reviews", q: "When you assign a reviewer, how many options do they get for providing feedback?", opts: ["2","3","4","5"], ans: 1, exp: "By assigning a reviewer, they get 3 options for providing feedback: Comment, Approve, Request Changes." },
+  { cat: "Reviews", q: "Which review option provides general feedback without approval or rejection?", opts: ["Comment","Approve","Request Changes","Suggest"], ans: 0, exp: "Comment - General feedback without approval or rejection." },
+  { cat: "Reviews", q: "Which review option allows merging if rulesets, code owners, or other policies are enforced?", opts: ["Comment","Approve","Request Changes","Resolve"], ans: 1, exp: "Approve - Allows merging if rulesets, code owners, or other policies are enforced." },
+  { cat: "Reviews", q: "What should happen if a reviewer selects 'Request Changes'?", opts: ["The PR is deleted","The proposed changes meet expectations but need a new title","A review should be re-requested after the changes are made","The reviewer must fix the code themselves"], ans: 2, exp: "Request Changes - The proposed changes need do not meet expectations and need additional work. A review should be re-requested after the changes are made." },
+  { cat: "Reviews", q: "Which tab is described as the 'primary place for collecting feedback'?", opts: ["Conversation tab","Commits tab","Checks tab","Files changed tab"], ans: 3, exp: "The Files changed tab is the primary place for collecting feedback." },
+  { cat: "Reviews", q: "How does the 'Files changed' tab allow you to prepare before submitting a review?", opts: ["By compiling the code","By adding comments directly to lines","By automatically merging safe commits","By allowing you to edit the original source files"], ans: 1, exp: "It allows for adding comments directly to lines before submitting a review." },
+  { cat: "Reviews", q: "Why can't you choose 'Approve' on your own pull request?", opts: ["You don't have admin access","The text explicitly notes you can't choose Approve or Request changes on your own PR","You must add a suggestion first","The PR must be merged first"], ans: 1, exp: "Note: You can't choose Approve or Request changes on your own pull request." },
+  { cat: "Reviews", q: "Which two options are restricted when reviewing your own pull request?", opts: ["Comment and Approve","Approve and Request changes","Comment and Request changes","Approve and Merge"], ans: 1, exp: "Note: You can't choose Approve or Request changes on your own pull request." },
+
+  // ── REVIEW BEST PRACTICES (37–46) ──────────────────────────────────
+  { cat: "Review Best Practices", q: "What is typically the first step when reviewing a pull request?", opts: ["Checking the automated tests","Reviewing that the title and description are clear and concise","Pushing a new commit","Merging the branch locally"], ans: 1, exp: "Reviewing the title and description are clear and concise." },
+  { cat: "Review Best Practices", q: "Why is it important to review the pull request title and description?", opts: ["It should easily convey the intended changes and any associated issues","To ensure it has a minimum character count","So GitHub Actions can parse the text","To assign the correct reviewer automatically"], ans: 0, exp: "It should easily convey the intended changes and any associated issues." },
+  { cat: "Review Best Practices", q: "After reviewing the description, what should you verify in the Files changed tab?", opts: ["That there are no comments","That the files have not been deleted","That all proposed code matches the description","That the code is written in JavaScript"], ans: 2, exp: "Reviewing the Files changed tab to ensure all proposed code matches the description." },
+  { cat: "Review Best Practices", q: "For most updates, what is recommended to verify the proposed changes match the intention?", opts: ["Ask the author to explain it verbally","Try out the proposed change","Only read the comments","Merge the code into main immediately to test it"], ans: 1, exp: "For most updates, try out the proposed change to verify they match the intention." },
+  { cat: "Review Best Practices", q: "Where should you look for guidance on review requirements, testing, or quality verification?", opts: ["The repository's contributing guide","The main branch README","The GitHub status page","The Conversation tab"], ans: 0, exp: "Use the repository's contributing guide for any guidance on review requirements, testing, quality verification, etc." },
+  { cat: "Review Best Practices", q: "Which of the following is listed as a good 'Review idea'?", opts: ["Ignore potential risks if they seem minor","Identify potential issues, risks, and limitations","Rewrite the author's code completely","Approve the code without reading to save time"], ans: 1, exp: "Review ideas: Identify potential issues, risks, and limitations." },
+  { cat: "Review Best Practices", q: "When reviewing, should you only focus on what needs to be fixed?", opts: ["Yes, highlighting good things is a waste of time","No, you should highlight what the author did well and what they should keep doing","Yes, positive feedback is not allowed in PRs","No, you should only focus on spelling errors"], ans: 1, exp: "Review ideas: Highlight what the author did well and what they should keep doing." },
+  { cat: "Review Best Practices", q: "How should you handle upcoming changes that the pull request doesn't account for?", opts: ["Reject the PR immediately","Share awareness of upcoming changes that the pull request doesn't account for","Edit the code to include them","Ignore them entirely"], ans: 1, exp: "Review ideas: Share awareness of upcoming changes that the pull request doesn't account for." },
+  { cat: "Review Best Practices", q: "According to the text, how should a reviewer communicate with the pull request author?", opts: ["With strict authority","With kindness and empathy","Using only code snippets","By sending them a direct email instead"], ans: 1, exp: "Review ideas: Treat the pull request author with kindness and empathy." },
+  { cat: "Review Best Practices", q: "What is the recommended approach to the length and depth of review feedback?", opts: ["Write as much as possible","Be concise and provide meaningful detail","Only leave one-word comments","Provide vague feedback to encourage the author to think"], ans: 1, exp: "Review ideas: Be concise and provide meaningful detail." },
+
+  // ── SUGGESTING CHANGES (47–55) ──────────────────────────────────
+  { cat: "Suggesting Changes", q: "When is the 'Add a suggestion' feature most useful?", opts: ["For massive architectural rewrites","For simple changes that are easier to implement than to describe","For deleting entire files","For assigning a new reviewer"], ans: 1, exp: "While reviewing, it is very common to find simple changes that are easier to implement than to describe... These are perfect situations for the Add a suggestion feature." },
+  { cat: "Suggesting Changes", q: "What examples does the text give for when to use the suggestion feature?", opts: ["Database migrations and API endpoints","Typos or rewording sentences","Merge conflicts and rebasing","Adding new software dependencies"], ans: 1, exp: "For example, typos or rewording sentences." },
+  { cat: "Suggesting Changes", q: "Where is the 'Add a suggestion' button located?", opts: ["In the Commits tab","In the comment text editor","On the main repository page","Inside the Settings tab"], ans: 1, exp: "The Add a suggestion feature is a button in the comment text editor." },
+  { cat: "Suggesting Changes", q: "What does clicking the 'Add a suggestion' button insert into the comment?", opts: ["An image of the code","A specially formatted code block","A link to the contributing guide","A GIF"], ans: 1, exp: "It inserts a specially formatted code block." },
+  { cat: "Suggesting Changes", q: "What button does GitHub provide to the author when a suggestion is made?", opts: ["Reject suggestion","Commit suggestion","Close pull request","Revert commit"], ans: 1, exp: "Instead of only showing a comment, GitHub will also provide a Commit suggestion button." },
+  { cat: "Suggesting Changes", q: "What is the main benefit for the author when accepting a suggested change?", opts: ["They get extra GitHub stars","There is no need to open a code editor","It automatically approves the PR","It bypasses all CI checks"], ans: 1, exp: "This allows the author to accept the suggestion and commit it with the push of a button. No need to open a code editor!" },
+  { cat: "Suggesting Changes", q: "How do you reveal the inline comment form in the Files changed tab?", opts: ["Double-click anywhere on the screen","Right-click the code","Hover your cursor next to the line numbers and click the plus icon","Press CTRL+C"], ans: 2, exp: "Hover your cursor next to the line numbers for the modified line. Click the plus icon to show an inline comment form." },
+  { cat: "Suggesting Changes", q: "In the activity, which file was modified using the suggestion feature?", opts: ["README.md","package.json","index.html","app.js"], ans: 2, exp: "Find the comparison view for the index.html file." },
+  { cat: "Suggesting Changes", q: "In which tab do you actually apply and commit a suggested change?", opts: ["Files changed tab","Commits tab","Checks tab","Conversation tab"], ans: 3, exp: "In the pull request navigation, select the Conversation tab. Scroll down and click the Commit suggestion button..." },
+
+  // ── MERGING (56–60) ────────────────────────────────────────────────
+  { cat: "Merging", q: "According to the text, when is it time to merge the changes?", opts: ["As soon as the PR is opened","Before anyone has reviewed it","With reviews collected and feedback implemented","When the branch is 30 days old"], ans: 2, exp: "With our reviews collected and feedback implemented, it's time to merge the changes." },
+  { cat: "Merging", q: "Which tab must you navigate to in order to find the 'Merge pull request' button?", opts: ["Commits tab","Files changed tab","Conversation tab","Checks tab"], ans: 2, exp: "In the pull request navigation, select the Conversation tab. Scroll down and click the Merge pull request button." },
+  { cat: "Merging", q: "After merging a pull request, what optional step is mentioned in the activity?", opts: ["Star the repository","Delete the update-game branch","Create a release tag","Send an email to the team"], ans: 1, exp: "(Optional) Delete the update-game branch." },
+  { cat: "Merging", q: "In the activity, what caution is given right before step 4?", opts: ["Do not delete the repository!","Do not merge your pull request yet!","Do not refresh the page!","Do not close the browser!"], ans: 1, exp: "❗ Caution: Do not merge your pull request yet!" },
+  { cat: "Merging", q: "Who provides the final review after the pull request is merged in the activity?", opts: ["The repository administrator","Mona","The original author","A community member"], ans: 1, exp: "With the pull request merged, Mona will check your progress and prepare a final review." }
+];
+
+const catColorMap = { 
+  "PR Basics": "cat-pr-basics",
+  "Opening PRs": "cat-opening-prs",
+  "Assignees": "cat-assignees",
+  "Reviews": "cat-reviews",
+  "Review Best Practices": "cat-review-best-practices",
+  "Suggesting Changes": "cat-suggesting-changes",
+  "Merging": "cat-merging" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-pr-basics';
+  const letters = ['A','B','C','D'];
+
+  // Safely escape any HTML tags in options and explanations
+  const escapeHTML = str => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${escapeHTML(q.q)}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${escapeHTML(opt)}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${escapeHTML(q.opts[q.ans])}</strong><br>${escapeHTML(q.exp)}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

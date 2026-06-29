@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Projects: Organization & Automation — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-visibility { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-access { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-teams { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-management { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-subissues { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 40 Questions</div>
+  <h1>Projects: Organization & Automation</h1>
+  <p>MCQs on Visibility, Access, Teams, and Settings</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Visibility',this)">Visibility</button>
+    <button class="filter-btn" onclick="filterCat('Access',this)">Access</button>
+    <button class="filter-btn" onclick="filterCat('Teams',this)">Teams & Repos</button>
+    <button class="filter-btn" onclick="filterCat('Management',this)">Management</button>
+    <button class="filter-btn" onclick="filterCat('Sub-issues',this)">Sub-issues</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── VISIBILITY (1-6) ────────────────────────────────────────────────
+  { cat: "Visibility", q: "What are the two visibility options available for a GitHub Project?", opts: ["Public and Private", "Open and Closed", "Global and Local", "Visible and Hidden"], ans: 0, exp: "You have the ability to control whether your Project is public or private." },
+  { cat: "Visibility", q: "When your Project is set to public, who can view it?", opts: ["Only logged-in GitHub users", "Everyone on the internet", "Only organization members", "Only people with the link"], ans: 1, exp: "When your Project is public, everyone on the internet can view it." },
+  { cat: "Visibility", q: "When a Project is private, who is permitted to see it?", opts: ["Only the Project creator", "Only organization owners", "Only users granted at least read access", "Anyone in the organization"], ans: 2, exp: "When your Project is private, only users granted at least read access can see your Project." },
+  { cat: "Visibility", q: "Where do you navigate within your Project to change its visibility?", opts: ["The three dots in the top-right -> Settings", "The main repository page", "The user profile page", "The Insights tab"], ans: 0, exp: "In the top-right, select the three dots at the top menu and choose Settings." },
+  { cat: "Visibility", q: "Under which specific section in Project Settings is the Visibility drop-down located?", opts: ["General settings", "Danger zone", "Access management", "Workflows"], ans: 1, exp: "Scroll down to Danger zone, and under Visibility select Private or Public from the drop-down." },
+  { cat: "Visibility", q: "Which HTML UI element is used to toggle between Public and Private in the Danger zone?", opts: ["Radio buttons", "A drop-down menu", "A toggle switch", "Checkboxes"], ans: 1, exp: "Under Visibility select Private or Public from the drop-down." },
+
+  // ── ACCESS (7-19) ─────────────────────────────────────────────────
+  { cat: "Access", q: "Managing access to your Project primarily depends on whether the Project is owned by:", opts: ["A free or paid account", "An organization or a personal/user account", "A team or a repository", "An administrator or a collaborator"], ans: 1, exp: "Access to your Project depends on if your Project is an organization-owned Project or a personal/user-owned Project." },
+  { cat: "Access", q: "What can admins of organization-owned Projects manage that admins of user-owned Projects cannot?", opts: ["Read permissions", "Custom fields", "Access for the entire organization and teams", "Drafted issues"], ans: 2, exp: "Admins of organization-owned Projects can manage access for the entire organization, for teams..." },
+  { cat: "Access", q: "In an organization-owned Project, what does the 'No access' base role mean?", opts: ["No one can view the project", "Only organization owners and users granted individual access can see the Project", "The project is deleted", "The project is temporarily archived"], ans: 1, exp: "No access: Only organization owners and users granted individual access can see the Project." },
+  { cat: "Access", q: "Who automatically serves as an admin for an organization-owned Project by default?", opts: ["Anyone with write access", "Organization owners", "Team leaders", "Outside collaborators"], ans: 1, exp: "Organization owners are also admins for the Project." },
+  { cat: "Access", q: "For an organization-owned Project, what does the 'Read' base role allow?", opts: ["Everyone in the organization can edit the Project", "Everyone on the internet can see the Project", "Everyone in the organization can see the Project", "Only admins can see the Project"], ans: 2, exp: "Read: Everyone in the organization can see the Project." },
+  { cat: "Access", q: "For an organization-owned Project, what does the 'Write' base role allow?", opts: ["Everyone in the organization can see and edit the Project", "Only individuals added explicitly can edit", "Everyone on the internet can edit", "Everyone in the organization can add collaborators"], ans: 0, exp: "Write: Everyone in the organization can see and edit the Project." },
+  { cat: "Access", q: "If the base role is set to 'Admin' for an organization-owned Project, who becomes an admin?", opts: ["Only the creator", "Only the organization owners", "Everyone in the organization", "Only selected teams"], ans: 2, exp: "Admin: Everyone in the organization is an admin for the Project." },
+  { cat: "Access", q: "In a Personal/User-owned Project, what does the 'Read' role permit an individual to do?", opts: ["View and edit the Project", "View the Project", "Add new collaborators", "Delete the Project"], ans: 1, exp: "Read: The individual can view the Project." },
+  { cat: "Access", q: "In a Personal/User-owned Project, what does the 'Write' role permit an individual to do?", opts: ["View and edit the Project", "Add new collaborators", "Change the project's visibility", "Delete custom fields only"], ans: 0, exp: "Write: The individual can view and edit the Project." },
+  { cat: "Access", q: "What specific capability does the 'Admin' role grant in a Personal/User-owned Project that the 'Write' role does not?", opts: ["View the Project", "Edit the Project", "Add new collaborators to the Project", "Comment on issues"], ans: 2, exp: "Admin: The individual can view, edit, and add new collaborators to the Project." },
+  { cat: "Access", q: "To invite collaborators, which option do you select in the left-hand navigation bar inside Project Settings?", opts: ["Manage access", "Collaborator settings", "Team management", "Danger zone"], ans: 0, exp: "In the left-hand navigation bar, select Manage access." },
+  { cat: "Access", q: "What tools are provided on the Manage access page for bringing new people into an org project?", opts: ["An 'Add via email' button", "An 'Invite collaborators' search bar", "A 'Share link' generator", "A CSV import tool"], ans: 1, exp: "Invite individuals and teams by searching in the Invite collaborators search bar." },
+  { cat: "Access", q: "Where exactly can you change a collaborator's role or remove them?", opts: ["On their profile page", "Under the Danger zone", "Under Manage access", "In the repository settings"], ans: 2, exp: "Change their role or remove them under Manage access." },
+
+  // ── TEAMS & REPOS (20-28) ─────────────────────────────────────────────
+  { cat: "Teams", q: "Why might you add a Project to a team?", opts: ["To transfer ownership to the team", "To grant them collaborator access and list it on the team's Projects page", "To lock the project from other teams", "To merge multiple projects together"], ans: 1, exp: "You can add Projects to your team to give them collaborator access... Adding lists them on the team's Projects page." },
+  { cat: "Teams", q: "What permission level is automatically granted to a team on any Project they get added to?", opts: ["Write permissions", "Admin permissions", "Read permissions", "No permissions"], ans: 2, exp: "Teams are granted read permissions on any Project they get added to." },
+  { cat: "Teams", q: "To add a Project to a team, what is the first step on GitHub.com?", opts: ["Select your profile photo and choose Your organizations", "Click the 'Teams' tab on the homepage", "Open the Project settings", "Go to the Danger zone"], ans: 0, exp: "In the top right corner of GitHub.com, select your profile photo and choose Your organizations." },
+  { cat: "Teams", q: "Once you navigate to a specific team's page, which tab must you select to add a project?", opts: ["Overview", "Repositories", "Projects", "Settings"], ans: 2, exp: "Select Projects and choose Link a project." },
+  { cat: "Teams", q: "What is the name of the button used to add a Project to a team's page?", opts: ["Add Project", "Link a project", "Connect board", "Import project"], ans: 1, exp: "Select Projects and choose Link a project." },
+  { cat: "Teams", q: "Why would you list relevant Projects in a repository?", opts: ["To back up the project data", "So your team can access information they need to stay up to date", "To execute code directly from the board", "To increase the repository's visibility"], ans: 1, exp: "You can list relevant Projects in a repository so your team can access information they need to stay up to date." },
+  { cat: "Teams", q: "What is the primary restriction for listing a Project in a repository?", opts: ["The repository must be public", "The same user or organization must own both the Projects and the repository", "The project must be in a 'Closed' state", "The user must have Admin access to both"], ans: 1, exp: "However, you can only list Projects if the same user or organization owns both the Projects and the repository." },
+  { cat: "Teams", q: "If a Project is linked to a repository, what must be true for repository members to actually see it?", opts: ["They must be org owners", "They must have visibility to the Project", "They must have Write access to the Project", "They must be the creator of the Project"], ans: 1, exp: "In order for repository members to see a Project listed in a repository, they must have visibility to the Project." },
+  { cat: "Teams", q: "To link a Project to a repository, what button do you press under the repository's Projects tab?", opts: ["New Project", "Link a project", "Add board", "Connect"], ans: 1, exp: "Select the Projects tab and choose to Link a project." },
+
+  // ── MANAGEMENT (29-36) ─────────────────────────────────────────
+  { cat: "Management", q: "What does 'Closing a Project' enable you to do?", opts: ["Remove it permanently from GitHub", "Remove it from the list of Projects but retain content to reopen later", "Lock it so no one can ever open it again", "Transfer ownership to another user"], ans: 1, exp: "Closing a Project enables you to remove it from the list of Projects but retain the content and ability to reopen the Project later." },
+  { cat: "Management", q: "Which action is recommended by GitHub to preserve your Project data when it is no longer actively needed?", opts: ["Deleting the project", "Exporting the project to CSV", "Closing the project", "Archiving the repository"], ans: 2, exp: "Closing a Project... We recommend this option to preserve your data." },
+  { cat: "Management", q: "Which of the following is permanently removed when you delete a Project?", opts: ["The repository source code", "Custom fields and associated values", "The organization itself", "The users' GitHub accounts"], ans: 1, exp: "...deleting a Project permanently removes it from the platform along with any saved views, custom fields and associated values..." },
+  { cat: "Management", q: "Are drafted issues preserved if you delete a Project?", opts: ["Yes, they convert to regular issues", "No, they are permanently removed", "Yes, they are sent to the organization owner's email", "Yes, they are moved to a 'Deleted' folder"], ans: 1, exp: "...deleting a Project permanently removes it... along with any... drafted issues." },
+  { cat: "Management", q: "In the Project Settings, under which section are the 'Close project' and 'Delete project' options found?", opts: ["General", "Manage access", "Danger zone", "Workflows"], ans: 2, exp: "Scroll down to the Danger zone section and either select Close project or Delete project." },
+  { cat: "Management", q: "What specific action is required when you select 'Delete project' to confirm the deletion?", opts: ["Clicking a verification link in your email", "Typing your GitHub password", "Typing the name of your Project into the text box", "Solving a CAPTCHA"], ans: 2, exp: "Selecting Delete project prompts you to read the warnings, and then type the name of your Project into the text box." },
+  { cat: "Management", q: "Does closing a project delete its insights data?", opts: ["Yes", "No, it retains the content and ability to reopen later", "Only if it is a personal project", "Yes, after 30 days"], ans: 1, exp: "Closing a Project enables you to... retain the content and ability to reopen the Project later." },
+  { cat: "Management", q: "Are both the 'Close project' and 'Delete project' buttons located in the exact same section?", opts: ["Yes, both are in the Danger zone", "No, Close is in General, Delete is in Danger zone", "No, Close is in Workflows", "Yes, both are in Manage access"], ans: 0, exp: "Regardless of which option you choose, both closing and deleting Project settings are in the same location." },
+
+  // ── SUB-ISSUES (37-40) ──────────────────────────────────────────────
+  { cat: "Sub-issues", q: "What feature does GitHub Projects support for better task tracking and hierarchy?", opts: ["Merging repositories", "Converting checklist items into sub-issues", "Automatically creating checklists from code comments", "Exporting checklists to PDFs"], ans: 1, exp: "GitHub Projects now supports converting checklist items into sub-issues for better task tracking and hierarchy." },
+  { cat: "Sub-issues", q: "To convert a checklist item into a sub-issue, what is the first interaction you do inside the issue?", opts: ["Click the 'New Issue' button", "Hover over a checklist item", "Type a slash command", "Delete the checklist item"], ans: 1, exp: "Hover over a checklist item and click the ... (more options) button." },
+  { cat: "Sub-issues", q: "After hovering over a checklist item, which button do you click to find the conversion option?", opts: ["The checkmark box", "The gear icon", "The ... (more options) button", "The Reply arrow"], ans: 2, exp: "Hover over a checklist item and click the ... (more options) button." },
+  { cat: "Sub-issues", q: "What is created when you select 'Convert to sub-issue'?", opts: ["A new repository", "A separate markdown file", "A dedicated issue linked back to the original one", "A new Project board"], ans: 2, exp: "This creates a dedicated issue linked back to the original one, which will also appear in your Projects view for tracking." }
+];
+
+const catColorMap = {
+  "Visibility": "cat-visibility",
+  "Access": "cat-access",
+  "Teams": "cat-teams",
+  "Management": "cat-management",
+  "Sub-issues": "cat-subissues"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-visibility';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

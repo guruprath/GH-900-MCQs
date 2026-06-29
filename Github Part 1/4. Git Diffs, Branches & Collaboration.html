@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Diffs, Branches & Collaboration — 75 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-diffs { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-branch-theory { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-merge { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-commands { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-vscode { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-collab { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 75 Questions</div>
+  <h1>Git Diffs, Branches & Collaboration</h1>
+  <p>Comprehensive Multiple Choice Questions & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">75</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Diffs',this)">Diffs</button>
+    <button class="filter-btn" onclick="filterCat('Branch Theory',this)">Branch Theory</button>
+    <button class="filter-btn" onclick="filterCat('Merge Strategies',this)">Merge Strategies</button>
+    <button class="filter-btn" onclick="filterCat('Commands',this)">Commands</button>
+    <button class="filter-btn" onclick="filterCat('VS Code',this)">VS Code</button>
+    <button class="filter-btn" onclick="filterCat('Collaboration',this)">Collaboration</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- DIFFS (1-18) ---
+  { cat: "Diffs", q: "Why is understanding file differences crucial in Git?", opts: ["It prevents the computer from crashing.", "It is crucial for reviewing your work and catching errors.", "It automatically writes unit tests for your code.", "It uploads the code to the server."], ans: 1, exp: "Understanding file differences is crucial for reviewing your work and catching errors!" },
+  { cat: "Diffs", q: "What does a green '+' symbol indicate in a Git diff?", opts: ["Lines that were removed", "Files that were successfully pushed", "Lines that were added", "Merge conflicts"], ans: 2, exp: "+ in green indicates lines that were added." },
+  { cat: "Diffs", q: "What does a red '-' symbol indicate in a Git diff?", opts: ["Lines that were added", "Lines that were removed", "Syntax errors", "Files pending deletion"], ans: 1, exp: "- in red indicates lines that were removed." },
+  { cat: "Diffs", q: "Can you change Git's default comparison colors?", opts: ["No, they are permanently green and red.", "Yes, using the 'git config' command.", "Only in the VS Code GUI.", "Only if you have an active internet connection."], ans: 1, exp: "You can change Git's default comparison colors with the below commands (e.g., git config --global color.diff.old yellow)." },
+  { cat: "Diffs", q: "Which command changes the color of 'old' diff lines to yellow globally?", opts: ["git config --global color.diff.old yellow", "git color old yellow", "git diff --color old=yellow", "git settings diff old yellow"], ans: 0, exp: "git config --global color.diff.old yellow" },
+  { cat: "Diffs", q: "Which command changes the color of 'new' diff lines to blue globally?", opts: ["git config --global color.diff.new blue", "git color new blue", "git diff --color new=blue", "git settings diff new blue"], ans: 0, exp: "git config --global color.diff.new blue" },
+  { cat: "Diffs", q: "What does the base `git diff` command show?", opts: ["Differences between remote and local repositories.", "Differences between staging area and previous commit.", "Differences between the working directory and the staging area.", "Differences between all branches."], ans: 2, exp: "git diff - Differences between the working directory and the staging area." },
+  { cat: "Diffs", q: "Which command shows the differences between the staging area and the previous commit?", opts: ["git diff --staged", "git diff HEAD~1", "git diff --cached", "git diff --index"], ans: 0, exp: "git diff --staged - Differences between staging area and previous commit." },
+  { cat: "Diffs", q: "What does `git diff HEAD~1` show?", opts: ["Differences between staging and working directory.", "Differences between current commit and previous commit.", "Differences between the main branch and feature branch.", "The history of a specific file."], ans: 1, exp: "git diff HEAD~1 - Differences between current commit and previous commit." },
+  { cat: "Diffs", q: "In the activity, running `git diff src/index.html` after running `git add src/index.html` results in what?", opts: ["It shows the added lines in blue.", "It shows the deleted lines in red.", "It displays an error message.", "No changes are displayed."], ans: 3, exp: "Notice that no changes are displayed, because the working directory now matches the staging area." },
+  { cat: "Diffs", q: "Why are no changes displayed if the working directory matches the staging area?", opts: ["Because the file is locked.", "Because `git diff` by default only compares the working directory against the staging area.", "Because Git deleted the file.", "Because the commit was already pushed."], ans: 1, exp: "No changes are displayed, because the working directory now matches the staging area (and default git diff compares working dir to staging area)." },
+  { cat: "Diffs", q: "If you have staged a file, which command must you use to see what you are about to commit?", opts: ["git diff --staged src/index.html", "git diff src/index.html", "git status", "git log"], ans: 0, exp: "View the differences between the staging area and the last commit: git diff --staged src/index.html" },
+  { cat: "Diffs", q: "In VS Code, what does an 'M' next to a file in the File Explorer indicate?", opts: ["Merged", "Modified", "Missing", "Master"], ans: 1, exp: "Notice the file name patterns.js changed color and now has an M indicating it is modified." },
+  { cat: "Diffs", q: "How do you open the Diff view in VS Code?", opts: ["Type 'git diff' in the terminal.", "Double-click the modified file in the Changes list.", "Right-click and select 'View Diff'.", "Press F12."], ans: 1, "exp": "In the Changes list, double-click the patterns.js file to open the Diff (comparison) view." },
+  { cat: "Diffs", q: "Can you edit code directly inside the VS Code comparison (Diff) view for live feedback BEFORE staging?", opts: ["Yes, you can modify the content.", "No, it is strictly read-only.", "Only if you use a special extension.", "Yes, but it automatically commits."], ans: 0, exp: "Tip: You can modify the content in the comparison view for live feedback!" },
+  { cat: "Diffs", q: "What happens to the VS Code comparison view immediately after you promote (stage) the file?", opts: ["It turns red.", "It stops showing changes since the current file matches the staging area.", "It automatically commits the file.", "It deletes the file."], ans: 1, exp: "Notice the comparison view stopped showing changes since the current file matches the staging area." },
+  { cat: "Diffs", q: "Can you make changes directly in the Diff view when viewing a file from the 'Staged Changes' list in VS Code?", opts: ["Yes.", "No, the staging area is locked in preparation for committing.", "Only if you have admin privileges.", "Only for CSS files."], ans: 1, exp: "Notice that you can't make changes now. The staging area is locked in preparation for committing." },
+  { cat: "Diffs", q: "When modifying the HTML file in the activity, what did removing the status information demonstrate in the diff?", opts: ["A syntax error.", "Lines that were added (+).", "Lines that were removed (-).", "A fast-forward merge."], ans: 2, exp: "Remove the status information... will demonstrate 3 kinds of changes (+ and -)." },
+
+  // --- BRANCH THEORY (19-31) ---
+  { cat: "Branch Theory", q: "What question does working with branches help answer regarding project history?", opts: ["How do I deploy faster?", "How do I avoid non-working versions in the history from incomplete work?", "How do I change my Git username?", "How do I compress my project files?"], ans: 1, exp: "But now, that brings up more questions! ... 'How do I avoid non-working versions in the history from incomplete work?'" },
+  { cat: "Branch Theory", q: "How are branches technically described in Git?", opts: ["Heavy encrypted folders.", "Lightweight pointers (like labels) to specific commits.", "Separate hard drives.", "Remote cloud backups."], ans: 1, exp: "Branches in Git are lightweight pointers (like labels) to specific commits." },
+  { cat: "Branch Theory", q: "What is a primary benefit of using branches?", opts: ["It automatically writes documentation.", "It allows working on a dependent version without influencing the original.", "It prevents you from using the CLI.", "It makes the repository run faster."], ans: 1, exp: "This allows working on a dependent version without influencing the original." },
+  { cat: "Branch Theory", q: "Which branch is usually the trusted working version and the first branch?", opts: ["feature branch", "development branch", "main Branch", "origin branch"], ans: 2, exp: "main Branch: Usually the trusted working version, and the first branch." },
+  { cat: "Branch Theory", q: "What was the 'main' branch historically called?", opts: ["head", "origin", "master", "trunk"], ans: 2, exp: "main Branch: Usually the trusted working version, and the first branch. (historically called master)" },
+  { cat: "Branch Theory", q: "What is a 'Feature Branch'?", opts: ["A branch that is automatically deployed to production.", "A safe isolated space to develop without affecting the trusted version.", "The default branch of any repository.", "A branch specifically for UI changes only."], ans: 1, exp: "Feature Branch: A safe isolated space to develop without affecting the trusted version." },
+  { cat: "Branch Theory", q: "What is the definition of 'Merging'?", opts: ["Deleting old branches.", "Combining changes from different branches.", "Uploading code to GitHub.", "Downloading code to your local machine."], ans: 1, exp: "Merging: Combining changes from different branches." },
+  { cat: "Branch Theory", q: "Why are there multiple strategies for organizing commits during a merge?", opts: ["Because Git is broken.", "For different styles of organization, transparency, and traceability.", "To make the repository larger.", "To enforce strict access control."], ans: 1, exp: "There are multiple strategies for organizing commits. Usually, all in the name of different styles of organization, transparency, and traceability." },
+  { cat: "Branch Theory", q: "If you work on a feature branch, do your incomplete changes pollute the main branch?", opts: ["Yes, immediately.", "No, they are isolated until merged.", "Only if you use VS Code.", "Yes, Git automatically syncs them."], ans: 1, exp: "Feature Branch: A safe isolated space to develop without affecting the trusted version." },
+  { cat: "Branch Theory", q: "What is branching great for?", opts: ["Parallel feature development and collaboration.", "Reducing file sizes.", "Bypassing passwords.", "Writing SQL databases."], ans: 0, exp: "This allows working on a dependent version without influencing the original, which is great for parallel feature development and collaboration." },
+  { cat: "Branch Theory", q: "In a visual history graph, what indicates your current version/branch?", opts: ["The color blue.", "The HEAD marker.", "A star icon.", "The word 'CURRENT'."], ans: 1, exp: "Notice our feature branch is marked with HEAD clarifying our current version." },
+  { cat: "Branch Theory", q: "Does creating a branch duplicate all the files on your hard drive?", opts: ["Yes, it creates a new folder copy.", "No, branches are lightweight pointers to specific commits.", "Yes, but it is compressed.", "No, it deletes the old files."], ans: 1, exp: "Branches in Git are lightweight pointers (like labels) to specific commits." },
+  { cat: "Branch Theory", q: "Before branching in the activity, what did the history graph look like?", opts: ["A tangled web.", "Perfectly linear (no branches yet).", "A circle.", "It was empty."], ans: 1, exp: "Notice that it is perfectly linear (no branches yet)." },
+
+  // --- MERGE STRATEGIES (32-42) ---
+  { cat: "Merge Strategies", q: "What does a Fast-forward merge do?", opts: ["Deletes all commits.", "Moves the new commits from the child branch onto the parent branch.", "Squashes commits into one.", "Creates a new merge commit."], ans: 1, exp: "Fast-forward merge: Move the new commits from the child branch onto the parent branch." },
+  { cat: "Merge Strategies", q: "What does a Merge commit do?", opts: ["Applies the changes as a single new commit on the parent branch, leaving the child branch in the network.", "Replaces the parent branch entirely.", "Deletes the child branch automatically.", "Reverts the last commit."], ans: 0, exp: "Merge commit: Apply the changes as a single new commit on the parent branch. Leave the child branch in the network for traceability." },
+  { cat: "Merge Strategies", q: "Which merge strategy leaves the child branch in the network for traceability?", opts: ["Fast-forward merge", "Squash merge", "Merge commit", "Rebase merge"], ans: 2, exp: "Merge commit: Apply the changes as a single new commit on the parent branch. Leave the child branch in the network for traceability." },
+  { cat: "Merge Strategies", q: "What does a Squash merge do?", opts: ["It deletes the parent branch.", "It collapses the commits from one branch into a single new commit on the other branch.", "It moves commits one by one.", "It forces a fast-forward."], ans: 1, exp: "Squash merge: Collapse the commits from one branch into a single new commit on the other branch." },
+  { cat: "Merge Strategies", q: "What is Git's default merge behavior if possible?", opts: ["Squash merge", "Fast forward merge", "Merge commit", "Rebase"], ans: 1, exp: "git merge - Apply the commits from one branch onto another branch. (Default: Fast forward merge)" },
+  { cat: "Merge Strategies", q: "In Activity 1, why was the `--no-ff` option used during the merge?", opts: ["To force a fast-forward.", "To delete the branch.", "So the branch stays visible in the history for learning purposes.", "To squash the commits."], ans: 2, exp: "For learning, we use the 'not fast forward' option so the branch stays visible in the history. It will make our visual diagram more interesting." },
+  { cat: "Merge Strategies", q: "What does the `--no-ff` flag stand for?", opts: ["No fast file", "Not for feature", "No fast forward", "No force fetch"], ans: 2, exp: "We use the 'not fast forward' option... git merge --no-ff" },
+  { cat: "Merge Strategies", q: "If you want a clean, strictly linear history without seeing old branch paths, which merge is best?", opts: ["Merge commit (--no-ff)", "Fast-forward merge", "No merge", "Revert merge"], ans: 1, exp: "Fast forward moves commits onto the parent branch linearly, whereas Merge commit leaves the child branch in the network." },
+  { cat: "Merge Strategies", q: "If you have 5 commits on a feature branch, and you perform a Squash merge into main, how many new commits appear on main?", opts: ["5", "1", "0", "6"], ans: 1, exp: "Squash merge: Collapse the commits from one branch into a single new commit." },
+  { cat: "Merge Strategies", q: "In the VS Code activity (Activity 2), what type of merge did the UI perform by default?", opts: ["Squash merge", "Merge commit", "Normal Fast Forward style merge", "No merge"], ans: 2, exp: "Notice it performed a normal Fast Forward style merge." },
+  { cat: "Merge Strategies", q: "Which merge strategy creates a 'loop' visual in the history graph?", opts: ["Fast-forward", "Merge commit (--no-ff)", "Squash", "Delete"], ans: 1, exp: "Merge commit: Leave the child branch in the network for traceability. (The visual shows a loop/parallel line)." },
+
+  // --- COMMANDS (43-57) ---
+  { cat: "Commands", q: "Which command starts a new branch from the current branch?", opts: ["git new-branch <name>", "git branch <name>", "git create <name>", "git start <name>"], ans: 1, exp: "git branch my-new-feature - Start a branch from the current branch." },
+  { cat: "Commands", q: "Which command changes your working directory to a different branch?", opts: ["git switch-branch <name>", "git checkout <name>", "git move <name>", "git jump <name>"], ans: 1, exp: "git checkout my-new-feature - Change your working directory to a different version from the repository history." },
+  { cat: "Commands", q: "Which newer command was introduced in Git 2.23 to simplify branch management (instead of checkout)?", opts: ["git move", "git branch-switch", "git switch", "git change"], ans: 2, exp: "Git 2.23 introduced the git switch command to simplify branch management." },
+  { cat: "Commands", q: "Which command applies the commits from one branch onto another branch?", opts: ["git merge", "git apply", "git commit", "git push"], ans: 0, exp: "git merge - Apply the commits from one branch onto another branch." },
+  { cat: "Commands", q: "How do you see a visual graph of the history including all branches in the CLI?", opts: ["git graph", "git log --all --graph --oneline", "git history --visual", "git branch --graph"], ans: 1, exp: "git log --all --graph --oneline" },
+  { cat: "Commands", q: "How do you show a list of the available branches in the CLI?", opts: ["git list", "git show-branches", "git branch --list", "git branches"], ans: 2, exp: "Show a list of the available branches: git branch --list" },
+  { cat: "Commands", q: "If you are on the 'main' branch, how do you merge 'fix-incomplete-high-score' without fast-forwarding?", opts: ["git merge fix-incomplete-high-score", "git merge --no-ff fix-incomplete-high-score", "git merge --squash fix-incomplete-high-score", "git pull fix-incomplete-high-score"], ans: 1, exp: "git merge --no-ff fix-incomplete-high-score -m \"Fix high score tracker\"" },
+  { cat: "Commands", q: "How do you remove the pointer/label to a merged branch named 'feature'?", opts: ["git delete feature", "git remove branch feature", "git branch --delete feature", "git clean feature"], ans: 2, exp: "Remove the pointer/label... git branch --delete fix-incomplete-high-score" },
+  { cat: "Commands", q: "Does `git branch --delete` delete the actual commits and code from the repository history?", opts: ["Yes, completely.", "No, it just deletes the name used for referencing it.", "Only if it wasn't merged.", "Yes, but it keeps a backup."], ans: 1, exp: "Note: This does not delete the branch content, just the name used for referencing it." },
+  { cat: "Commands", q: "What must you do BEFORE you can merge a feature branch into the 'main' branch?", opts: ["Delete the feature branch.", "Switch back to the main branch.", "Push to GitHub.", "Run git init."], ans: 1, exp: "Switch back to the main branch: git checkout main, then git merge." },
+  { cat: "Commands", q: "In the activity, how many commits were made to the `fix-incomplete-high-score` branch before merging?", opts: ["1", "2", "3", "4"], ans: 2, exp: "Notice our feature branch has 3 more commits than the main branch." },
+  { cat: "Commands", q: "What happens to the working directory when you type `git checkout main` from a feature branch?", opts: ["It deletes the feature files.", "It changes the working directory to match the main branch version.", "It automatically merges the files.", "Nothing happens."], ans: 1, exp: "Change your working directory to a different version from the repository history." },
+  { cat: "Commands", q: "When merging with `--no-ff`, why might you include the `-m` flag?", opts: ["To mute the output.", "To provide a commit message for the merge commit.", "To force the merge.", "To modify the branch name."], ans: 1, exp: "git merge --no-ff fix-incomplete-high-score -m \"Fix high score tracker\" (Provides the merge commit message)." },
+  { cat: "Commands", q: "What is the result of `git log --all --graph --oneline` after a `--no-ff` merge?", opts: ["A single straight line.", "A parallel branch line that converges back into main.", "An error.", "A list of deleted files."], ans: 1, exp: "Notice the parallel branch that is now merged." },
+  { cat: "Commands", q: "Which command explicitly switches you to the 'main' branch?", opts: ["git main", "git switch main", "git checkout main", "Both B and C"], ans: 3, exp: "git checkout main (and git switch is the newer alternative)." },
+
+  // --- VS CODE (58-65) ---
+  { cat: "VS Code", q: "In VS Code, where can you quickly see and change the current branch name?", opts: ["In the top title bar.", "In the lower status bar on the left.", "In the Extensions tab.", "In the terminal only."], ans: 1, exp: "In the lower status bar on the left, click the branch name main." },
+  { cat: "VS Code", q: "How do you create a new branch using the VS Code UI?", opts: ["Type 'git branch' in the editor.", "Click the branch name in the status bar and select 'Create new branch...'", "Right click the File Explorer and select 'Branch'.", "You can only do it via CLI."], ans: 1, exp: "In the lower status bar... click the branch name main. Select the Create new branch... option." },
+  { cat: "VS Code", q: "In the VS Code activity, what branch name was created to track levels?", opts: ["add-level-counter", "fix-levels", "feature/levels", "level-branch"], ans: 0, exp: "Select the Create new branch... option and use the below name: add-level-counter" },
+  { cat: "VS Code", q: "When working in VS Code's Source Control Graph panel, what does it show?", opts: ["Only the current branch.", "The entire history: new commits, previous branches, and original commits.", "Only deleted branches.", "Only pushed commits."], ans: 1, exp: "Notice the Graph panel shows the entire history: the new commits, the previous branch, and also the original commits." },
+  { cat: "VS Code", q: "To prepare for merging in VS Code, what must you click first?", opts: ["The Merge button.", "The branch name in the status bar to switch back to 'main'.", "The terminal icon.", "The Sync button."], ans: 1, exp: "To prepare for merging, click the branch name again and select the main branch." },
+  { cat: "VS Code", q: "How do you initiate a merge via the VS Code Source Control UI?", opts: ["Drag and drop branches.", "Click the three dot menu (...), then Branch, and select Merge...", "Right click the code editor.", "Press Ctrl+M."], ans: 1, exp: "Click the three dot menu (...), then Branch, and select Merge..." },
+  { cat: "VS Code", q: "How do you delete a branch using the VS Code Source Control UI?", opts: ["Click the trash can icon next to the file.", "Click the three dot menu (...), then Branch, and select Delete Branch...", "Select the branch and press Delete on your keyboard.", "You cannot delete branches in the UI."], ans: 1, exp: "Click the three dot menu (...), then Branch, and select Delete Branch..." },
+  { cat: "VS Code", q: "Why is the VS Code Graph panel useful during branching?", opts: ["It automatically writes code.", "You can watch it update and visualize the history as you apply changes.", "It connects to the database.", "It plays music."], ans: 1, exp: "Let's watch it update as we apply changes... Notice the Graph panel shows the entire history." },
+
+  // --- COLLABORATION (66-75) ---
+  { cat: "Collaboration", q: "According to the text, what makes Git collaboration possible?", opts: ["It is centralized.", "It is a 'distributed' version control system, allowing it to share changes with other copies.", "It uses cloud storage exclusively.", "It automatically emails code."], ans: 1, exp: "Git is a 'distributed' version control system, this means it can share changes with other copies of the same repository!" },
+  { cat: "Collaboration", q: "What is the process of copying a repository to your local machine called?", opts: ["Pushing", "Pulling", "Cloning", "Forking"], ans: 2, exp: "Copy a repository to your local machine (called cloning)." },
+  { cat: "Collaboration", q: "What is the process of publishing your changes to a remote repository called?", opts: ["Cloning", "Pushing", "Merging", "Switching"], ans: 1, exp: "Publish your changes to a remote repository, somewhere others can also access (called pushing)." },
+  { cat: "Collaboration", q: "If other developers like your published changes, what do they do to integrate them into their version?", opts: ["Push them", "Clone them", "Pull them", "Delete them"], ans: 2, exp: "If so, they merge them into their version of the project (called pulling)." },
+  { cat: "Collaboration", q: "What is it called when you proactively ask another developer to integrate your changes into their copy?", opts: ["A push request", "A pull request", "A merge demand", "A clone request"], ans: 1, exp: "Additionally, you might proactively ask another developer to integrate your changes into their copy (called a pull request)." },
+  { cat: "Collaboration", q: "In a typical collaboration workflow, what do you do immediately after cloning a repository?", opts: ["Push immediately.", "Delete the main branch.", "Create branches and develop new features.", "Submit a pull request."], ans: 2, exp: "Here is a typical workflow: 1. Copy (cloning). 2. Create branches and develop new features." },
+  { cat: "Collaboration", q: "Where does the text state 'really fun development happens'?", opts: ["In the terminal", "In VS Code", "In teams, not alone", "In the main branch"], ans: 2, "exp": "But.. the really fun development happens in teams, not alone." },
+  { cat: "Collaboration", q: "Which of the following was NOT listed as a recap accomplishment?", opts: ["Explored project history", "Worked with branches for safe experimentation", "Created repositories and staged changes", "Wrote an entire video game from scratch"], ans: 3, exp: "The recap lists: Configured Git, Created repositories, Explored history, Worked with branches, Learned collaboration. Not writing a game from scratch." },
+  { cat: "Collaboration", q: "Why are branches a natural fit for team collaboration?", opts: ["They prevent anyone from viewing the code.", "They provide powerful parallelism to work on different features independently.", "They automatically fix bugs.", "They block other developers from pushing."], ans: 1, exp: "Since branches provide powerful parallelism to work on different features independently, a natural extension is to enable multiple people to work in parallel." },
+  { cat: "Collaboration", q: "What is the ultimate benefit of mastering local Git operations and branches?", opts: ["You never have to write code again.", "Your game/project is now safe to experiment developing new features.", "You get free GitHub hosting.", "Your code compiles faster."], ans: 1, exp: "Nice work! You've mastered local Git operations and our game is now safe to experiment developing new features!" }
+];
+
+const catColorMap = { 
+  "Diffs": "cat-diffs",
+  "Branch Theory": "cat-branch-theory",
+  "Merge Strategies": "cat-merge",
+  "Commands": "cat-commands",
+  "VS Code": "cat-vscode",
+  "Collaboration": "cat-collab"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-diffs';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Enterprise License & Usage Tracking — 90 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-licensing { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-admin { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-apis { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-machine { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-peripheral { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-best-practices { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 90 Questions</div>
+  <h1>GitHub Enterprise License & Usage Tracking</h1>
+  <p>Comprehensive MCQs on tracking licenses, machine accounts, APIs, and best practices.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">90</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Licensing',this)">Licensing</button>
+    <button class="filter-btn" onclick="filterCat('Admin',this)">Admin Console</button>
+    <button class="filter-btn" onclick="filterCat('APIs',this)">APIs</button>
+    <button class="filter-btn" onclick="filterCat('Machine',this)">Machine Accounts</button>
+    <button class="filter-btn" onclick="filterCat('Peripheral',this)">Peripheral Svcs</button>
+    <button class="filter-btn" onclick="filterCat('Best Practices',this)">Best Practices</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── LICENSING (1-15) ──────────────────────────────────────────────
+  { cat: "Licensing", q: "Why is tracking license usage crucial for a GitHub Enterprise administrator?", opts: ["To write better source code", "To increase the number of public repositories", "For managing costs, optimizing resources, and staying compliant", "To bypass API rate limits automatically"], ans: 2, exp: "Tracking license usage is crucial for managing costs, optimizing resources, and staying compliant." },
+  { cat: "Licensing", q: "Which billing plan type shows a set number of available licenses?", opts: ["Pay-As-You-Go (PAYG)", "Open Source Plan", "Prepaid (subscription-based) plans", "Free Tier"], ans: 2, exp: "For prepaid (subscription-based) plans, you see a set number of available licenses." },
+  { cat: "Licensing", q: "What is the default billing plan for new GitHub Enterprise customers?", opts: ["Prepaid (subscription-based)", "Pay-As-You-Go (PAYG)", "Per-repository billing", "One-time perpetual license"], ans: 1, exp: "Pay-As-You-Go (PAYG) plans—the default for new Enterprise customers." },
+  { cat: "Licensing", q: "In a Pay-As-You-Go (PAYG) plan, how is billing calculated?", opts: ["Based on the number of repositories", "Based on a fixed annual fee regardless of users", "Based on actual usage (active seats)", "Based on the number of organizations created"], ans: 2, exp: "Billing is based on actual usage (active seats), and you’re charged each month according to that usage." },
+  { cat: "Licensing", q: "Which of the following concepts does NOT apply to a Pay-As-You-Go (PAYG) plan?", opts: ["Monthly billing", "Active seats", "Available licenses", "Actual usage"], ans: 2, exp: "For Pay-As-You-Go (PAYG) plans... there’s no concept of 'available licenses.'" },
+  { cat: "Licensing", q: "How frequently are you charged under a Pay-As-You-Go plan?", opts: ["Daily", "Weekly", "Monthly", "Annually"], ans: 2, exp: "Billing is based on actual usage (active seats), and you’re charged each month according to that usage." },
+  { cat: "Licensing", q: "Which of the following is an example of an entity that consumes a GitHub license?", opts: ["A public repository", "A webhook", "A machine account", "A branch protection rule"], ans: 2, exp: "Each machine account consumes a GitHub license, like a standard user." },
+  { cat: "Licensing", q: "What does tracking license usage help prevent?", opts: ["Merge conflicts", "Unnecessary spending", "Code vulnerabilities directly", "Repository cloning"], ans: 1, exp: "Tracking license usage is essential for cost optimization... to optimize costs and prevent unnecessary spending." },
+  { cat: "Licensing", q: "True or False: Both human users and machine accounts consume GitHub licenses.", opts: ["True", "False"], ans: 0, exp: "Each machine account consumes a GitHub license, like a standard user." },
+  { cat: "Licensing", q: "Which action aligns billing with actual consumption?", opts: ["Reclaiming unused seats", "Enabling usage-based billing", "Auditing regularly", "Automating monitoring"], ans: 1, exp: "Enable usage-based billing – Align billing with actual consumption." },
+  { cat: "Licensing", q: "What is a primary financial benefit of tracking peripheral services?", opts: ["Increasing developer velocity", "Optimizing billing for GitHub-hosted runner minutes", "Preventing DDoS attacks", "Automatically generating invoices"], ans: 1, exp: "Helps optimize billing for GitHub-hosted runner minutes." },
+  { cat: "Licensing", q: "What happens if a prepaid account runs out of available licenses?", opts: ["They automatically switch to PAYG", "New users cannot be added until more licenses are purchased or reclaimed", "The enterprise account is suspended", "Billing stops immediately"], ans: 1, exp: "Prepaid accounts have a set number of available licenses; once consumed, admins must reclaim seats or buy more." },
+  { cat: "Licensing", q: "Which tracking method provides insights into usage across multiple GitHub instances?", opts: ["GHEC Admin Console", "Enterprise Account Billing Page", "GitHub Enterprise Metrics API", "GitHub Actions Settings"], ans: 2, exp: "Method 4: Find license usage across multiple GitHub instances... Use the Metrics API." },
+  { cat: "Licensing", q: "What determines if 'Available licenses' is shown in the UI for an organization?", opts: ["If the org has more than 100 users", "If the enterprise uses a prepaid account", "If the enterprise uses a PAYG account", "If the org uses GitHub Free"], ans: 1, exp: "Available licenses (only shown for prepaid accounts)." },
+  { cat: "Licensing", q: "What is the consequence of having inactive users on a prepaid plan?", opts: ["They consume licenses that could be used by others, wasting resources", "They automatically get deleted after 30 days", "They downgrade to a free tier automatically", "They increase the API rate limit"], ans: 0, exp: "Reclaim unused seats – Identify inactive users and free up unused licenses." },
+
+  // ── ADMIN CONSOLE (16-30) ─────────────────────────────────────────
+  { cat: "Admin", q: "To find license usage for a specific organization in GitHub Enterprise Cloud, where do you navigate first?", opts: ["Organization Settings > Developer settings", "GitHub Enterprise Cloud Admin Panel", "User Profile > Billing", "Security > Code scanning"], ans: 1, exp: "Navigate to GitHub Enterprise Cloud Admin Panel." },
+  { cat: "Admin", q: "In the GHEC Admin Panel, which tab contains the License usage section for a specific org?", opts: ["Settings > Security", "Settings > Actions", "Settings > Billing & plans", "Settings > Audit log"], ans: 2, exp: "Go to Settings > Billing & plans." },
+  { cat: "Admin", q: "Which of the following is NOT a detail shown in the specific organization's License usage section?", opts: ["Total seats assigned", "Pending invitations", "Historical license usage trends", "Active seats in use"], ans: 2, exp: "Historical license usage trends are viewed in the GHES dashboard, not typically the specific org GHEC billing page." },
+  { cat: "Admin", q: "Where do you navigate to find license usage across MULTIPLE organizations?", opts: ["GHEC Admin Panel > Organizations", "GitHub Enterprise Cloud > Enterprise settings", "GitHub Desktop", "Metrics API dashboard"], ans: 1, exp: "Method 2: ... Navigate to GitHub Enterprise Cloud > Enterprise settings." },
+  { cat: "Admin", q: "In the Enterprise settings, what path leads to license usage across multiple organizations?", opts: ["Policies > Members", "Billing > License Usage", "Settings > Compliance", "Audit log > Billing"], ans: 1, exp: "Go to Billing > License Usage. Review license usage for each organization under the enterprise account." },
+  { cat: "Admin", q: "To find license usage for GitHub Enterprise Server (GHES) accounts, where do you log in?", opts: ["github.com/settings", "GitHub Enterprise Server Admin Console", "GitHub Mobile App", "GHEC Billing Page"], ans: 1, exp: "Log in to the GitHub Enterprise Server Admin Console." },
+  { cat: "Admin", q: "What is the navigation path to License Usage in the GHES Admin Console?", opts: ["Settings > License Usage", "Billing > Subscriptions", "Enterprise > Users", "Metrics > Dashboard"], ans: 0, exp: "Go to Settings > License Usage." },
+  { cat: "Admin", q: "Which metric is uniquely mentioned as viewable in the GHES Admin Console License Usage page?", opts: ["Pending invitations", "Historical license usage trends", "Machine accounts", "API tokens"], ans: 1, exp: "Review: Total allocated licenses, Active users, Available seats, Historical license usage trends." },
+  { cat: "Admin", q: "Where do you navigate to find machine account usage statistics in the Enterprise Admin Console?", opts: ["Settings > Developer settings", "Enterprise Settings > Billing & License Management", "Security > Alerts", "Actions > Runners"], ans: 1, exp: "Navigate to Enterprise Settings. Select Billing & License Management. Look for a Machine Accounts section." },
+  { cat: "Admin", q: "When viewing Machine Accounts in Billing & License Management, what specific date is shown?", opts: ["Creation date", "Last password change date", "Last active date", "Expiration date"], ans: 2, exp: "Identify: Number of active machine accounts, License consumption per machine account, Last active date." },
+  { cat: "Admin", q: "Where can you view GitHub-hosted runner minutes used?", opts: ["Enterprise Settings > Actions", "Enterprise Settings > Billing & License Management", "Repository > Insights", "User Settings > Billing"], ans: 0, exp: "Go to Enterprise Settings → Actions. View: Total GitHub-hosted runner minutes used." },
+  { cat: "Admin", q: "What runner information can be viewed in the Actions settings besides GitHub-hosted minutes?", opts: ["Self-hosted runner usage and billing for extra runner minutes", "Source code of the runners", "IP addresses of all runners", "The exact scripts running on them"], ans: 0, exp: "View: Total GitHub-hosted runner minutes used, Self-hosted runner usage, Billing for extra runner minutes." },
+  { cat: "Admin", q: "If you want to access the Metrics API for multiple instances, where must you go?", opts: ["GHEC Support portal", "GitHub Enterprise Server admin settings", "GitHub Actions dashboard", "GitHub Desktop settings"], ans: 1, exp: "Access GitHub Enterprise Server admin settings. Use the Metrics API." },
+  { cat: "Admin", q: "Does the Enterprise Settings -> Actions page show billing for extra runner minutes?", opts: ["Yes", "No", "Only for PAYG accounts", "Only for open-source projects"], ans: 0, exp: "View: ... Billing for extra runner minutes." },
+  { cat: "Admin", q: "Which section in the Admin Console shows 'Pending invitations'?", opts: ["GHES Settings > License Usage", "GHEC Settings > Billing & plans", "Enterprise Settings > Actions", "Enterprise Settings > Audit log"], ans: 1, exp: "Go to Settings > Billing & plans. Locate the License usage section. Review details such as: ... Pending invitations." },
+
+  // ── APIS (31-50) ──────────────────────────────────────────────────
+  { cat: "APIs", q: "Which GraphQL node is used to retrieve billing info for a single specific organization?", opts: ["enterprise", "organization", "billingInfo", "licenseUsage"], ans: 1, exp: "organization(login: \"org-name\")" },
+  { cat: "APIs", q: "In the GraphQL query for a specific organization, what field contains the number of used seats?", opts: ["activeSeats", "seatsUsed", "consumedLicenses", "totalUsage"], ans: 1, exp: "billingInfo { totalSeats, seatsUsed, seatsAvailable }" },
+  { cat: "APIs", q: "What argument must be passed to the `organization` node in the GraphQL query?", opts: ["id", "slug", "login", "name"], ans: 2, exp: "organization(login: \"org-name\")" },
+  { cat: "APIs", q: "When querying license usage across MULTIPLE organizations via GraphQL, what is the root node?", opts: ["organizations", "enterprise", "github", "billing"], ans: 1, exp: "enterprise(slug: \"enterprise-name\") { organizations(first: 50) { ... } }" },
+  { cat: "APIs", q: "In the enterprise GraphQL query, what argument is passed to the `enterprise` node?", opts: ["login", "slug", "id", "orgName"], ans: 1, exp: "enterprise(slug: \"enterprise-name\")" },
+  { cat: "APIs", q: "In the enterprise GraphQL query, how do you request the first 50 organizations?", opts: ["organizations(limit: 50)", "organizations(first: 50)", "organizations(count: 50)", "organizations(max: 50)"], ans: 1, exp: "organizations(first: 50)" },
+  { cat: "APIs", q: "Under the `organizations` connection in GraphQL, which field holds the actual organization objects?", opts: ["edges", "nodes", "items", "data"], ans: 1, exp: "organizations(first: 50) { nodes { name, billingInfo { ... } } }" },
+  { cat: "APIs", q: "Which tool is commonly used in the provided examples to make REST API requests from the command line?", opts: ["wget", "httpie", "curl", "postman"], ans: 2, exp: "curl -H \"Authorization: token YOUR-TOKEN\" ..." },
+  { cat: "APIs", q: "What HTTP header is required to authenticate the REST API requests shown in the text?", opts: ["Bearer", "Authorization", "X-GitHub-Token", "API-Key"], ans: 1, exp: "-H \"Authorization: token YOUR-TOKEN\"" },
+  { cat: "APIs", q: "What is the REST API endpoint to find license usage for an enterprise?", opts: ["https://api.github.com/enterprises/YOUR-ENTERPRISE/license", "https://api.github.com/orgs/license", "https://api.github.com/enterprise/billing", "https://api.github.com/admin/license"], ans: 0, exp: "\"https://api.github.com/enterprises/YOUR-ENTERPRISE/license\"" },
+  { cat: "APIs", q: "What is the REST API endpoint used for the GitHub Enterprise Metrics API?", opts: [".../enterprises/metrics", ".../enterprise/settings/licenses", ".../admin/metrics", ".../license/usage"], ans: 1, exp: "\"https://api.github.com/enterprise/settings/licenses\"" },
+  { cat: "APIs", q: "What does the Metrics API endpoint (`/enterprise/settings/licenses`) reveal?", opts: ["Pending invitations only", "Total enterprise-wide licenses, usage per instance, available capacity per region", "List of all machine accounts", "CI/CD execution times"], ans: 1, exp: "Review: Total enterprise-wide licenses, Usage per GitHub instance, Available capacity per region." },
+  { cat: "APIs", q: "In the GraphQL query for Machine Accounts, what field retrieves the total number of machine accounts?", opts: ["count", "totalCount", "size", "length"], ans: 1, exp: "machineAccounts { totalCount }" },
+  { cat: "APIs", q: "In the GraphQL query for Machine Accounts, what fields are queried for each node?", opts: ["id, name, role", "login, createdAt, lastActiveAt", "username, email, status", "login, token, expiresAt"], ans: 1, exp: "nodes { login, createdAt, lastActiveAt }" },
+  { cat: "APIs", q: "What REST API endpoint is used to track self-hosted runners?", opts: [".../enterprises/YOUR-ENTERPRISE/actions/runners", ".../actions/self-hosted", ".../enterprise/runners", ".../admin/actions/runners"], ans: 0, exp: "\"https://api.github.com/enterprises/YOUR-ENTERPRISE/actions/runners\"" },
+  { cat: "APIs", q: "What REST API endpoint is used to monitor API-based integrations and detect inactive services?", opts: [".../enterprises/YOUR-ENTERPRISE/audit-log", ".../integrations/status", ".../api/usage", ".../enterprise/services"], ans: 0, exp: "\"https://api.github.com/enterprises/YOUR-ENTERPRISE/audit-log\"" },
+  { cat: "APIs", q: "Which of the following API methods is specifically noted as a 'Command-line alternative' for finding specific org usage?", opts: ["REST API", "GraphQL API", "SOAP API", "gRPC"], ans: 1, exp: "Command-line alternative (GraphQL API)" },
+  { cat: "APIs", q: "What format does the GraphQL API return its data in?", opts: ["XML", "YAML", "JSON", "CSV"], ans: 2, exp: "The examples are labeled with 'JSON' blocks." },
+  { cat: "APIs", q: "Which GraphQL field retrieves the login name of a machine account?", opts: ["username", "login", "name", "id"], ans: 1, exp: "nodes { login }" },
+  { cat: "APIs", q: "What parameter does the `Authorization` header use in the provided `curl` examples?", opts: ["Bearer YOUR-TOKEN", "token YOUR-TOKEN", "Basic YOUR-TOKEN", "Key YOUR-TOKEN"], ans: 1, exp: "curl -H \"Authorization: token YOUR-TOKEN\"" },
+
+  // ── MACHINE ACCOUNTS (51-65) ──────────────────────────────────────
+  { cat: "Machine", q: "What is a machine account in GitHub?", opts: ["An account used exclusively by GitHub support", "An account used for automation, running scripts, or integrating with 3rd-party tools", "A physical server hosted by GitHub", "An account that does not consume a license"], ans: 1, exp: "Machine accounts are GitHub accounts used for automation, running scripts, or integrating with third-party tools." },
+  { cat: "Machine", q: "Do machine accounts consume a GitHub license?", opts: ["No, they are free", "Yes, they consume a license like a standard user", "Only if they run GitHub Actions", "Only if they are older than 30 days"], ans: 1, exp: "Each machine account consumes a GitHub license, like a standard user." },
+  { cat: "Machine", q: "How do machine accounts act in relation to human users?", opts: ["They mimic specific human users", "They act independently of human users", "They share credentials with human users", "They require manual human approval for every action"], ans: 1, exp: "Characteristics: - They act independently of human users." },
+  { cat: "Machine", q: "Which of the following tools is commonly associated with using a machine account?", opts: ["GitHub Desktop", "Jenkins", "Microsoft Word", "Slack"], ans: 1, exp: "Often used by CI/CD tools (e.g., GitHub Actions, Jenkins, CircleCI)." },
+  { cat: "Machine", q: "Why is it important to track machine accounts?", opts: ["To identify inactive accounts and reduce unnecessary allocation", "To upgrade them to admin status", "To convert them into human accounts", "To increase the total seat count intentionally"], ans: 0, exp: "Why Track These? To identify inactive machine accounts. ... To help reduce unnecessary license allocation." },
+  { cat: "Machine", q: "What does tracking the `lastActiveAt` field for a machine account help you determine?", opts: ["When the account was created", "If the account is currently inactive and can be reclaimed", "Who created the account", "How much API quota it has left"], ans: 1, exp: "To track when each machine account was last active. (Helps identify inactive accounts)." },
+  { cat: "Machine", q: "What security risk is associated with unused machine accounts?", opts: ["They cause merge conflicts", "They can be exploited if compromised, leading to unauthorized access", "They delete repositories automatically", "They slow down the GitHub UI"], ans: 1, exp: "Unused accounts increase security risks, as they can be exploited if compromised." },
+  { cat: "Machine", q: "What can compromised machine accounts be exploited to do?", opts: ["Manipulate source code, deploy malicious changes, or expose secrets", "Only read public repositories", "Change the enterprise billing plan", "Delete the GitHub Enterprise server"], ans: 0, exp: "If compromised, machine accounts can be exploited to manipulate source code, deploy malicious changes, or expose secrets." },
+  { cat: "Machine", q: "How should you secure machine accounts according to best practices?", opts: ["Give them enterprise owner permissions", "Restrict their permissions and enforce security policies", "Share their passwords in Slack", "Never audit them"], ans: 1, exp: "Restrict Machine Accounts: Limit their permissions and enforce security policies." },
+  { cat: "Machine", q: "What happens to the risk of privilege escalation if you restrict a machine account's permissions?", opts: ["It increases", "It is eliminated entirely", "It is reduced", "It remains the same"], ans: 2, exp: "Machine accounts should not have unnecessary access to repositories, reducing the risk of privilege escalation." },
+  { cat: "Machine", q: "Are machine accounts billed differently than human users on a PAYG plan?", opts: ["Yes, they are cheaper", "No, each consumes a GitHub license like a standard user", "Yes, they are billed per API call", "Yes, they are completely free"], ans: 1, exp: "Each machine account consumes a GitHub license, like a standard user." },
+  { cat: "Machine", q: "When using the GraphQL API, machine accounts are queried under which node?", opts: ["enterprise", "organization", "repository", "user"], ans: 1, exp: "organizations(first: 50) { nodes { name, machineAccounts { ... } } }" },
+  { cat: "Machine", q: "What accumulates over time if machine accounts are not audited?", opts: ["Unused or stale machine accounts that still have access", "Extra free API credits", "More human users", "Faster CI/CD times"], ans: 0, exp: "Over time, organizations accumulate unused or stale machine accounts that may still have access to repositories and systems." },
+  { cat: "Machine", q: "What is a primary difference between a machine account and a peripheral service?", opts: ["Machine accounts are physical devices, peripheral services are cloud-based", "A machine account is a GitHub account entity, while a peripheral service is an external integration interacting via API", "Machine accounts are free, peripheral services cost money", "There is no difference"], ans: 1, exp: "Machine accounts are GitHub accounts used for automation... Peripheral Services are external integrations that interact with GitHub via API requests." },
+  { cat: "Machine", q: "Can a machine account be used by CircleCI?", opts: ["Yes", "No"], ans: 0, exp: "Often used by CI/CD tools (e.g., GitHub Actions, Jenkins, CircleCI)." },
+
+  // ── PERIPHERAL SERVICES (66-75) ───────────────────────────────────
+  { cat: "Peripheral", q: "What is a peripheral service in the context of GitHub Enterprise?", opts: ["A mouse or keyboard attached to a server", "External integrations that interact with GitHub via API requests", "A secondary GitHub organization", "A backup database"], ans: 1, exp: "Peripheral Services are external integrations that interact with GitHub via API requests." },
+  { cat: "Peripheral", q: "Which of the following is an example of a Security Scanning Tool peripheral service?", opts: ["Slack", "Jira", "Dependabot", "Datadog"], ans: 2, exp: "Security Scanning Tools (e.g., Dependabot, Snyk, CodeQL)." },
+  { cat: "Peripheral", q: "Which of the following is an example of a Third-party Integration peripheral service?", opts: ["Jenkins", "GitHub Actions", "CodeQL", "Datadog"], ans: 3, exp: "Third-party Integrations (e.g., Slack, Jira, Datadog)." },
+  { cat: "Peripheral", q: "How do peripheral services primarily interact with GitHub?", opts: ["Via direct database queries", "Via API requests", "Via FTP uploads", "Via manual web scraping"], ans: 1, exp: "External integrations that interact with GitHub via API requests." },
+  { cat: "Peripheral", q: "Why should you track peripheral services' API usage?", opts: ["To identify inactive services and audit third-party tools", "To increase their rate limits automatically", "To make them run slower", "To prevent users from logging in"], ans: 0, exp: "This helps you: Detect Inactive Services... Audit Third-Party Tools..." },
+  { cat: "Peripheral", q: "What can excessive API calls from peripheral services lead to?", opts: ["Unlimited free runner minutes", "Rate limits, affecting developers' workflows", "Automatic repository deletion", "A forced upgrade to GHES"], ans: 1, exp: "Excessive API calls can lead to rate limits, affecting developers' workflows." },
+  { cat: "Peripheral", q: "What is a risk of unauthorized or unknown API usage from a peripheral service?", opts: ["It can expose sensitive data and security vulnerabilities", "It improves code compilation speed", "It generates false positive Dependabot alerts", "It converts private repos to public"], ans: 0, exp: "Unauthorized or unknown API usage can expose sensitive data and security vulnerabilities." },
+  { cat: "Peripheral", q: "What type of runner wastes computing resources and exposes security risks if left idle/unmonitored?", opts: ["GitHub-hosted runners", "Self-hosted GitHub runners", "Action runners", "Cloud runners"], ans: 1, exp: "Idle self-hosted runners waste computing resources and may expose organizations to security risks if left unmonitored." },
+  { cat: "Peripheral", q: "What is a major financial reason to disable peripheral services that are not providing value?", opts: ["To reduce costs", "To increase GitHub's revenue", "To pay for more machine accounts", "To hide the audit log"], ans: 0, exp: "Reduce Costs: Disable services that are not providing value." },
+  { cat: "Peripheral", q: "Which REST API endpoint is best for auditing third-party tools communicating with your enterprise?", opts: ["/actions/runners", "/audit-log", "/license", "/settings/licenses"], ans: 1, exp: "Method 3: Peripheral Services API Usage Tracking. Monitor API-based integrations using: .../audit-log" },
+
+  // ── BEST PRACTICES & OPTIMIZATION (76-90) ─────────────────────────
+  { cat: "Best Practices", q: "What is a recommended best practice for monitoring usage trends?", opts: ["Check manually once a year", "Automate monitoring using GraphQL or REST API queries", "Wait for the monthly bill to arrive", "Ask developers to report their usage"], ans: 1, exp: "Automate monitoring – Use GraphQL or REST API queries to track usage trends." },
+  { cat: "Best Practices", q: "What should you do to reclaim unused seats?", opts: ["Buy more seats immediately", "Identify inactive users and free up unused licenses", "Delete the organization", "Change passwords for all users"], ans: 1, exp: "Reclaim unused seats – Identify inactive users and free up unused licenses." },
+  { cat: "Best Practices", q: "How often should you conduct regular audits to control costs?", opts: ["Daily", "Monthly or quarterly", "Every 5 years", "Never"], ans: 1, exp: "Audit regularly – Conduct monthly or quarterly reviews to control costs." },
+  { cat: "Best Practices", q: "Which of the following best describes the financial model for GitHub-hosted runners?", opts: ["Flat monthly fee for unlimited minutes", "Pay-as-you-go basis", "Free for all enterprise accounts", "Paid per gigabyte of repository size"], ans: 1, exp: "GitHub-hosted runners operate on a pay-as-you-go basis..." },
+  { cat: "Best Practices", q: "What is the result of optimizing GitHub-hosted runner usage?", opts: ["It significantly reduces costs", "It decreases the number of available licenses", "It requires buying more physical servers", "It turns off API access"], ans: 0, exp: "...and optimizing usage can significantly reduce costs." },
+  { cat: "Best Practices", q: "What should be done with idle self-hosted runners?", opts: ["Leave them running just in case", "Identify and optimize them to avoid wasting resources and exposing risks", "Make them publicly accessible", "Ignore them as they don't cost GitHub Action minutes"], ans: 1, exp: "Optimize Runner Usage: Identify idle self-hosted runners... Idle self-hosted runners waste computing resources and may expose organizations to security risks..." },
+  { cat: "Best Practices", q: "Why is tracking API usage important for developers' workflows?", opts: ["To ensure they write code faster", "Because excessive API calls can lead to rate limits that disrupt their work", "To see what time they log in", "To charge developers per API call"], ans: 1, exp: "Excessive API calls can lead to rate limits, affecting developers' workflows." },
+  { cat: "Best Practices", q: "What happens if a machine account is compromised?", opts: ["It can be exploited to manipulate source code, deploy malicious changes, or expose secrets", "It automatically gets locked by GitHub", "It sends an alert to the CEO", "Nothing, machine accounts have no permissions"], ans: 0, exp: "If compromised, machine accounts can be exploited to manipulate source code, deploy malicious changes, or expose secrets." },
+  { cat: "Best Practices", q: "How can you minimize potential breaches related to machine accounts?", opts: ["By enforcing security policies", "By using simple passwords", "By making all repositories public", "By deleting the audit log"], ans: 0, exp: "Enforcing security policies helps ensure compliance and minimizes potential breaches." },
+  { cat: "Best Practices", q: "What is the primary benefit of tracking license usage across an enterprise?", opts: ["Cost optimization, security, and compliance", "Better UI performance", "Faster git push times", "Free GitHub Copilot access"], ans: 0, exp: "Tracking license usage for machine accounts and peripheral services is crucial for cost optimization, security, and compliance in GitHub Enterprise." },
+  { cat: "Best Practices", q: "Which of the following is NOT an API method recommended to track usage?", opts: ["GraphQL API", "REST API", "SOAP API", "Metrics API"], ans: 2, exp: "Admins should leverage GitHub UI, GraphQL, and REST APIs... (SOAP is not mentioned)." },
+  { cat: "Best Practices", q: "If an enterprise has unused seats, what does that indicate?", opts: ["Efficient resource allocation", "Inefficiencies and potential unnecessary spending", "A security breach", "An imminent server crash"], ans: 1, exp: "To identify unused or excessive licenses. To optimize costs and prevent unnecessary spending." },
+  { cat: "Best Practices", q: "Why might a third-party application consume a GitHub Enterprise license?", opts: ["If it creates a machine account to operate", "Because all external apps cost money", "If it uses the GraphQL API", "If it is an open-source tool"], ans: 0, exp: "Many integrations use machine accounts, and 'Each machine account consumes a GitHub license'." },
+  { cat: "Best Practices", q: "What action helps detect services no longer in use?", opts: ["Reviewing the `/audit-log` REST API", "Creating new machine accounts", "Upgrading to a PAYG plan", "Deleting inactive users manually without auditing"], ans: 0, exp: "Monitor API-based integrations using... /audit-log... Detect Inactive Services: Find services no longer in use." },
+  { cat: "Best Practices", q: "What is the overarching goal of applying best practices to license usage?", opts: ["To maximize the number of licenses purchased", "To improve cost control and security", "To move all infrastructure on-premise", "To avoid using GitHub Actions entirely"], ans: 1, exp: "You'll explore methods to track their consumption, identify inefficiencies, and apply best practices to improve cost control and security." }
+];
+
+const catColorMap = {
+  "Licensing": "cat-licensing",
+  "Admin": "cat-admin",
+  "APIs": "cat-apis",
+  "Machine": "cat-machine",
+  "Peripheral": "cat-peripheral",
+  "Best Practices": "cat-best-practices"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-licensing';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

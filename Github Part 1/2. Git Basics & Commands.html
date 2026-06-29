@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Basics & Commands — 75 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-setup { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-workflow { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-branching { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-syncing { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-history { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 75 Questions</div>
+  <h1>Git Basics & Commands</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">75</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Setup',this)">Setup</button>
+    <button class="filter-btn" onclick="filterCat('Workflow',this)">Workflow</button>
+    <button class="filter-btn" onclick="filterCat('Branching',this)">Branching</button>
+    <button class="filter-btn" onclick="filterCat('Syncing',this)">Syncing</button>
+    <button class="filter-btn" onclick="filterCat('History',this)">History</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS (1-6) ────────────────────────────────────────────────
+  { cat: "Basics", q: "How does Git primarily track changes to your files?", opts: ["By keeping an active continuous recording", "By remembering changes as if it's taking snapshots of your file system", "By saving only the deleted text", "By archiving the entire hard drive hourly"], ans: 1, exp: "Git works by remembering the changes to your files as if it's taking snapshots of your file system." },
+  { cat: "Basics", q: "What is the primary purpose of the staging area in Git?", opts: ["To permanently store deleted files", "To act as a remote server", "To hold file contents before they are committed", "To run automated tests"], ans: 2, exp: "The staging area holds changes you stage with git add until you commit them." },
+  { cat: "Basics", q: "What is another term used for the 'staging area'?", opts: ["The repository", "The index", "The snapshot", "The working tree"], ans: 1, exp: "The staging area is also known as the index." },
+  { cat: "Basics", q: "Which command allows you to get easily accessible information about all Git commands?", opts: ["git info", "git help", "git manual", "git describe"], ans: 1, exp: "Use the git help command to easily get information about all the commands." },
+  { cat: "Basics", q: "How can you view the specific help page for the 'commit' command?", opts: ["git help -c commit", "git commit --help", "help git commit", "git --help commit"], ans: 1, exp: "You can find help pages by typing git <command> --help. For example, git commit --help." },
+  { cat: "Basics", q: "What analogy does the text use to describe how Git remembers file changes?", opts: ["Writing a diary", "Recording a video", "Taking snapshots", "Building a brick wall"], ans: 2, exp: "Git works by remembering the changes to your files as if it's taking snapshots of your file system." },
+
+  // ── SETUP & CONFIG (7-15) ───────────────────────────────────────
+  { cat: "Setup", q: "Which command initializes a new local Git repository?", opts: ["git start", "git create", "git new", "git init"], ans: 3, exp: "git init: Initializes a new local Git repository in your current directory." },
+  { cat: "Setup", q: "Where does 'git init' create the new local repository?", opts: ["In the root of your hard drive", "In a new folder named 'repo'", "In your current directory", "On the remote server"], ans: 2, exp: "git init initializes a new local Git repository in your current directory." },
+  { cat: "Setup", q: "What does the command 'git clone <url>' do?", opts: ["Uploads your local repo to the URL", "Creates a local copy of an existing remote repository", "Deletes the remote repository", "Initializes an empty repo on a server"], ans: 1, exp: "git clone <url> creates a local copy of an existing remote repository." },
+  { cat: "Setup", q: "Which command sets your name for attribution in all commits globally?", opts: ["git set user.name 'Name'", "git config --global user.name 'Name'", "git user --name 'Name'", "git name --global 'Name'"], ans: 1, exp: "git config --global user.name 'Name' sets your name for attribution in all commits." },
+  { cat: "Setup", q: "If you want to set your email address for Git commits, which config flag should you use to apply it everywhere?", opts: ["--local", "--system", "--global", "--all"], ans: 2, exp: "git config --global user.email 'email@example.com' sets your email for attribution globally." },
+  { cat: "Setup", q: "What is the consequence of not setting your user.name and user.email in Git?", opts: ["Git will not allow you to initialize a repo", "Git will not allow you to clone a repo", "Your commits won't have the correct attribution data", "The repository will automatically delete itself"], ans: 2, exp: "The config commands set your name and email 'for attribution' in commits." },
+  { cat: "Setup", q: "Can you create a local copy of a repo without initializing a new one from scratch?", opts: ["No, git init is always required first", "Yes, by using git clone <url>", "Yes, by using git pull origin", "No, local copies cannot be made from remotes"], ans: 1, exp: "git clone <url> creates a local copy of an existing remote repository." },
+  { cat: "Setup", q: "In the command 'git clone <url>', what does '<url>' represent?", opts: ["Your local file path", "The email address of the repository owner", "The address of an existing remote repository", "A configuration string"], ans: 2, exp: "It creates a local copy of an existing remote repository located at that URL." },
+  { cat: "Setup", q: "Which command would you use right after creating a brand new, empty folder for a project?", opts: ["git clone", "git commit", "git init", "git status"], ans: 2, exp: "git init initializes a new local Git repository in your current directory." },
+
+  // ── WORKFLOW: STATUS & ADD (16-35) ──────────────────────────────
+  { cat: "Workflow", q: "What is considered the first and most commonly used Git command?", opts: ["git add", "git commit", "git push", "git status"], ans: 3, exp: "The first and most commonly used Git command is git status." },
+  { cat: "Workflow", q: "What two areas does 'git status' display the state of?", opts: ["The remote server and local branches", "The working tree and the staging area", "The commit history and the index", "The repository and the remote origin"], ans: 1, exp: "git status displays the state of the working tree and of the staging area (also known as the index)." },
+  { cat: "Workflow", q: "Which of the following file types can you inspect using 'git status'?", opts: ["Modified, staged, and untracked files", "Only staged files", "Only remote files", "Deleted branches only"], ans: 0, exp: "It lets you inspect modified, staged, and untracked files so you can decide what to do next." },
+  { cat: "Workflow", q: "What is the purpose of the 'git add' command?", opts: ["To add a new user to the repository", "To add file contents to the staging area", "To push changes to the remote server", "To create a new branch"], ans: 1, exp: "git add is the command you use to add file contents to the staging area." },
+  { cat: "Workflow", q: "What is the technical term for adding file contents to the staging area?", opts: ["Committing", "Pushing", "Staging", "Indexing"], ans: 2, exp: "The technical term is staging these changes." },
+  { cat: "Workflow", q: "Can 'git add' be used on files that Git already knows about?", opts: ["No, it only works on brand new files", "Yes, to stage later changes to those files", "Only if the file was deleted", "Only if the file is ignored"], ans: 1, exp: "You use git add to stage new files... and to stage later changes to files Git already knows about." },
+  { cat: "Workflow", q: "Where are changes stored after you use 'git add' but before you commit?", opts: ["In the remote repository", "In the commit history", "In the staging area", "In the working directory only"], ans: 2, exp: "All changes you stage with git add are stored in the staging area until you commit them." },
+  { cat: "Workflow", q: "How do you add a specific file named 'index.html' to the staging area?", opts: ["git add index.html", "git stage index.html", "git commit index.html", "git push index.html"], ans: 0, exp: "git add <file> adds a specific file to the staging area." },
+  { cat: "Workflow", q: "Which command adds ALL new and changed files in the directory to the staging area at once?", opts: ["git add all", "git add *", "git add .", "git add -A"], ans: 2, exp: "git add . adds all new and changed files in the directory to the staging area." },
+  { cat: "Workflow", q: "If you modify a file that has already been committed in the past, what must you do before committing the new changes?", opts: ["Run git init", "Run git clone", "Run git add to stage the changes", "Run git fetch"], ans: 2, exp: "You use git add to... stage later changes to files Git already knows about." },
+  { cat: "Workflow", q: "What does an 'untracked file' mean in the context of 'git status'?", opts: ["A file that Git is not currently saving snapshots for", "A file deleted from the remote", "A file with a syntax error", "A file that has already been pushed"], ans: 0, exp: "Untracked files are shown in git status; they are new files Git doesn't know about yet until you use git add." },
+  { cat: "Workflow", q: "What does it mean when a file is 'modified' according to git status?", opts: ["It was pushed to the server", "It was changed in the working directory but not necessarily staged", "It was deleted permanently", "It was merged from another branch"], ans: 1, exp: "git status shows the state of your working directory, including modified files." },
+  { cat: "Workflow", q: "If you type 'git status' and see no modified or untracked files, what does this imply?", opts: ["Your working tree is clean", "Your repository is broken", "You need to run git init", "The remote server is down"], ans: 0, exp: "If there are no modified or untracked files, git status will indicate nothing to commit (working tree clean)." },
+  { cat: "Workflow", q: "Why is 'git status' useful before running 'git add'?", opts: ["It automatically stages files", "It lets you inspect files so you can decide what to do next", "It deletes unwanted files", "It pushes commits to the server"], ans: 1, exp: "It lets you inspect modified, staged, and untracked files so you can decide what to do next." },
+  { cat: "Workflow", q: "Is 'git add .' restricted to just newly created files?", opts: ["Yes", "No, it adds all new AND changed files", "No, it only adds deleted files", "Yes, unless you use a special flag"], ans: 1, exp: "git add . adds all new and changed files in the directory to the staging area." },
+  { cat: "Workflow", q: "What must you do to a completely new file before it can be committed?", opts: ["git push it", "git branch it", "Stage it for its first commit using git add", "git log it"], ans: 2, exp: "You use git add to stage new files for their first commit." },
+  { cat: "Workflow", q: "Which command acts as the bridge between the working directory and the commit snapshot?", opts: ["git log", "git add", "git remote", "git clone"], ans: 1, exp: "git add is the command you use to add file contents to the staging area... until you commit them." },
+  { cat: "Workflow", q: "If you want to stage only ONE file out of five modified files, what command should you use?", opts: ["git add .", "git commit", "git add <file>", "git status"], ans: 2, exp: "git add <file> adds a specific file to the staging area." },
+  { cat: "Workflow", q: "What happens if you run 'git commit' without running 'git add' first on new changes?", opts: ["The changes are pushed automatically", "The new changes will not be included in the snapshot", "Git will delete the changes", "Git will automatically run git add ."], ans: 1, exp: "All changes you stage with git add are stored in the staging area until you commit them. Unstaged changes are not committed." },
+  { cat: "Workflow", q: "Which of these is NOT a file state inspected by git status?", opts: ["Modified", "Staged", "Untracked", "Cloned"], ans: 3, exp: "It lets you inspect modified, staged, and untracked files." },
+
+  // ── WORKFLOW: COMMIT (36-50) ────────────────────────────────────
+  { cat: "Workflow", q: "After staging changes, which command saves your work to a snapshot?", opts: ["git push", "git commit", "git snapshot", "git save"], ans: 1, exp: "After you've staged some changes for commit, you can save your work to a snapshot by invoking the git commit command." },
+  { cat: "Workflow", q: "The word 'commit' in Git functions as both a verb and a...", opts: ["Adjective", "Adverb", "Noun", "Pronoun"], ans: 2, exp: "Commit is both a verb and a noun." },
+  { cat: "Workflow", q: "As a verb, what does committing changes mean?", opts: ["Downloading a copy from the server", "Putting a copy of the file/directory in the repository as a new version", "Deleting old versions of code", "Sharing code with another developer via email"], ans: 1, exp: "As a verb, committing changes means you put a copy... in the repository as a new version." },
+  { cat: "Workflow", q: "As a noun, what does a 'commit' represent?", opts: ["A large chunk of video data", "A small chunk of data giving unique identity to a snapshot", "The server address", "A configuration file"], ans: 1, exp: "As a noun, a commit is the small chunk of data that gives a unique identity to a particular snapshot of your project." },
+  { cat: "Workflow", q: "Which of the following is NOT typically saved in a commit's data?", opts: ["Author's name and email", "The date", "The user's local operating system version", "Comments about what was done"], ans: 2, exp: "Data saved includes author's name/email, date, comments, optional digital signature, snapshot reference, and parent commits." },
+  { cat: "Workflow", q: "What does the '-m' flag stand for in the command 'git commit -m'?", opts: ["Modify", "Merge", "Message", "Master"], ans: 2, exp: "git commit -m 'message' records the staged changes... with a descriptive message." },
+  { cat: "Workflow", q: "What must accompany the 'git commit -m' command?", opts: ["A file path", "A branch name", "A descriptive message in quotes", "A remote URL"], ans: 2, exp: "git commit -m 'message': Records the staged changes... with a descriptive message." },
+  { cat: "Workflow", q: "A commit contains a reference to its 'parent'. What is a parent commit?", opts: ["The commit that came immediately before it", "The very first commit in the repository", "The branch name", "The staging area"], ans: 0, exp: "The data saved in a commit includes... the parent commit or commits, if any." },
+  { cat: "Workflow", q: "Can a commit include an optional digital signature?", opts: ["No, Git does not support cryptography", "Yes, as part of the commit data", "Only on remote servers", "Only if you use GitHub"], ans: 1, exp: "The data that's saved in a commit includes... an optional digital signature." },
+  { cat: "Workflow", q: "If you make a change, add it, and commit it, what have you created in the repository?", opts: ["A new remote", "A new branch", "A new version / snapshot", "A new file system"], ans: 2, exp: "Committing changes means you put a copy... in the repository as a new version (snapshot)." },
+  { cat: "Workflow", q: "What is the main purpose of the comment (message) in a commit?", opts: ["To execute code", "To explain what you did and why", "To tag a user", "To set the configuration"], ans: 1, exp: "The data saved includes... comments about what you did (and why)." },
+  { cat: "Workflow", q: "Which piece of data gives a 'unique identity' to a snapshot?", opts: ["The author's email", "The commit itself (as a noun)", "The git clone url", "The commit message"], ans: 1, exp: "A commit is the small chunk of data that gives a unique identity to a particular snapshot." },
+  { cat: "Workflow", q: "Does 'git commit' automatically upload your changes to a remote server?", opts: ["Yes, immediately", "No, it only records the changes to the repository's history locally", "Yes, if connected to Wi-Fi", "No, unless you use the -u flag"], ans: 1, exp: "git commit records the staged changes to the repository's history (locally). Pushing is required to upload." },
+  { cat: "Workflow", q: "If a commit is the first one in a brand new repository, how many parent commits will it have?", opts: ["One", "Two", "None", "Infinite"], ans: 2, exp: "The data includes... parent commit or commits, IF ANY. The first commit has no parent." },
+  { cat: "Workflow", q: "What command must successfully complete BEFORE 'git commit' will have anything to save?", opts: ["git fetch", "git pull", "git add", "git log"], ans: 2, exp: "After you've staged some changes (using git add), you can save your work... invoking git commit." },
+
+  // ── BRANCHING & MERGING (51-60) ─────────────────────────────────
+  { cat: "Branching", q: "Which command lists all local branches in the repository?", opts: ["git list", "git log", "git branch", "git show"], ans: 2, exp: "git branch: Lists all local branches in the repository." },
+  { cat: "Branching", q: "How do you create a new branch at the current commit?", opts: ["git checkout <name>", "git branch <name>", "git add <name>", "git create branch <name>"], ans: 1, exp: "git branch <name>: Creates a new branch at the current commit." },
+  { cat: "Branching", q: "Which two commands can be used to switch from the current branch to another specified branch?", opts: ["git switch or git jump", "git checkout or git switch", "git branch or git switch", "git move or git checkout"], ans: 1, exp: "git checkout <branch> or git switch <branch>: Switches from the current branch to the specified one." },
+  { cat: "Branching", q: "What does the command 'git checkout -b <name>' accomplish?", opts: ["Deletes a branch", "Creates a new branch and immediately switches to it", "Merges a branch", "Renames a branch"], ans: 1, exp: "git checkout -b <name>: Creates a new branch and immediately switches to it." },
+  { cat: "Branching", q: "If you want to combine the changes from another branch into your current active branch, which command do you use?", opts: ["git fetch", "git pull", "git merge <branch>", "git add <branch>"], ans: 2, exp: "git merge <branch>: Merges the specified branch into your current active branch." },
+  { cat: "Branching", q: "What must you do before you can merge 'feature-branch' into 'main'?", opts: ["Switch to 'feature-branch'", "Switch to 'main'", "Delete 'feature-branch'", "Push to origin"], ans: 1, exp: "git merge <branch> merges the specified branch INTO your CURRENT active branch. So you must be on 'main'." },
+  { cat: "Branching", q: "When using 'git branch <name>', does Git automatically switch you to that new branch?", opts: ["Yes", "No, you remain on the current branch", "Yes, but only if it's the first branch", "Yes, but you have to type 'yes' to confirm"], ans: 1, exp: "git branch <name> creates a new branch. (Unlike git checkout -b, it does not immediately switch to it)." },
+  { cat: "Branching", q: "What is the difference between 'git checkout' and 'git checkout -b'?", opts: ["There is no difference", "'-b' pushes the branch to remote", "'-b' creates a new branch and switches to it, standard checkout only switches", "'-b' deletes the branch"], ans: 2, exp: "git checkout switches branches; git checkout -b creates a new one and switches." },
+  { cat: "Branching", q: "Which command is a more modern alternative to 'git checkout' specifically for changing branches?", opts: ["git jump", "git switch", "git branch -s", "git move"], ans: 1, exp: "git checkout <branch> or git switch <branch>." },
+  { cat: "Branching", q: "Does 'git branch' list remote branches by default, according to the text?", opts: ["Yes, all branches", "No, it lists all LOCAL branches", "It only lists the main branch", "It lists branches on GitHub only"], ans: 1, exp: "git branch: Lists all local branches in the repository." },
+
+  // ── SYNCING WITH REMOTES (61-68) ────────────────────────────────
+  { cat: "Syncing", q: "Which command links your local repository to a remote server?", opts: ["git push origin", "git remote add origin <url>", "git link <url>", "git connect origin <url>"], ans: 1, exp: "git remote add origin <url>: Links your local repository to a remote server." },
+  { cat: "Syncing", q: "In the command 'git remote add origin <url>', what does 'origin' represent?", opts: ["The URL itself", "A common shorthand name for the remote server", "A branch name", "A Git command"], ans: 1, exp: "origin is the standard name given to the remote server being linked." },
+  { cat: "Syncing", q: "Which command uploads your local commits to a specified remote branch?", opts: ["git pull", "git fetch", "git push origin <branch>", "git sync"], ans: 2, exp: "git push origin <branch>: Uploads your local commits to the specified remote branch." },
+  { cat: "Syncing", q: "What does 'git pull' do?", opts: ["Uploads changes to the server", "Fetches changes from the remote repo and merges them into your current branch", "Downloads changes without merging", "Deletes the remote repository"], ans: 1, exp: "git pull: Fetches changes from the remote repository and merges them into your current branch." },
+  { cat: "Syncing", q: "If you want to download changes from a remote repository WITHOUT merging them into your local branches, which command should you use?", opts: ["git pull", "git merge", "git fetch", "git update"], ans: 2, exp: "git fetch: Downloads changes from a remote repository without merging them into your local branches." },
+  { cat: "Syncing", q: "Which command is essentially a combination of 'git fetch' followed by 'git merge'?", opts: ["git push", "git clone", "git pull", "git status"], ans: 2, exp: "git pull fetches changes... and merges them." },
+  { cat: "Syncing", q: "To make your local commits available to other team members on a remote server, you must...", opts: ["git fetch", "git status", "git push", "git commit"], ans: 2, exp: "git push origin <branch> uploads your local commits to the specified remote branch." },
+  { cat: "Syncing", q: "Before you can push or pull, what must be configured if you didn't clone the repo?", opts: ["git branch", "git remote add origin <url>", "git init", "git status"], ans: 1, exp: "You must link your local repository to a remote server using git remote add origin <url>." },
+
+  // ── HISTORY & INSPECTION (69-75) ────────────────────────────────
+  { cat: "History", q: "Which command allows you to see information about previous commits?", opts: ["git diff", "git show", "git log", "git history"], ans: 2, exp: "The git log command allows you to see information about previous commits." },
+  { cat: "History", q: "What specific details does 'git log' print about the most recent commits?", opts: ["Line-by-line code changes only", "Time stamp, author, and commit message", "File sizes and system paths", "Branch names and remote URLs only"], ans: 1, exp: "git log command prints information about the most recent commits, like their time stamp, the author, and a commit message." },
+  { cat: "History", q: "Which command shows the differences between your working directory and the last commit?", opts: ["git diff", "git show", "git log", "git status"], ans: 0, exp: "git diff: Shows the differences between your working directory and the last commit (unstaged changes)." },
+  { cat: "History", q: "Does 'git diff' (by default) show changes that have already been staged?", opts: ["Yes", "No, it shows unstaged changes", "It only shows pushed changes", "It only shows deleted files"], ans: 1, exp: "git diff shows differences... (unstaged changes)." },
+  { cat: "History", q: "Which command displays the detailed content changes and metadata for a specific single commit?", opts: ["git log", "git diff", "git show <commit>", "git status"], ans: 2, exp: "git show <commit>: Displays the detailed content changes and metadata for a specific commit." },
+  { cat: "History", q: "How is 'git log' helpful to developers?", opts: ["It automatically writes code", "It helps keep track of what you've been doing and what changes have been saved", "It pushes code to GitHub", "It resolves merge conflicts"], ans: 1, exp: "This command helps you keep track of what you've been doing and what changes have been saved." },
+  { cat: "History", q: "If you want to view the exact lines of code added or removed in a specific past snapshot, which command is best?", opts: ["git log", "git status", "git show <commit>", "git branch"], ans: 2, exp: "git show <commit> displays the DETAILED content changes... for a specific commit." }
+];
+
+const catColorMap = { "Basics":"cat-basics","Setup":"cat-setup","Workflow":"cat-workflow","Branching":"cat-branching","Syncing":"cat-syncing","History":"cat-history" };
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Platform & Features — 90 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-overview { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-repos { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-commits { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-gists { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-wikis { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-features { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 90 Questions</div>
+  <h1>GitHub Platform & Features</h1>
+  <p>Comprehensive Multiple Choice Questions & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">90</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Platform Overview',this)">Platform Overview</button>
+    <button class="filter-btn" onclick="filterCat('Repositories',this)">Repositories</button>
+    <button class="filter-btn" onclick="filterCat('Commits & Cloning',this)">Commits & Cloning</button>
+    <button class="filter-btn" onclick="filterCat('Gists',this)">Gists</button>
+    <button class="filter-btn" onclick="filterCat('Wikis',this)">Wikis</button>
+    <button class="filter-btn" onclick="filterCat('Feature Previews',this)">Feature Previews</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- PLATFORM OVERVIEW (1-15) ---
+  { cat: "Platform Overview", q: "What is Git at its core?", opts: ["A cloud hosting provider", "A distributed version control system", "A programming language", "An AI-powered chat bot"], ans: 1, exp: "Git is a distributed version control system that lets developers track changes, collaborate on code, and manage revisions over time." },
+  { cat: "Platform Overview", q: "How does GitHub build upon the foundation of Git?", opts: ["By rewriting Git in a different language", "By replacing local development completely", "By adding collaboration tools, automation features, and a web interface", "By removing the need for commits and branches"], ans: 2, exp: "GitHub builds on top of Git by adding collaboration tools, automation features, and a user-friendly web interface." },
+  { cat: "Platform Overview", q: "What are the five core pillars of the GitHub Enterprise platform?", opts: ["AI, Collaboration, Productivity, Security, Scale", "Git, Gists, Wikis, Issues, Repositories", "Coding, Testing, Deploying, Monitoring, Securing", "Public, Private, Secret, Forked, Cloned"], ans: 0, exp: "The core pillars are AI, Collaboration, Productivity, Security, and Scale." },
+  { cat: "Platform Overview", q: "Which of the following AI tools are explicitly mentioned as part of the GitHub platform?", opts: ["ChatGPT and DALL-E", "Copilot, Copilot Chat, and Copilot Agents", "AutoGPT and Midjourney", "GitHub AI Studio"], ans: 1, exp: "GitHub enhances productivity through Copilot, Copilot Chat, and Copilot Agents." },
+  { cat: "Platform Overview", q: "How does GitHub enhance productivity according to the text?", opts: ["By forcing developers to work locally", "By providing built-in CI/CD tools to automate repetitive tasks", "By limiting the number of repositories", "By restricting third-party integrations"], ans: 1, exp: "Productivity is accelerated with automation... With built-in CI/CD tools directly integrated... the platform lets users automate repetitive tasks." },
+  { cat: "Platform Overview", q: "Which of the following is considered a native, first-party security feature in GitHub?", opts: ["Jenkins", "Dependabot", "Docker", "Kubernetes"], ans: 1, exp: "GitHub Enterprise includes native, first-party features like CodeQL, secret scanning, Dependabot, and security overview." },
+  { cat: "Platform Overview", q: "How does GitHub handle code privacy when running integrated security checks?", opts: ["Code must be made public to run security checks", "Code remains private while benefiting from integrated security checks", "Code is shared with third-party vendors for analysis", "Security checks are only available for public repositories"], ans: 1, exp: "Code remains private, while still benefiting from integrated security checks." },
+  { cat: "Platform Overview", q: "According to the text, how many developers are part of the GitHub community?", opts: ["Over 10 million", "Over 50 million", "Over 100 million", "Over 1 billion"], ans: 2, exp: "GitHub is the largest developer community... with real-time data from over 100 million developers." },
+  { cat: "Platform Overview", q: "According to the text, how many repositories exist on GitHub?", opts: ["42 million", "100 million", "420 million", "1 billion"], ans: 2, exp: "...420 million repositories, and countless deployments." },
+  { cat: "Platform Overview", q: "Who contributes to and enhances the extensible features of GitHub?", opts: ["Only Microsoft employees", "Open source developers from around the world", "Only enterprise administrators", "Automated AI bots exclusively"], ans: 1, exp: "Open source developers from around the world contribute to and enhance the very features that make GitHub exceptional." },
+  { cat: "Platform Overview", q: "How does generative AI impact software development on GitHub?", opts: ["It completely replaces human developers", "It dramatically transforms it through AI-powered pull requests, issues, and quicker security feedback", "It manages billing and subscriptions", "It enforces local network security policies"], ans: 1, exp: "Generative AI is dramatically transforming software development... through AI-powered pull requests and issues... and security by providing quicker feedback." },
+  { cat: "Platform Overview", q: "What is a primary benefit of GitHub's Collaboration pillar?", opts: ["It increases delays to ensure thorough review", "It reduces delays and streamlines workflows", "It prevents multiple people from working on the same file", "It limits cross-role communication"], ans: 1, exp: "GitHub offers tools that help teams work together efficiently, reducing delays and streamlining workflows." },
+  { cat: "Platform Overview", q: "Why is GitHub trusted by organizations in highly regulated industries?", opts: ["Because it ignores compliance standards to favor speed", "Because it relies entirely on local servers", "Because it adheres to global compliance standards", "Because it deletes code automatically after deployment"], ans: 2, exp: "GitHub adheres to global compliance standards, making it a reliable choice for secure development at scale." },
+  { cat: "Platform Overview", q: "What does the unified developer experience of the GitHub Enterprise Platform focus on?", opts: ["The developer experience", "Maximizing server hardware sales", "Marketing optimization", "Replacing Git entirely"], ans: 0, exp: "In essence, the GitHub Enterprise Platform focuses on the developer experience." },
+  { cat: "Platform Overview", q: "What data helps GitHub continuously evolve its platform?", opts: ["Feedback from competitors", "Insights from its large developer base of over 100 million users", "Data purchased from third-party brokers", "Only data from Microsoft employees"], ans: 1, exp: "Insights from this large developer base help GitHub continuously evolve the platform." },
+
+  // --- REPOSITORIES (16-30) ---
+  { cat: "Repositories", q: "What is the primary function of a repository?", opts: ["To act as a real-time chat application", "To contain all of a project's files and each file's revision history", "To execute built-in CI/CD pipelines only", "To manage enterprise billing"], ans: 1, exp: "A repository contains all of your project's files and each file's revision history." },
+  { cat: "Repositories", q: "Where can you find the option to create a 'New repository' on GitHub.com?", opts: ["At the bottom of the footer", "In the upper-right corner drop-down menu", "Inside the security overview tab", "Only on the command line"], ans: 1, exp: "In the upper-right corner of any page, use the drop-down menu, and select New repository." },
+  { cat: "Repositories", q: "What does the 'Owner' drop-down menu determine when creating a repository?", opts: ["The programming language used", "The account that will own the repository", "Who pays the repository creation fee", "The physical location of the server"], ans: 1, exp: "Use the Owner drop-down menu to select the account you want to own the repository." },
+  { cat: "Repositories", q: "Who can access a Public repository?", opts: ["Only the owner", "Only organization members", "Everyone on the internet", "Only verified users"], ans: 2, exp: "Public repositories are accessible to everyone on the internet." },
+  { cat: "Repositories", q: "Who can access a Private repository?", opts: ["Everyone on the internet", "Only the owner, explicitly shared people, and certain org members", "Only users with a paid subscription", "Anyone with the URL"], ans: 1, exp: "Private repositories are only accessible to you, people you explicitly share access with, and... certain organization members." },
+  { cat: "Repositories", q: "Is a repository description required when creating a new repository?", opts: ["Yes, it is mandatory", "No, it is an optional description", "Yes, but only for private repositories", "Yes, but only for public repositories"], ans: 1, exp: "Type a name for your repository, and an optional description." },
+  { cat: "Repositories", q: "What prerequisite is needed to create a repository within an organization?", opts: ["You must be the CEO", "You must have sufficient permissions", "You must have 100 followers", "You must use the GitHub CLI"], ans: 1, exp: "You can create a new repository on your personal account or any organization where you have sufficient permissions." },
+  { cat: "Repositories", q: "What is the purpose of cloning a repository?", opts: ["To delete it from GitHub", "To create a local copy on your computer for making changes", "To convert it to a gist", "To merge two repositories together"], ans: 1, exp: "Cloning a repository allows you to create a local copy of a repository on your computer." },
+  { cat: "Repositories", q: "Which button do you select to find the URL for cloning a repository?", opts: ["The 'Fork' button", "The 'Settings' button", "The 'Code' button", "The 'Issues' button"], ans: 2, exp: "Above the list of files, click the Code button." },
+  { cat: "Repositories", q: "Which of the following is NOT an option provided to copy the repository URL?", opts: ["HTTPS", "SSH", "GitHub CLI", "FTP"], ans: 3, exp: "Copy the URL for the repository using the HTTPS, SSH, or GitHub CLI option." },
+  { cat: "Repositories", q: "What is the correct Bash command to clone a repository?", opts: ["git copy <repository-url>", "git clone <repository-url>", "git download <repository-url>", "git pull <repository-url>"], ans: 1, exp: "Run the following command: git clone <repository-url>" },
+  { cat: "Repositories", q: "After cloning is complete, what command do you use to navigate into the new folder?", opts: ["cd <repository-name>", "dir <repository-name>", "open <repository-name>", "enter <repository-name>"], ans: 0, exp: "Once the cloning process is complete, navigate into the repository folder: cd <repository-name>" },
+  { cat: "Repositories", q: "What is the main purpose of files inside a GitHub repository?", opts: ["To act as executable viruses", "To store data and information about your project", "To host chat logs", "To track employee hours"], ans: 1, exp: "Files in GitHub can do a handful of things, but the main purpose of files is to store data and information about your project." },
+  { cat: "Repositories", q: "What level of access must you have to add a file directly to a repository?", opts: ["Read access", "Write access", "Triage access", "Billing access"], ans: 1, exp: "To add a file to a repository, you need at least Write access." },
+  { cat: "Repositories", q: "If you don't create a new file, how else can you add files to a repository through the web interface?", opts: ["By emailing them to GitHub", "By uploading an existing file", "By using a fax machine", "By calling support"], ans: 1, exp: "browse to the folder where you want to create a file by selecting the creating a new file link or uploading an existing file." },
+
+  // --- COMMITS & CLONING (31-45) ---
+  { cat: "Commits & Cloning", q: "How do you create a subdirectory when naming a new file on GitHub.com?", opts: ["Type a backslash (\\)", "Type the / directory separator", "Use the 'New Folder' button", "Right click and select 'Directory'"], ans: 1, exp: "To create subdirectories, type the / directory separator." },
+  { cat: "Commits & Cloning", q: "Which feature allows you to review your new file content before committing it?", opts: ["The 'Test' button", "The 'Preview' button", "The 'Compile' button", "The 'Run' button"], ans: 1, exp: "To review the new content, above the file contents, select Preview." },
+  { cat: "Commits & Cloning", q: "What should be included in a commit message field?", opts: ["A full 10-page essay", "A short and meaningful commit message that describes the change", "Only a date and time", "The password for the repository"], ans: 1, exp: "type a short and meaningful commit message that describes the change you made to the file." },
+  { cat: "Commits & Cloning", q: "Can a commit be attributed to more than one author?", opts: ["No, only one author is allowed", "Yes, you can attribute the commit to more than one author in the commit message", "Yes, but only if they share a computer", "No, unless it is a pull request"], ans: 1, exp: "You can attribute the commit to more than one author in the commit message." },
+  { cat: "Commits & Cloning", q: "Which email addresses appear in the email address drop-down menu for a commit?", opts: ["Any email address in the world", "Only verified email addresses", "Only emails ending in @github.com", "Only public email addresses"], ans: 1, exp: "Only verified email addresses appear in this drop-down menu." },
+  { cat: "Commits & Cloning", q: "What happens if you have enabled email address privacy on GitHub?", opts: ["You cannot make commits", "Your commit is rejected", "The default commit author email is [username]@users.noreply.github.com", "Your IP address is used instead"], ans: 2, exp: "If you enabled email address privacy, then [username]@users.noreply.github.com is the default commit author email address." },
+  { cat: "Commits & Cloning", q: "What is the recommended action if your current branch is the default branch when committing?", opts: ["Delete the default branch", "Create a new branch for your commit, and then create a pull request", "Commit directly to the default branch to save time", "Use a gist instead"], ans: 1, exp: "If your current branch is the default branch, you should choose to create a new branch for your commit, and then create a pull request." },
+  { cat: "Commits & Cloning", q: "Which buttons finalize the creation of a file and its commit?", opts: ["Save file or Upload file", "Commit changes or Propose changes", "Finalize or Execute", "Approve or Reject"], ans: 1, exp: "Select Commit changes or Propose changes." },
+  { cat: "Commits & Cloning", q: "What happens after you successfully select 'Commit changes' for a new file in a new branch?", opts: ["You created a new file, a new branch, and made a commit", "The file is downloaded to your desktop", "The repository is made public", "The repository is deleted"], ans: 0, exp: "Congratulations, you just created a new file in your repository! You have also created a new branch and made a commit." },
+  { cat: "Commits & Cloning", q: "Where do you define the extension for a new file created in the web UI?", opts: ["In the file contents text box", "In the commit message field", "In the file name field", "In the repository description"], ans: 2, exp: "In the file name field, type the name and extension for the file." },
+  { cat: "Commits & Cloning", q: "What is the primary action required to sync changes made locally back to the remote repository?", opts: ["Cloning the repository again", "This requires pushing the changes (implied context of syncing)", "Turning off the computer", "Creating a new repository"], ans: 1, exp: "Cloning... is useful for making changes locally and syncing them back to the remote repository." },
+  { cat: "Commits & Cloning", q: "What term is used for the location where you execute `git clone`?", opts: ["A web browser", "Your terminal", "A text document", "An email client"], ans: 1, exp: "Open your terminal and navigate to the directory where you want to clone the repository." },
+  { cat: "Commits & Cloning", q: "What does the drop-down menu 'Add file ᐁ' allow you to do?", opts: ["Only upload existing files", "Create new file or upload existing files", "Delete files", "Rename files"], ans: 1, exp: "select the Add file ᐁ drop-down menu. Then select Create new file." },
+  { cat: "Commits & Cloning", q: "What happens when you type the `/` character in the file name field?", opts: ["It creates a subdirectory", "It throws an error", "It creates a comment", "It executes a script"], ans: 0, exp: "To create subdirectories, type the / directory separator." },
+  { cat: "Commits & Cloning", q: "What is the final step immediately after typing the commit message?", opts: ["Logging out", "Deciding whether to add your commit to the current branch or a new branch", "Deleting the file", "Running git clone"], ans: 1, exp: "Below the Commit message fields, decide whether to add your commit to the current branch or to a new branch." },
+
+  // --- GISTS (46-65) ---
+  { cat: "Gists", q: "What are Gists?", opts: ["A premium feature for enterprise billing", "A feature to share code snippets, notes, or small pieces of info", "A tool for scanning secrets", "A new AI language model"], ans: 1, exp: "Gists are a feature of GitHub that allows users to share code snippets, notes, or other small pieces of information in a lightweight and convenient way." },
+  { cat: "Gists", q: "How do Gists fundamentally act under the hood?", opts: ["They are essentially mini Git repositories", "They are standalone text files with no history", "They are compiled binaries", "They are image hosting platforms"], ans: 0, exp: "They are essentially mini Git repositories, which means you can fork, clone, and version-control them." },
+  { cat: "Gists", q: "Can you version-control a gist?", opts: ["No, they are static", "Yes, just like a full repository", "Only if it is a Secret Gist", "Only if it is embedded"], ans: 1, exp: "Every change made to a gist is tracked, allowing you to view the history of edits... version-control them just like a full repository." },
+  { cat: "Gists", q: "Who can view Public Gists?", opts: ["Only the creator", "Everyone, and they can be discovered through GitHub's search", "Only logged-in users", "Only collaborators"], ans: 1, exp: "Public Gists: These are visible to everyone and can be discovered through GitHub's search functionality." },
+  { cat: "Gists", q: "Are Secret Gists entirely private?", opts: ["Yes, completely", "No, they are not entirely private; anyone with the URL can access them", "Yes, they require a password to view", "No, they appear in search results"], ans: 1, exp: "Secret Gists: These are not searchable or publicly listed, but they are not entirely private. Anyone with the URL can access them." },
+  { cat: "Gists", q: "What is a common use case for a Secret Gist?", opts: ["Publishing an open-source library", "Sharing code with a limited audience, such as collaborators", "Storing bank passwords", "Hosting a public blog"], ans: 1, exp: "They are useful for sharing code with a limited audience, such as collaborators or friends." },
+  { cat: "Gists", q: "Can you fork a gist?", opts: ["Yes, allowing others to build upon your work", "No, gists cannot be forked", "Only Public Gists can be forked", "Only full repositories can be forked"], ans: 0, exp: "Like repositories, gists can be forked and cloned." },
+  { cat: "Gists", q: "What feature allows you to use gists in tutorials or documentation on blogs?", opts: ["Forking", "Embedding", "Secret URLs", "Cloning"], ans: 1, exp: "Embedding: Gists can be embedded into websites or blogs, making them a great tool for sharing code examples." },
+  { cat: "Gists", q: "Which formatting language is supported natively by Gists to include rich text?", opts: ["HTML exclusively", "Markdown", "XML", "JSON"], ans: 1, exp: "Gists support Markdown formatting, which means you can include rich text, headings, links..." },
+  { cat: "Gists", q: "Which of the following is NOT a recommended use case for a Gist?", opts: ["Storing configuration files for personal use", "Sharing quick code examples", "Storing sensitive or confidential data like API keys", "Sharing error logs"], ans: 2, exp: "[!IMPORTANT] Never use gists to store sensitive or confidential data, such as passwords, secrets, or API keys." },
+  { cat: "Gists", q: "Why shouldn't you store API keys in a Secret Gist?", opts: ["Because API keys are too long", "Because anyone with the link can access them, and they are not fully private", "Because GitHub deletes Secret Gists automatically", "Because Secret Gists don't support text"], ans: 1, exp: "Gists are not fully private: even secret gists can be accessed by anyone with the link." },
+  { cat: "Gists", q: "When is a full repository more appropriate than a Gist?", opts: ["For a 5-line script", "For sharing a single configuration file", "For larger projects or multi-file structures", "For sharing an error log"], ans: 2, exp: "For larger projects or multi-file structures, a full repository is more appropriate." },
+  { cat: "Gists", q: "Where is the 'Fork' button located on a gist page?", opts: ["Bottom-left", "Top-right", "Hidden in settings", "Inside the file editor"], ans: 1, exp: "Select Fork at the top-right of the gist page." },
+  { cat: "Gists", q: "What is the correct command to clone a gist locally?", opts: ["git clone gist <id>", "git clone https://gist.github.com/your-gist-id.git", "git fetch gist", "git gist-clone <id>"], ans: 1, exp: "git clone https://gist.github.com/your-gist-id.git" },
+  { cat: "Gists", q: "Can gists be collaborated on by multiple users?", opts: ["No, they are strictly read-only", "Yes, through forking and commenting enabling lightweight collaboration", "Yes, but only via email", "No, unless converted to a repository"], ans: 1, exp: "While gists are typically used for individual snippets, they can also be shared and collaborated on by multiple users. Forking and commenting... enable lightweight collaboration." },
+  { cat: "Gists", q: "If you want to view the history of edits on a gist, is that possible?", opts: ["Yes, every change made to a gist is tracked", "No, gists only save the latest version", "Yes, but you have to pay a fee", "No, history is only for full repositories"], ans: 0, exp: "Every change made to a gist is tracked, allowing you to view the history of edits." },
+  { cat: "Gists", q: "Are Secret Gists discoverable through GitHub's search functionality?", opts: ["Yes", "No", "Only by organization members", "Only by the repository owner"], ans: 1, exp: "Secret Gists: These are not searchable or publicly listed..." },
+  { cat: "Gists", q: "What makes gists ideal for quick solutions?", opts: ["They automatically compile code", "They don't require the creation of a full repository", "They run on AWS servers automatically", "They don't support version control"], ans: 1, exp: "Gists are particularly useful for sharing quick solutions... without the need to create a full repository." },
+  { cat: "Gists", q: "Which of the following can you include in a gist because of Markdown support?", opts: ["Rich text, headings, links, and images", "Executable binary files", "Live video streams", "Virtual machines"], ans: 0, exp: "you can include rich text, headings, links, and even images alongside your code." },
+  { cat: "Gists", q: "What happens if a malicious user guesses the URL of your Secret Gist containing a password?", opts: ["They are blocked automatically", "They can access it, as anyone with the URL can access them", "They must enter a PIN", "The gist self-destructs"], ans: 1, exp: "Anyone with the URL can access them... Never use gists to store sensitive or confidential data." },
+
+  // --- WIKIS (66-80) ---
+  { cat: "Wikis", q: "What is the purpose of a GitHub wiki?", opts: ["To execute code in the browser", "To host long-form documentation about your project", "To act as a continuous integration runner", "To store heavy binary assets"], ans: 1, exp: "Every repository on GitHub.com comes equipped with a section for hosting documentation, called a wiki." },
+  { cat: "Wikis", q: "How does a wiki differ from a README file?", opts: ["A wiki cannot have text", "A README quickly tells what your project can do; a wiki provides additional long-form documentation", "A wiki is only for private repos", "A README is a paid feature"], ans: 1, exp: "While a README file quickly tells what your project can do, you can use a wiki to provide additional documentation." },
+  { cat: "Wikis", q: "Who has access to the wiki of a private repository?", opts: ["Everyone on the internet", "Only people who have at least read access to your repository", "Only people with write access", "Only organization owners"], ans: 1, exp: "if your repository is private, only people who have at least read access to your repository will have access to your wiki." },
+  { cat: "Wikis", q: "How do you navigate to the wiki of a repository?", opts: ["Select the Wiki tab in the repository", "Go to wiki.github.com", "Select the Issues tab", "It is located at the bottom of the README"], ans: 0, exp: "To create a wiki page: Navigate to the repository. Select the Wiki tab." },
+  { cat: "Wikis", q: "What do you select to add a page if no wiki pages exist yet?", opts: ["New Page", "Create the first page", "Add Wiki", "Initialize Docs"], ans: 1, exp: "Select Create the first page if no pages exist..." },
+  { cat: "Wikis", q: "What fields must be filled when creating a wiki page?", opts: ["Code and Output", "Title and content", "Author and date", "URL and Description"], ans: 1, exp: "Enter a title and content, then select Save Page." },
+  { cat: "Wikis", q: "Where is the 'Edit' button located when modifying an existing wiki page?", opts: ["Bottom-left", "Top-right", "Center", "Hidden behind a menu"], ans: 1, exp: "Select Edit at the top-right." },
+  { cat: "Wikis", q: "What is required to delete a wiki page?", opts: ["Clicking the 'Delete' button in the UI", "Using Git to clone the wiki repo, remove the file, and push the change", "Emailing GitHub support", "Archiving the repository"], ans: 1, exp: "Deleting a wiki page requires using Git. Clone the wiki repository, remove the file, and push the change." },
+  { cat: "Wikis", q: "Can you delete a wiki page entirely from the GitHub web interface based on the text?", opts: ["Yes, using the trash icon", "No, it requires using Git", "Yes, if you have admin rights", "No, wikis are permanent"], ans: 1, exp: "Deleting a wiki page requires using Git. Clone the wiki repository, remove the file, and push the change." },
+  { cat: "Wikis", q: "What is a good topic for a wiki page as mentioned in the text?", opts: ["A 5-line code snippet", "API keys and passwords", "How you designed the project or its core principles", "CI/CD execution logs"], ans: 2, exp: "share long-form content about your project, such as how to use it, how you designed it, or its core principles." },
+  { cat: "Wikis", q: "Does every repository on GitHub.com come equipped with a wiki section?", opts: ["No, only paid ones", "Yes, every repository comes equipped with a wiki", "Only public repositories", "Only organization repositories"], ans: 1, exp: "Every repository on GitHub.com comes equipped with a section for hosting documentation, called a wiki." },
+  { cat: "Wikis", q: "What action finalizes the creation or edit of a wiki page?", opts: ["Commit changes", "Save Page", "Publish Docs", "Upload Wiki"], ans: 1, exp: "Make changes and select Save Page." },
+  { cat: "Wikis", q: "Is a wiki repository technically separate from the main project code repository in how it's handled for deletion?", opts: ["Yes, you must clone the wiki repository specifically to delete a page", "No, it shares the exact same git history", "No, they are identical", "Yes, but it cannot be cloned"], ans: 0, exp: "Clone the wiki repository, remove the file, and push the change." },
+  { cat: "Wikis", q: "If your repository is public, who can view the wiki?", opts: ["Only contributors", "Everyone (implied, since private requires read access)", "Only logged in users", "Only the owner"], ans: 1, exp: "if your repository is private, only people who have at least read access... (Implying public wikis follow public repo access)." },
+  { cat: "Wikis", q: "What is the primary benefit of using a wiki over just a README?", opts: ["It compiles faster", "It allows for extensive, multi-page, long-form documentation", "It hides the code completely", "It costs less money"], ans: 1, exp: "share long-form content... while a README file quickly tells what your project can do, you can use a wiki to provide additional documentation." },
+
+  // --- FEATURE PREVIEWS & MIXED (81-90) ---
+  { cat: "Feature Previews", q: "What are Feature Previews?", opts: ["A movie streaming service for developers", "A way to try out experimental features before they are officially released", "A premium tier for GitHub Enterprise", "A tool to preview code compilation"], ans: 1, exp: "Feature Previews allow you to try out experimental features on GitHub before they are officially released." },
+  { cat: "Feature Previews", q: "Why does GitHub offer Feature Previews?", opts: ["To charge extra money", "To allow users to provide feedback to help shape the final product", "To hide bugs", "To enforce strict compliance"], ans: 1, exp: "These previews give you early access... and allow you to provide feedback to help shape the final product." },
+  { cat: "Feature Previews", q: "Where do you click to access your Feature Previews?", opts: ["The repository settings", "Your profile picture in the top-right corner", "The footer of the page", "The Code button"], ans: 1, exp: "Navigate to your GitHub account by selecting your profile picture in the top-right corner of GitHub.com." },
+  { cat: "Feature Previews", q: "What do you do once you are on the Feature preview page to try a feature?", opts: ["Download a software patch", "Toggle the features you want to try", "Write a Python script", "Create a new branch"], ans: 1, exp: "Browse the list of available previews and toggle the features you want to try." },
+  { cat: "Feature Previews", q: "How often does GitHub add new experimental features?", opts: ["Never", "Frequently", "Once a decade", "Only on leap years"], ans: 1, exp: "GitHub frequently adds new experimental features for users to explore." },
+  { cat: "Feature Previews", q: "Which of the following is NOT an action you can perform on a Gist?", opts: ["Forking", "Cloning", "Embedding", "Deleting another user's gist"], ans: 3, exp: "You can fork, clone, and embed gists. You cannot delete another user's gist." },
+  { cat: "Feature Previews", q: "If you want to suggest a change to a project without having write access to the repository, what GitHub collaboration tool is mentioned as supporting faster collaboration?", opts: ["Pull Requests", "Secret Gists", "Wiki Deletion", "Feature Previews"], ans: 0, exp: "Repositories, Issues, Pull Requests, and other tools help to support faster collaboration across roles." },
+  { cat: "Feature Previews", q: "Which of the following is an example of an automation tool mentioned in the Productivity section?", opts: ["Copilot", "Built-in CI/CD tools", "Wikis", "Gists"], ans: 1, exp: "With built-in CI/CD (Continuous Integration and Continuous Delivery) tools directly integrated... automate repetitive tasks." },
+  { cat: "Feature Previews", q: "What does the abbreviation CI/CD stand for in the context of GitHub?", opts: ["Code Integration and Code Deployment", "Continuous Integration and Continuous Delivery", "Collaborative Issues and Copilot Design", "Cloud Infrastructure and Centralized Data"], ans: 1, exp: "CI/CD (Continuous Integration and Continuous Delivery)" },
+  { cat: "Feature Previews", q: "True or False: Secret Gists are a completely safe place to store production database passwords.", opts: ["True", "False"], ans: 1, exp: "[!IMPORTANT] Never use gists to store sensitive or confidential data, such as passwords, secrets, or API keys." }
+];
+
+const catColorMap = { 
+  "Platform Overview": "cat-overview",
+  "Repositories": "cat-repos",
+  "Commits & Cloning": "cat-commits",
+  "Gists": "cat-gists",
+  "Wikis": "cat-wikis",
+  "Feature Previews": "cat-features"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-overview';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

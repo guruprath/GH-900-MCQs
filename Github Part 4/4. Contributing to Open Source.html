@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contributing to Open Source — 50 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-communication { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-git-basics { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-pull-requests { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-status-checks { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-etiquette { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 50 Questions</div>
+  <h1>Contributing to Open Source</h1>
+  <p>Communicate intent, create pull requests, and pass status checks.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">50</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Communication',this)">Communication</button>
+    <button class="filter-btn" onclick="filterCat('Git Basics',this)">Git Basics</button>
+    <button class="filter-btn" onclick="filterCat('Pull Requests',this)">Pull Requests</button>
+    <button class="filter-btn" onclick="filterCat('Status Checks',this)">Status Checks</button>
+    <button class="filter-btn" onclick="filterCat('Etiquette',this)">Etiquette</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── COMMUNICATION ────────────────────────────────────────────────
+  { cat: "Communication", q: "What is a key success factor when it comes to contributing work to an open-source project?", opts: ["Writing complex code", "Communication", "Working alone", "Submitting large changes instantly"], ans: 1, exp: "When it comes to contributing work to an open-source project, communication is a key success factor." },
+  { cat: "Communication", q: "What is a major risk of avoiding active communication with others in an open-source project?", opts: ["Getting banned from GitHub", "Risking your time working on tasks someone else is already working on", "Exposing your private data", "Automatically deleting the repository"], ans: 1, exp: "Avoiding active communication... means risking your time working on tasks that someone else is already working on." },
+  { cat: "Communication", q: "What is another risk of not communicating your intent before working?", opts: ["You might work on features that don't align with the project's values or best practices", "Your pull request will be charged a fee", "Your code will not compile locally", "You will lose your GitHub account"], ans: 0, exp: "Or, you might work on features or improvements that don't align with the project's values or best practices." },
+  { cat: "Communication", q: "What does committing to active communication ensure regarding your work?", opts: ["It will automatically pass all tests", "It will be well received and impactful", "It will be merged without review", "It will generate financial revenue"], ans: 1, exp: "Conversely, committing to active communication ensures that your work will be well received and impactful." },
+  { cat: "Communication", q: "Why should you practice patience when communicating with open-source project maintainers?", opts: ["They live in different time zones", "The internet can be slow", "Maintainers most likely have a day job and a private life to tend to", "They are legally required to wait 24 hours before replying"], ans: 2, exp: "Open-source project maintainers most likely have a day job and a private life to tend to." },
+  { cat: "Communication", q: "Where is usually the best place to communicate your intent to contribute, unless indicated otherwise?", opts: ["Twitter / X", "The README file", "The issue tracker", "Private email"], ans: 2, exp: "Unless indicated otherwise in the README file, the issue tracker is usually the best place for doing that." },
+  { cat: "Communication", q: "How can you check if someone is already assigned to an existing issue?", opts: ["By running a Git command", "By looking at the Assignees section", "By checking the codebase", "By looking at the project license"], ans: 1, exp: "If you want to work on an existing issue, check that nobody is assigned to it by looking at the Assignees section." },
+  { cat: "Communication", q: "What does it mean if an issue has a linked pull request?", opts: ["The issue is closed", "The issue is invalid", "Somebody is already working on it", "The code is ready to be merged"], ans: 2, exp: "A linked pull request means somebody is already working on it." },
+  { cat: "Communication", q: "Why should you post a comment on an issue indicating your interest to work on it?", opts: ["To get paid for the work", "To close the issue immediately", "To lock the repository", "To tell people who might come later that someone's working on the issue"], ans: 3, exp: "That way, you're telling people who might come later that someone's working on the issue." },
+  { cat: "Communication", q: "What should you do if you want to work on a new feature that's NOT already present in the issue tracker?", opts: ["Create a pull request immediately", "Create a new issue", "Email the maintainer", "Force push your code"], ans: 1, exp: "If you want to work on a new feature or a bug that's not already present in the issue tracker, create a new issue." },
+
+  // ── PULL REQUESTS ─────────────────────────────────────────────────
+  { cat: "Pull Requests", q: "What form will your contribution take when submitting it to the project?", opts: ["A bug report", "A direct push to main", "A pull request or PR", "An email patch"], ans: 2, exp: "Your contribution will take the form of a pull request or PR." },
+  { cat: "Pull Requests", q: "Which of the following is NOT listed as something a pull request contains?", opts: ["A title and description", "One or more commits", "A live video feed of the code execution", "Comments and code reviews"], ans: 2, exp: "A pull request is a special place on GitHub that contains... title, commits, comments, reviews, status checks." },
+  { cat: "Pull Requests", q: "What happens in the 'Code reviews' section of a pull request?", opts: ["Automated tests execute", "You can find detailed feedback on your changes and eventually commit suggestions", "Your code is compiled", "The issue is assigned to you"], ans: 1, exp: "Code reviews, where you can find detailed feedback on your changes and eventually commit suggestions." },
+  { cat: "Pull Requests", q: "What does it mean when your pull request is merged?", opts: ["Your changes have been deleted", "Your changes have been integrated into the project's codebase", "Your pull request is now a draft", "The automated checks failed"], ans: 1, exp: "When your pull request is merged, it means that your changes have been integrated into the project's codebase." },
+  { cat: "Pull Requests", q: "What is the very first step on the GitHub page when you want to start contributing code?", opts: ["Select the Merge button", "Select the Fork button", "Select the Delete button", "Select the Run Actions button"], ans: 1, exp: "Select the Fork button to create a copy of the repository on your GitHub account." },
+  { cat: "Pull Requests", q: "Why is forking the repository a necessary step?", opts: ["It speeds up Git commands", "It prevents others from seeing your code", "By default, you don't have the permissions to make changes on a public repository unless it's your own copy", "It triggers the status checks automatically"], ans: 2, exp: "This step is necessary because, by default, you don't have the permissions to make any changes on a public repository unless it's your own copy." },
+  { cat: "Pull Requests", q: "After creating a fork, where do you select it from?", opts: ["The Code button", "Your repositories from your account profile menu", "The issues tab", "The actions tab"], ans: 1, exp: "Select Your repositories from your account profile menu. Select the repository fork." },
+  { cat: "Pull Requests", q: "Which button do you select to get information on how to 'clone' the repository?", opts: ["The Fork button", "The Code button", "The Clone button", "The Pull Request button"], ans: 1, exp: "Select the Code button to get information on how to 'clone' the Git repository to your local machine." },
+  { cat: "Pull Requests", q: "What button appears in the suggestion box on GitHub after you push a branch to your fork?", opts: ["Compare & pull request", "Merge & delete", "Review & approve", "Commit & push"], ans: 0, exp: "Open your project fork on GitHub, and select the Compare & pull request button in the suggestion box that appears." },
+  { cat: "Pull Requests", q: "How should you link a related issue in your pull request description?", opts: ["By pasting the full URL only", "By mentioning its number using #<ISSUE_NUMBER>", "By writing its title in bold", "By tagging the maintainer's name"], ans: 1, exp: "You should also link back to the related issue by mentioning its number by using #<ISSUE_NUMBER>." },
+
+  // ── GIT BASICS ────────────────────────────────────────────────
+  { cat: "Git Basics", q: "What terminal command is used to create a copy of the repository on your local machine?", opts: ["git copy <URL>", "git clone <REPOSITORY_URL>", "git pull origin", "git fork <URL>"], ans: 1, exp: "git clone <REPOSITORY_URL> This command will create a copy of the repository on your local machine." },
+  { cat: "Git Basics", q: "Which application is mentioned as an alternative to using the terminal for cloning?", opts: ["GitHub Desktop", "GitKraken", "SourceTree", "Bitbucket"], ans: 0, exp: "Alternatively, you can use GitHub Desktop if you prefer to use an application." },
+  { cat: "Git Basics", q: "What command is used to enter the project folder after cloning?", opts: ["dir <PROJECT_FOLDER>", "open <PROJECT_FOLDER>", "cd <PROJECT_FOLDER>", "enter <PROJECT_FOLDER>"], ans: 2, exp: "After the project has finished cloning, enter the project folder: cd <PROJECT_FOLDER>" },
+  { cat: "Git Basics", q: "What command is used to create and switch to a new branch?", opts: ["git switch new", "git branch -n", "git checkout -b <BRANCH_NAME>", "git make-branch <BRANCH_NAME>"], ans: 2, exp: "(Optional) Create a new branch by using the following command: git checkout -b <BRANCH_NAME>" },
+  { cat: "Git Basics", q: "Is creating a new branch before making changes mandatory?", opts: ["Yes, Git will throw an error otherwise", "No, but it is highly recommended", "Yes, it is required by all public repositories", "No, it is highly discouraged"], ans: 1, exp: "This step isn't mandatory, but is highly recommended." },
+  { cat: "Git Basics", q: "What is the benefit of creating a new branch for your work?", opts: ["It saves disk space", "You can work on multiple contributions separately", "It encrypts your code", "It skips status checks"], ans: 1, exp: "With a new branch, you can work on multiple contributions separately, each one using a different branch." },
+  { cat: "Git Basics", q: "What command stages all your changes for commit?", opts: ["git stage all", "git add .", "git save", "git push"], ans: 1, exp: "git add ." },
+  { cat: "Git Basics", q: "What command creates a commit with a specified message?", opts: ["git message \"...\"", "git add -m \"...\"", "git push -m \"...\"", "git commit -m \"<COMMIT_MESSAGE>\""], ans: 3, exp: "git commit -m \"<COMMIT_MESSAGE>\"" },
+  { cat: "Git Basics", q: "Where is it a good idea to check for commit-message conventions you might need to follow?", opts: ["The .gitignore file", "The CONTRIBUTING file", "The LICENSE file", "The README file"], ans: 1, exp: "It's also a good idea to check if there are mentions in the CONTRIBUTING file for commit-message conventions you need to follow." },
+  { cat: "Git Basics", q: "What command pushes your new branch to the remote repository (your fork)?", opts: ["git push --set-upstream origin <BRANCH_NAME>", "git push origin main", "git upload <BRANCH_NAME>", "git remote push"], ans: 0, exp: "Push your changes to the remote by using the command: git push --set-upstream origin <BRANCH_NAME>" },
+
+  // ── STATUS CHECKS & DETAILS ───────────────────────────────────────────────
+  { cat: "Git Basics", q: "What does the term 'upstream repository' refer to in the context of pushing code?", opts: ["The original, public repository you do not own", "The remote repository linked to your local repository", "The master branch on your local machine", "A secondary backup repository"], ans: 1, exp: "When we talk about an upstream repository, we refer to the remote repository linked to your local repository." },
+  { cat: "Git Basics", q: "What is 'origin' in the context of Git?", opts: ["The default alias for the repository URL", "The name of the main branch", "A git command to undo changes", "The author of the commit"], ans: 0, exp: "The origin is the default alias for the repository URL, which was created by Git in step 4." },
+  { cat: "Git Basics", q: "What command should you enter to push if you didn't create a new branch previously?", opts: ["git push origin new", "git push --force", "git push", "git upload"], ans: 2, exp: "If you didn't create a branch previously, enter only git push." },
+  { cat: "Pull Requests", q: "Where can you find the issue number to link it in your pull request?", opts: ["At the bottom of the issue description", "In the URL only", "Next to its title", "In the repository settings"], ans: 2, exp: "You can find the issue number next to its title." },
+  { cat: "Status Checks", q: "What is the purpose of status checks on a pull request?", opts: ["To calculate the cost of the changes", "They are automated checks that maintainers have put in place to ensure a consistent quality of the project", "To assign the pull request to a reviewer", "To automatically merge the code"], ans: 1, exp: "These status checks are automated checks that the maintainers have put in place to ensure a consistent quality of the project." },
+  { cat: "Status Checks", q: "What is required regarding status checks to get your pull request accepted?", opts: ["It needs to pass at least 50% of automated checks", "It needs to pass all automated checks", "They are optional and can be ignored", "Only the author's local tests need to pass"], ans: 1, exp: "To get your pull request accepted, it needs to pass all automated checks." },
+  { cat: "Status Checks", q: "What should you do if an automated check is failing and you want to learn more?", opts: ["Close the pull request", "Delete your fork", "Select the Details button", "Force push your code"], ans: 2, exp: "If one is failing... select the Details button to learn more about the failure." },
+  { cat: "Status Checks", q: "What should you do if you are unsure about what to do with a failing check?", opts: ["Ignore it", "Use the comments to ask for the maintainers' guidance or help", "Create a new pull request", "Email GitHub support"], ans: 1, exp: "If you're unsure about what to do with a failing check, you can always use the comments to ask for the maintainers' guidance or help to fix it." },
+  { cat: "Status Checks", q: "Can status checks ensure that your changes follow the project's rules?", opts: ["No, they only check for syntax errors", "Yes, they can serve different purposes including ensuring rules are followed", "No, human reviewers must do this manually", "Yes, but only for private repositories"], ans: 1, exp: "Status checks can serve different purposes. For example, they can ensure that your changes follow the project's rules..." },
+  { cat: "Pull Requests", q: "If your pull request requires many changes or introduces a new feature, what must you do before starting work?", opts: ["Get the maintainers' approval", "Purchase a GitHub license", "Add yourself as a maintainer", "Write a blog post about it"], ans: 0, exp: "If it's a new feature proposition or if the issue requires many changes, make sure to get the maintainers' approval before you move on to the next step." },
+
+  // ── ETIQUETTE & REVIEWS ─────────────────────────────────────────────
+  { cat: "Etiquette", q: "What is the best way to get the maintainers' opinions if you are unsure about some changes you made?", opts: ["Email them directly", "Comment directly on the pull requests", "Message them on social media", "Create a new issue"], ans: 1, exp: "The best way to do that is to comment directly on the pull requests." },
+  { cat: "Etiquette", q: "What type of pull request can you create to ask for guidance on a work-in-progress?", opts: ["A final pull request", "A locked pull request", "A draft pull request", "An invisible pull request"], ans: 2, exp: "If you consider your changes a work-in-progress, you also have the option to create a draft pull request instead." },
+  { cat: "Etiquette", q: "What happens to the pull request if you push new commits to your branch after receiving feedback?", opts: ["The pull request is closed automatically", "The pull request will automatically update with the new changes", "You must open a brand new pull request", "The maintainers receive an angry notification"], ans: 1, exp: "If you push new commits to your branch, the pull request will automatically update with the new changes." },
+  { cat: "Etiquette", q: "What does it usually mean if a reviewer leaves comments on your pull request?", opts: ["Your code is perfect", "More details are needed about your changes or the motivation behind it", "You are banned from the project", "They accidentally clicked the wrong button"], ans: 1, exp: "The reviewer made some comments. It usually means that more details are needed about your changes or the motivation behind it." },
+  { cat: "Etiquette", q: "What should you remember to do in all your exchanges during a pull request review?", opts: ["Argue your point aggressively", "Demand an immediate merge", "Always be respectful and follow the code of conduct", "Ignore feedback from other contributors"], ans: 2, exp: "Remember to always be respectful in all your exchanges and to follow the code of conduct." },
+  { cat: "Etiquette", q: "Contributing to open source requires what specific virtue mentioned in the text?", opts: ["Speed", "Patience", "Perfection", "Wealth"], ans: 1, exp: "Contributing to open source requires patience. Sometimes you don't get immediate feedback." },
+  { cat: "Etiquette", q: "Why is reaching out to maintainers privately (via email, X) considered harmful?", opts: ["It costs money", "It is illegal", "It is considered harmful and prevents public learning", "It breaks the GitHub servers"], ans: 2, exp: "Don't reach out to the maintainers privately... This behavior is considered harmful. Discussing things publicly also gives other contributors... the opportunity to learn." },
+  { cat: "Etiquette", q: "What is a benefit of discussing issues publicly rather than privately?", opts: ["It gives other contributors the opportunity to learn about the process and best practices", "It increases your follower count", "It guarantees the pull request will be merged faster", "It bypasses automated status checks"], ans: 0, exp: "Discussing things publicly also gives other contributors or passersby the opportunity to learn about the process behind the changes and the best practices to follow." },
+  { cat: "Etiquette", q: "If you don't get an answer immediately on an issue, what should you do?", opts: ["Spam the issue thread", "Wait a little longer before you ping the maintainers", "Open three more identical issues", "Delete your GitHub account"], ans: 1, exp: "If you don't get an answer immediately, wait a little longer before you ping the maintainers." },
+  { cat: "Etiquette", q: "What should you do if your pull request requires some changes?", opts: ["Get discouraged and quit", "Look closely at the feedback provided and make the requested changes", "Argue that your code is flawless", "Force push the same code again"], ans: 1, exp: "Your pull request requires some changes. Don't get discouraged! Look closely at the feedback provided. If you make the requested changes, there's a good chance that your pull request will be accepted." }
+];
+
+const catColorMap = { 
+  "Communication": "cat-communication",
+  "Git Basics": "cat-git-basics",
+  "Pull Requests": "cat-pull-requests",
+  "Status Checks": "cat-status-checks",
+  "Etiquette": "cat-etiquette"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-communication';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

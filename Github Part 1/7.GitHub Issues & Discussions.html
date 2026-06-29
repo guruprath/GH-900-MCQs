@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Issues & Discussions — 75 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-overview { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-issues { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-discussions { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-categories { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-management { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 75 Questions</div>
+  <h1>GitHub Issues & Discussions</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">75</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Overview',this)">Overview</button>
+    <button class="filter-btn" onclick="filterCat('Issues',this)">Issues</button>
+    <button class="filter-btn" onclick="filterCat('Discussions',this)">Discussions Setup</button>
+    <button class="filter-btn" onclick="filterCat('Categories',this)">Categories</button>
+    <button class="filter-btn" onclick="filterCat('Management',this)">Management</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- OVERVIEW (1-5) ---
+  { cat: "Overview", q: "What is at the core of everything GitHub does?", opts: ["Code compilation", "Collaboration", "Data mining", "Cloud hosting"], ans: 1, exp: "Collaboration is at the core of everything GitHub does." },
+  { cat: "Overview", q: "What helps you organize your project and its files?", opts: ["Issues", "Discussions", "Repositories", "Commits"], ans: 2, exp: "Repositories help you organize your project and its files." },
+  { cat: "Overview", q: "Which feature is described as a way to keep track of changes made to your project?", opts: ["Pull requests", "Discussions", "Wikis", "Issues"], ans: 0, exp: "Pull requests, which is a way to keep track of changes made to your project." },
+  { cat: "Overview", q: "What two specific features does this unit focus on?", opts: ["Branches and Commits", "Forks and Clones", "Issues and Discussions", "Actions and Packages"], ans: 2, exp: "In this unit, we're learning about issues and discussions." },
+  { cat: "Overview", q: "What do issues and discussions contribute to within the GitHub Enterprise Platform?", opts: ["The collaborative nature", "The automated testing", "The security scanning", "The billing process"], ans: 0, exp: "These are features that contribute to the collaborative nature of the GitHub Enterprise Platform." },
+
+  // --- ISSUES (6-25) ---
+  { cat: "Issues", q: "What are GitHub Issues primarily used to track?", opts: ["Only bugs", "Ideas, feedback, tasks, or bugs", "Source code history", "Deployment servers"], ans: 1, exp: "GitHub Issues are used to track ideas, feedback, tasks, or bugs for work on GitHub." },
+  { cat: "Issues", q: "True or False: Issues can only be created directly from the repository's main page.", opts: ["True, there is only one way", "False, they can be created in various ways", "True, but only by admins", "False, they can only be created via the API"], ans: 1, exp: "Issues can be created in various ways, so you can choose the most convenient method for your workflow." },
+  { cat: "Issues", q: "Which of the following is NOT a listed method for creating an issue?", opts: ["A specific line of code", "An item in a task list", "A URL query", "An email sent to GitHub support"], ans: 3, exp: "The text lists: repository, task list, project note, comment in issue/PR, specific line of code, and URL query. Email is not listed." },
+  { cat: "Issues", q: "Can an issue be generated directly from a comment in an existing pull request?", opts: ["Yes", "No", "Only if the pull request is closed", "Only by repository owners"], ans: 0, exp: "Issues can also be created from... A comment in an issue or pull request." },
+  { cat: "Issues", q: "Where do you navigate first to create an issue from a repository on GitHub.com?", opts: ["The Settings tab", "The main page of the repository", "Your user profile", "The global search bar"], ans: 1, exp: "On GitHub.com, navigate to the main page of the repository." },
+  { cat: "Issues", q: "Under the repository name, what tab must you select to view or create issues?", opts: ["Projects", "Pull requests", "Issues", "Code"], ans: 2, exp: "Under your repository name, select Issues." },
+  { cat: "Issues", q: "What button do you click on the Issues page to start creating a new issue?", opts: ["Submit", "New issue", "Create thread", "Open blank"], ans: 1, exp: "Select New issue." },
+  { cat: "Issues", q: "If your repository uses issue templates, what button appears next to the type of issue you'd like to open?", opts: ["Start now", "Get started", "Open template", "Select"], ans: 1, exp: "next to the type of issue you'd like to open select Get started." },
+  { cat: "Issues", q: "What option should you choose if the type of issue you want to open isn't included in the available templates?", opts: ["Cancel issue", "Open a blank issue", "Request new template", "Contact maintainer"], ans: 1, exp: "If the type of issue you'd like to open isn't included in the available options, select Open a blank issue." },
+  { cat: "Issues", q: "If a repository uses issue forms, what will you see instead of a blank issue template?", opts: ["A structured form to fill out", "A warning message", "A redirect to discussions", "An email prompt"], ans: 0, exp: "If your repository uses issue forms, you'll see a structured form to fill out instead of a blank issue template." },
+  { cat: "Issues", q: "What do issue forms allow maintainers to do?", opts: ["Block users from submitting bugs", "Collect specific information in a standardized format", "Automatically fix bugs in code", "Charge money for issue resolution"], ans: 1, exp: "Issue forms allow maintainers to collect specific information in a standardized format." },
+  { cat: "Issues", q: "What is required to be entered in the 'Add a title' field?", opts: ["The code snippet", "A title for your issue", "Your username", "A category tag"], ans: 1, exp: "In the Add a title field, enter a title for your issue." },
+  { cat: "Issues", q: "Where do you provide the main details or body text of your issue?", opts: ["In the Add a description field", "In the Title field", "In the Labels section", "In the Milestone tab"], ans: 0, exp: "In the Add a description field, type a description of your issue." },
+  { cat: "Issues", q: "Which of the following actions can a project maintainer perform on a new issue?", opts: ["Assign it to someone", "Add it to a project board", "Apply a label", "All of the above"], ans: 3, exp: "If you're a project maintainer, you can assign the issue to someone, add it to a project board, associate it with a milestone, or apply a label." },
+  { cat: "Issues", q: "Can a project maintainer associate an issue with a milestone?", opts: ["Yes", "No", "Only if it is a bug", "Only if they have Enterprise licensing"], ans: 0, exp: "you can... associate it with a milestone." },
+  { cat: "Issues", q: "What button finalizes the creation of the issue?", opts: ["Save draft", "Submit new issue", "Publish", "Create bug"], ans: 1, exp: "When you're finished, select Submit new issue." },
+  { cat: "Issues", q: "What tools are mentioned to help manage collaboration effectively and increase issue visibility?", opts: ["Labels, mentions, and reactions", "Folders, tags, and emojis", "Emails, texts, and calls", "Branches, forks, and clones"], ans: 0, exp: "Use labels, mentions, and reactions to manage collaboration effectively and increase issue visibility." },
+  { cat: "Issues", q: "What is the primary benefit of using issue templates?", opts: ["They stop users from submitting issues", "They help maintain consistent structure and expectations for contributors", "They automatically write code to fix the issue", "They hide issues from public view"], ans: 1, exp: "Issue templates help maintain consistent structure and expectations for contributors." },
+  { cat: "Issues", q: "If a conversation is better suited for asking questions and sharing general information, what feature should be used instead of Issues?", opts: ["Pull Requests", "Wikis", "GitHub Discussions", "Gists"], ans: 2, exp: "Some conversations may be more appropriate for GitHub Discussions. Use GitHub Discussions to ask and answer questions, share information..." },
+  { cat: "Issues", q: "Which of the following is an example of an actionable item best suited for an Issue rather than a Discussion?", opts: ["A tracked bug requiring a code fix", "A general question about the roadmap", "An announcement of a new version", "A community poll"], ans: 0, exp: "Issues are used to track ideas, feedback, tasks, or bugs for work. Discussions are for Q&A, ideas, general feedback not tied to code." },
+
+  // --- DISCUSSIONS SETUP (26-45) ---
+  { cat: "Discussions", q: "What are GitHub Discussions primarily designed for?", opts: ["Tracking bugs in the code", "Conversations that aren't necessarily tied to code", "Automating software deployments", "Storing large binary files"], ans: 1, exp: "Discussions are designed for conversations that aren’t necessarily tied to code—such as Q&A, ideas, or general feedback." },
+  { cat: "Discussions", q: "What kind of communication do Discussions support within a shared forum?", opts: ["One-way broadcasts only", "Open, ongoing communication", "Private messaging between two users", "Automated bot alerts only"], ans: 1, exp: "They support open, ongoing communication within a shared forum." },
+  { cat: "Discussions", q: "Are GitHub Discussions always public?", opts: ["Yes, they cannot be made private", "No, they can be public or private depending on the repository's visibility", "Yes, unless you pay for Enterprise", "No, they are always private"], ans: 1, exp: "and can be public or private, depending on the repository's visibility." },
+  { cat: "Discussions", q: "Who has the authority to enable GitHub Discussions for a community repository?", opts: ["Any authenticated user", "Repository owners and those with Write access", "Only GitHub administrators", "Users with Read access"], ans: 1, exp: "Repository owners and those with Write access can enable GitHub Discussions for a community." },
+  { cat: "Discussions", q: "How is the visibility of a discussion determined?", opts: ["It is set manually for each discussion", "It inherits visibility from the repository they’re created in", "It is always public", "It is determined by the user's profile settings"], ans: 1, exp: "The visibility of a discussion inherits visibility from the repository they’re created in." },
+  { cat: "Discussions", q: "When you first enable GitHub Discussions, what are you prompted to configure?", opts: ["A welcome post", "A billing account", "A CI/CD pipeline", "A new branch"], ans: 0, exp: "When you first enable GitHub Discussions, you're prompted to configure a welcome post." },
+  { cat: "Discussions", q: "To enable discussions, what tab must you select from the main page of the repository?", opts: ["Code", "Issues", "Settings", "Actions"], ans: 2, exp: "Under your repository name, select Settings." },
+  { cat: "Discussions", q: "Under which section in the repository Settings do you find the option to setup discussions?", opts: ["Security", "Features", "Pages", "Collaborators"], ans: 1, exp: "Scroll down to the Features section and under Discussions, select Setup discussions." },
+  { cat: "Discussions", q: "What button activates the feature in the Settings page?", opts: ["Setup discussions", "Enable forums", "Start chatting", "Create wiki"], ans: 0, exp: "under Discussions, select Setup discussions." },
+  { cat: "Discussions", q: "What should you do to the welcome post template under 'Start a new discussion'?", opts: ["Delete it immediately", "Edit the template to match your community's tone and resources", "Leave it blank", "Lock it from comments"], ans: 1, exp: "Under Start a new discussion, edit the template to match your community's tone and resources." },
+  { cat: "Discussions", q: "What button do you click to finalize the welcome post and finish enabling the feature?", opts: ["Save changes", "Start discussion", "Enable", "Publish"], ans: 1, exp: "Select Start discussion." },
+  { cat: "Discussions", q: "Who can create a new discussion in a standard repository?", opts: ["Only the repository owner", "Any authenticated user who can view the repository", "Only users with Write access", "Anonymous users"], ans: 1, exp: "Any authenticated user who can view the repository can create a discussion in that repository." },
+  { cat: "Discussions", q: "For organization-level discussions, who has permission to create a discussion?", opts: ["Only organization owners", "Any user who can view the source repository", "Only billing managers", "Nobody, organization discussions are read-only"], ans: 1, exp: "For organization-level discussions, any user who can view the source repository can also create a discussion." },
+  { cat: "Discussions", q: "Where do you navigate to start a new discussion after the feature is enabled?", opts: ["The Settings tab", "The Discussions tab under the repository or organization name", "The Pull Requests tab", "The Insights tab"], ans: 1, exp: "Under your repository or organization name, select Discussions." },
+  { cat: "Discussions", q: "On the Discussions page, where is the 'New discussion' button located?", opts: ["Bottom left", "Center", "Right side of the page", "Hidden in a dropdown menu"], ans: 2, exp: "On the right side of the page, select New discussion." },
+  { cat: "Discussions", q: "After selecting 'New discussion', how do you choose a category?", opts: ["By typing it in manually", "By choosing 'Get started' next to the desired category", "By dragging and dropping", "By running a terminal command"], ans: 1, exp: "Select a discussion category by choosing Get started." },
+  { cat: "Discussions", q: "Is it possible to create a discussion without placing it in a category?", opts: ["Yes, categories are optional", "No, all discussions must be placed in a category", "Only for repository owners", "Only if it is a private repository"], ans: 1, exp: "All discussions must be placed in a category." },
+  { cat: "Discussions", q: "Who defines the discussion categories available in a repository?", opts: ["GitHub Support", "Repository maintainers", "Any user", "The repository creator only"], ans: 1, exp: "Repository maintainers define these categories." },
+  { cat: "Discussions", q: "What two fields must be filled out to create the content of your new discussion?", opts: ["Labels and Milestones", "Title and Body (Write)", "Category and Tags", "Assignees and Reviewers"], ans: 1, exp: "Under Discussion title enter a title for your discussion, and under Write enter the body of your discussion." },
+  { cat: "Discussions", q: "What is the final button clicked to post the new discussion?", opts: ["Submit issue", "Start discussion", "Post topic", "Save draft"], ans: 1, exp: "Select Start discussion." },
+
+  // --- CATEGORIES (46-60) ---
+  { cat: "Categories", q: "What three elements are included in each discussion category to clarify its purpose?", opts: ["Name, color, and tag", "Unique name, emoji, and description", "ID, icon, and timestamp", "Title, author, and date"], ans: 1, exp: "Each discussion category includes a unique name, emoji, and description to clarify its purpose." },
+  { cat: "Categories", q: "Why are discussion categories customizable?", opts: ["To change the UI color scheme", "To help distinguish categories that are Q&A from more open-ended conversations", "To restrict user access", "To charge for premium features"], ans: 1, exp: "They're customizable to help distinguish categories that are Q&A or more open-ended conversations." },
+  { cat: "Categories", q: "Which default category is intended for 'Updates and news from project maintainers'?", opts: ["General", "Ideas", "Announcements", "Show and tell"], ans: 2, exp: "📣 Announcements: Updates and news from project maintainers" },
+  { cat: "Categories", q: "What format does the 'Announcements' category use?", opts: ["Open-ended discussion", "Announcement", "Question and Answer", "Polls"], ans: 1, exp: "Format for Announcements is 'Announcement'." },
+  { cat: "Categories", q: "Which default category is intended for 'Anything and everything relevant to the project'?", opts: ["Q&A", "General", "Polls", "Ideas"], ans: 1, exp: "#️⃣ General: Anything and everything relevant to the project" },
+  { cat: "Categories", q: "What format does the 'General' category use?", opts: ["Announcement", "Open-ended discussion", "Polls", "Question and Answer"], ans: 1, exp: "Format for General is 'Open-ended discussion'." },
+  { cat: "Categories", q: "Which default category is for 'Ideas to change or improve the project'?", opts: ["Show and tell", "Announcements", "Ideas", "Q&A"], ans: 2, exp: "💡 Ideas: Ideas to change or improve the project" },
+  { cat: "Categories", q: "What format does the 'Ideas' category use?", opts: ["Open-ended discussion", "Announcement", "Polls", "Question and Answer"], ans: 0, exp: "Format for Ideas is 'Open-ended discussion'." },
+  { cat: "Categories", q: "Which default category allows the community to vote on multiple options?", opts: ["Ideas", "General", "Polls", "Q&A"], ans: 2, exp: "🗳️ Polls: Polls with multiple options for the community to vote for and discuss" },
+  { cat: "Categories", q: "What format does the 'Polls' category use?", opts: ["Open-ended discussion", "Polls", "Question and Answer", "Announcement"], ans: 1, exp: "Format for Polls is 'Polls'." },
+  { cat: "Categories", q: "Which default category is specifically for 'Questions for the community to answer'?", opts: ["Q&A", "General", "Ideas", "Show and tell"], ans: 0, exp: "🙏 Q&A: Questions for the community to answer" },
+  { cat: "Categories", q: "What format does the 'Q&A' category use?", opts: ["Open-ended discussion", "Polls", "Question and Answer", "Announcement"], ans: 2, exp: "Format for Q&A is 'Question and Answer'." },
+  { cat: "Categories", q: "Which default category is meant for sharing 'Creations, experiments, or tests relevant to the project'?", opts: ["Announcements", "Ideas", "Show and tell", "Polls"], ans: 2, exp: "🙌 Show and tell: Creations, experiments, or tests relevant to the project" },
+  { cat: "Categories", q: "What format does the 'Show and tell' category use?", opts: ["Open-ended discussion", "Announcement", "Polls", "Question and Answer"], ans: 0, exp: "Format for Show and tell is 'Open-ended discussion'." },
+  { cat: "Categories", q: "True or False: Maintainers can define new custom categories beyond the defaults.", opts: ["True", "False", "Only with Enterprise", "Only if there are no existing categories"], ans: 0, exp: "Repository maintainers define these categories. They're customizable..." },
+
+  // --- MANAGEMENT (61-75) ---
+  { cat: "Management", q: "In what specific style of discussion can you mark a comment as an answer?", opts: ["Announcement", "Q&A style", "Polls", "Show and tell"], ans: 1, exp: "In a Q&A style discussion, you can mark a comment as the accepted answer to the original question." },
+  { cat: "Management", q: "How do you mark a comment as the accepted answer?", opts: ["Reply with the word 'Answer'", "Select 'Mark as answer' below the comment", "React with a checkmark emoji", "Contact GitHub support"], ans: 1, exp: "Select Mark as answer below the comment." },
+  { cat: "Management", q: "What happens visually when a comment is marked as the answer?", opts: ["It is deleted", "It is highlighted, making it easy for others to find", "It turns red", "It is moved to a separate page"], ans: 1, exp: "The comment will be highlighted, making it easy for others to find the solution quickly." },
+  { cat: "Management", q: "Is it possible to unmark an answer if a better solution is provided later?", opts: ["Yes", "No, it is permanent", "Only by repository owners", "Only within 24 hours"], ans: 0, exp: "You can also unmark an answer if needed." },
+  { cat: "Management", q: "If a discussion reveals a bug that needs to be fixed in the code, what action can you take?", opts: ["Delete the discussion", "Convert the discussion to an issue", "Mark it as an answer", "Create a pull request directly from the comment"], ans: 1, exp: "If a discussion leads to work that needs to be tracked, you can convert the discussion into an issue." },
+  { cat: "Management", q: "Where is the menu located to convert a discussion to an issue?", opts: ["At the bottom of the page", "In the repository settings", "At the top-right of the discussion (... menu)", "Next to the 'New discussion' button"], ans: 2, exp: "Select the ... (three dots) menu at the top-right of the discussion." },
+  { cat: "Management", q: "What must you do after selecting 'Convert to issue'?", opts: ["Write code to fix the issue", "Confirm the conversion and select a repository to create the new issue in", "Assign three reviewers", "Pay a fee"], ans: 1, exp: "Confirm the conversion and select a repository to create the new issue in." },
+  { cat: "Management", q: "Why is converting a discussion to an issue a useful feature?", opts: ["It hides community complaints", "It keeps track of actionable work that originates from community conversations", "It automatically bans disruptive users", "It increases repository storage limits"], ans: 1, exp: "This keeps track of actionable work that originates from community conversations." },
+  { cat: "Management", q: "What can repository maintainers do to make important discussions highly visible?", opts: ["Email them to everyone", "Pin important discussions to the top of the Discussions tab", "Make them flash bright colors", "Convert them to Wikis"], ans: 1, exp: "Repository maintainers can pin important discussions to the top of the Discussions tab for better visibility." },
+  { cat: "Management", q: "To pin a discussion, what menu do you access?", opts: ["The repository settings", "The User Profile menu", "The ... (three dots) menu at the top-right of the discussion", "The global search bar"], ans: 2, exp: "Select the ... (three dots) menu at the top-right of the discussion." },
+  { cat: "Management", q: "After opening the ... (three dots) menu, what option do you choose to pin?", opts: ["Pin discussion", "Make sticky", "Highlight thread", "Top post"], ans: 0, exp: "Select Pin discussion." },
+  { cat: "Management", q: "Which of the following is an example of when pinning a discussion is helpful?", opts: ["Highlighting announcements", "Highlighting important questions", "Highlighting ongoing topics", "All of the above"], ans: 3, exp: "Pinned discussions are helpful for highlighting announcements, important questions, or ongoing topics the community should notice." },
+  { cat: "Management", q: "Can a user who only has Read access to a repository convert a discussion to an issue?", opts: ["Yes, anyone can", "No, it requires higher permissions (implied as it alters repository tracking structure)", "Yes, if they created the discussion", "Only if it is a public repository"], ans: 1, exp: "Converting to an issue modifies the repository's tracking board, typically requiring Write/maintainer access (implied by the roles mentioned earlier like 'project maintainer')." },
+  { cat: "Management", q: "When converting a discussion to an issue, can you choose to place the issue in a different repository?", opts: ["No, it must be the same repository", "Yes, you must 'select a repository to create the new issue in'", "Only if you own both repositories", "Only in enterprise environments"], ans: 1, exp: "Confirm the conversion and select a repository to create the new issue in." },
+  { cat: "Management", q: "Which GitHub feature is specifically designed to handle Q&A style formats with accepted answers?", opts: ["Issues", "Wikis", "Pull Requests", "Discussions"], ans: 3, exp: "Discussions support the Q&A format... In a Q&A style discussion, you can mark a comment as the accepted answer." }
+];
+
+const catColorMap = {
+  "Overview": "cat-overview",
+  "Issues": "cat-issues",
+  "Discussions": "cat-discussions",
+  "Categories": "cat-categories",
+  "Management": "cat-management"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-overview';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

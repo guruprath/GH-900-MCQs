@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Code Scanning & CodeQL — 90 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-setup { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-pr { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-actions { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-alerts { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-resolution { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 90 Questions</div>
+  <h1>GitHub Code Scanning & CodeQL</h1>
+  <p>Comprehensive MCQs on enabling, triaging, and fixing alerts.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">90</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Setup',this)">Setup</button>
+    <button class="filter-btn" onclick="filterCat('Pull Requests',this)">Pull Requests</button>
+    <button class="filter-btn" onclick="filterCat('Actions & Logs',this)">Actions & Logs</button>
+    <button class="filter-btn" onclick="filterCat('Alerts & Triage',this)">Alerts & Triage</button>
+    <button class="filter-btn" onclick="filterCat('Resolution',this)">Resolution</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS (1–15) ────────────────────────────────────────────────
+  { cat: "Basics", q: "What product suite is Code scanning part of?", opts: ["GitHub Actions", "GitHub Advanced Security (GHAS)", "GitHub Copilot", "GitHub Enterprise"], ans: 1, exp: "Code scanning is part of the GitHub Advanced Security (GHAS) product suite." },
+  { cat: "Basics", q: "In addition to SAST and container testing, what other type of testing does Code scanning support?", opts: ["DAST", "Penetration testing", "Infrastructure as code (IaC)", "Load testing"], ans: 2, exp: "It supports many types such as SAST, container, and infrastructure as code." },
+  { cat: "Basics", q: "Where do code scanning results live?", opts: ["In an external dashboard", "Directly in GitHub next to your code", "Only in email notifications", "In the repository Wiki"], ans: 1, exp: "And, the best part is that the results can also live directly in GitHub next to your code. No need for context switching!" },
+  { cat: "Basics", q: "What is the pricing model for all features of GitHub Advanced Security on public repositories?", opts: ["Pay-per-user", "Requires a paid enterprise account", "Free", "Freemium with limits"], ans: 2, exp: "All features of GitHub Advanced Security are free for public repositories." },
+  { cat: "Basics", q: "What is required to use GitHub Advanced Security on private repositories?", opts: ["A minimum of 50 users", "It is free for all private repositories", "A compatible paid account", "Open source licensing"], ans: 2, exp: "However, private repositories require a compatible paid account." },
+  { cat: "Basics", q: "What type of testing tool is CodeQL?", opts: ["Dynamic analysis testing tool", "Interactive testing tool", "Static analysis testing tool", "Network vulnerability scanner"], ans: 2, exp: "CodeQL is a static analysis testing tool..." },
+  { cat: "Basics", q: "Which of the following security weaknesses does CodeQL help identify?", opts: ["DDoS vulnerabilities", "SQL injection", "Man-in-the-middle attacks", "Phishing links"], ans: 1, exp: "...that helps you identify security weaknesses such as SQL injection..." },
+  { cat: "Basics", q: "Besides SQL injection and code injection, what is another weakness CodeQL identifies?", opts: ["Cross-site scripting (XSS)", "Buffer overflow", "Missing headers", "Expired SSL certificates"], ans: 0, exp: "...cross-site scripting, and code injection issues." },
+  { cat: "Basics", q: "How are CodeQL queries typically collected?", opts: ["Into isolated scripts", "Into query suites", "Into binary packages", "Into JSON payloads"], ans: 1, exp: "Typically CodeQL queries are collected into query suites to cover multiple patterns." },
+  { cat: "Basics", q: "Why are CodeQL queries collected into query suites?", opts: ["To save disk space", "To bypass rate limits", "To cover multiple patterns", "To speed up the network transfer"], ans: 2, exp: "Typically CodeQL queries are collected into query suites to cover multiple patterns." },
+  { cat: "Basics", q: "Who pre-populates the query suites for common scenarios and languages?", opts: ["Community contributors only", "Teams of security experts", "Machine learning algorithms", "The repository owner"], ans: 1, exp: "To help with this, teams of security experts have pre-populated suites for many common scenarios and programming languages." },
+  { cat: "Basics", q: "What is the simplest way to take advantage of CodeQL?", opts: ["Writing custom queries from scratch", "Accepting the default suite", "Downloading third-party actions", "Running it locally via CLI"], ans: 1, exp: "In many cases, taking advantage of CodeQL is as simple as accepting the default suite..." },
+  { cat: "Basics", q: "If you want to go beyond the default suite, which pre-populated option can you select?", opts: ["The maximum suite", "The extended suite", "The premium suite", "The enterprise suite"], ans: 1, exp: "...but you can also select the extended suite..." },
+  { cat: "Basics", q: "How can you customize your own CodeQL query suite?", opts: ["With GitHub Actions", "By emailing GitHub Support", "Using a browser extension", "Editing the repository README"], ans: 0, exp: "...or customize your own with GitHub Actions." },
+  { cat: "Basics", q: "What is the primary benefit of CodeQL results living directly in GitHub?", opts: ["It saves money", "No need for context switching", "It allows public sharing of vulnerabilities", "It runs tests locally"], ans: 1, exp: "And, the best part is that the results can also live directly in GitHub next to your code. No need for context switching!" },
+
+  // ── SETUP (16–30) ────────────────────────────────────────────────
+  { cat: "Setup", q: "In the default configuration, how are supported languages handled?", opts: ["They must be manually specified in a YAML file", "They will automatically be detected", "Only Python is supported by default", "They are selected via a checkbox list"], ans: 1, exp: "Languages: Supported languages will automatically be detected in your repository..." },
+  { cat: "Setup", q: "Which query suites are provided automatically in the default configuration?", opts: ["Default or Extended", "Basic or Premium", "Standard or Advanced", "Custom or Community"], ans: 0, exp: "Query suites: ... The Default or Extended are provided automatically." },
+  { cat: "Setup", q: "What is the default runner type for running CodeQL analysis?", opts: ["Self-hosted runners", "Third-party cloud runners", "Standard GitHub Hosted Runners", "Local machine runners"], ans: 2, exp: "Runner type: ... This defaults to Standard GitHub Hosted Runners..." },
+  { cat: "Setup", q: "Can the CodeQL runner type be customized?", opts: ["No, it must use GitHub Hosted Runners", "Yes, it can be customized to use self-hosted runners", "Only for enterprise accounts", "Only via the API"], ans: 1, exp: "...but can be customized to use self-hosted runners." },
+  { cat: "Setup", q: "What are the common event triggers for running a CodeQL scan on production code?", opts: ["On issue creation and branch deletion", "Before merging and on a schedule", "Only on release creation", "Only manually triggered by admins"], ans: 1, exp: "Events: Triggers for running a CodeQL scan. It's common to run before merging and on a schedule for production code." },
+  { cat: "Setup", q: "To enable code scanning, which top navigation tab do you select first?", opts: ["Code", "Security", "Actions", "Settings"], ans: 3, exp: "In the top navigation, select the Settings tab." },
+  { cat: "Setup", q: "In the Settings left navigation, which section must you find to set up CodeQL?", opts: ["Code security and analysis", "Security -> Advanced Security", "Developer settings", "Integrations"], ans: 1, exp: "In the left navigation, find the Security section and select Advanced Security." },
+  { cat: "Setup", q: "In the Code scanning area, what do you click to begin setting up CodeQL?", opts: ["The 'Set up' dropdown menu", "The 'Add tool' button", "The 'Configure YAML' link", "The 'Enable all' toggle"], ans: 0, exp: "In the CodeQL setting, click the Set up dropdown menu..." },
+  { cat: "Setup", q: "Which option do you choose from the 'Set up' dropdown to quickly enable CodeQL?", opts: ["Advanced", "Custom", "Default", "Manual"], ans: 2, exp: "...click the Set up dropdown menu and choose Default." },
+  { cat: "Setup", q: "What is the final button clicked to activate CodeQL scanning in the setup activity?", opts: ["Save changes", "Enable CodeQL", "Start scanning", "Commit workflow"], ans: 1, exp: "Click Enable CodeQL." },
+  { cat: "Setup", q: "What happens immediately after clicking 'Enable CodeQL'?", opts: ["An email is sent to all contributors", "The repository is locked for 5 minutes", "It triggers a first run of CodeQL", "A pull request is automatically created"], ans: 2, exp: "Tip: This will trigger a first run of CodeQL." },
+  { cat: "Setup", q: "Where can you view the progress of the first CodeQL run?", opts: ["In the Issues tab", "In the Actions tab", "In the repository Wiki", "In the Code tab"], ans: 1, exp: "You can view the progress in the Actions tab." },
+  { cat: "Setup", q: "Which part of the configuration determines when a CodeQL scan occurs?", opts: ["Query suites", "Runner type", "Events", "Languages"], ans: 2, exp: "Events: Triggers for running a CodeQL scan." },
+  { cat: "Setup", q: "True or False: Using the default configuration means you must write your own GitHub Actions workflow from scratch.", opts: ["True", "False"], ans: 1, exp: "False. In many cases, taking advantage of CodeQL is as simple as accepting the default suite (which automatically provisions the setup)." },
+  { cat: "Setup", q: "Who checks your progress after CodeQL is enabled in the activity?", opts: ["Dependabot", "Mona", "GitHub Support", "The repository admin"], ans: 1, exp: "With CodeQL now enabled, Mona will check your progress and share the next steps." },
+
+  // ── PULL REQUESTS (31–45) ────────────────────────────────────────
+  { cat: "Pull Requests", q: "What file was modified in the activity to trigger a vulnerability?", opts: ["index.html", "main.py", "routes.py", "server.js"], ans: 2, exp: "Navigate to the server folder and select the routes.py file." },
+  { cat: "Pull Requests", q: "In what folder was the `routes.py` file located?", opts: ["src", "app", "server", "api"], ans: 2, exp: "Navigate to the server folder and select the routes.py file." },
+  { cat: "Pull Requests", q: "What type of vulnerability was introduced by the code: `\"SELECT * FROM books WHERE name LIKE '%\" + name + \"%'\"`?", opts: ["Cross-site scripting", "SQL injection", "Command injection", "Buffer overflow"], ans: 1, exp: "Notice that the results found a SQL injection vulnerability." },
+  { cat: "Pull Requests", q: "What branch name was used for the pull request to test the vulnerability?", opts: ["fix-routes", "vulnerable-branch", "test-codeql", "learning-codeql"], ans: 3, exp: "Use the below branch name. learning-codeql" },
+  { cat: "Pull Requests", q: "When creating the commit for the vulnerability, which branch option was strictly advised AGAINST?", opts: ["The learning-codeql branch", "A new branch", "The main branch", "A detached head state"], ans: 2, exp: "DO NOT commit to the main branch." },
+  { cat: "Pull Requests", q: "Where do you look to find the CodeQL analysis job on a pull request?", opts: ["At the top of the description", "In the commit messages", "Scroll to the bottom of the pull request and search for a check", "In the Files changed tab only"], ans: 2, exp: "Scroll to the bottom of the pull request and search for a check named CodeQL." },
+  { cat: "Pull Requests", q: "What is the name of the check that analyzes the proposed code changes in the PR?", opts: ["Security Scan", "CodeQL", "GHAS Checker", "SAST Analysis"], ans: 1, exp: "...search for a check named CodeQL. This is the analysis job scanning the proposed code changes..." },
+  { cat: "Pull Requests", q: "If the CodeQL job is still running on the PR, what is the recommended action?", opts: ["Cancel and restart it", "Wait a few minutes for it to complete", "Merge the PR immediately", "Contact GitHub support"], ans: 1, exp: "If the job is still running, wait a few minutes for it to complete." },
+  { cat: "Pull Requests", q: "Besides identifying the vulnerability, what else do the analysis results suggest in the PR comments?", opts: ["A ban on the user", "Deleting the repository", "A suggested fix", "Upgrading to a paid plan"], ans: 2, exp: "It also suggests a fix." },
+  { cat: "Pull Requests", q: "What link provides additional insights about the alert's data flow?", opts: ["View details", "Show paths", "Trace execution", "Debug logs"], ans: 1, exp: "Clicking the Show paths link will provide additional insights about the alert's data flow..." },
+  { cat: "Pull Requests", q: "In the context of the alert's data flow, what represents the user input?", opts: ["The sink", "The flow", "The source", "The trace"], ans: 2, exp: "...data flow from user input (source)..." },
+  { cat: "Pull Requests", q: "In the context of the alert's data flow, what represents when the application acts on the input?", opts: ["The source", "The origin", "The sink", "The endpoint"], ans: 2, exp: "...and when it is acted on (sink)." },
+  { cat: "Pull Requests", q: "Are you required to resolve the problem in the PR immediately during Step 2 of the activity?", opts: ["Yes, or the repo is locked", "No, don't worry about resolving the problem (yet)", "Yes, it is a hard block", "Only if it is a Critical severity"], ans: 1, exp: "Don't worry about responding to this or resolving the problem (yet)." },
+  { cat: "Pull Requests", q: "Which page offers more information about integrating code scanning into pull requests?", opts: ["The GitHub Blog", "Triage code scanning alerts in pull requests page", "The Advanced Security Wiki", "CodeQL Query Reference"], ans: 1, exp: "Check out the Triage code scanning alerts in pull requests page to learn more..." },
+  { cat: "Pull Requests", q: "What action triggers the creation of the pull request in the activity?", opts: ["Clicking 'Propose changes' and then 'Create pull request'", "Merging to main", "Enabling CodeQL", "Approving a review"], ans: 0, exp: "Click the Propose changes option and click Create pull request." },
+
+  // ── ACTIONS & LOGS (46–60) ───────────────────────────────────────
+  { cat: "Actions & Logs", q: "Which top navigation tab is used to view the CodeQL scanning logs?", opts: ["Code", "Security", "Actions", "Settings"], ans: 2, exp: "In the top navigation, select the Actions tab." },
+  { cat: "Actions & Logs", q: "How do you filter the workflow runs in the Actions tab to only show CodeQL?", opts: ["Search 'security' in the bar", "Select the CodeQL entry in the left navigation", "Filter by author", "Sort by longest duration"], ans: 1, exp: "In the left navigation, select the CodeQL entry to filter the workflow runs." },
+  { cat: "Actions & Logs", q: "In the activity, what was the name of the workflow run clicked to open more details?", opts: ["Initial Scan", "PR #2", "routes.py fix", "learning-codeql push"], ans: 1, exp: "Click on the workflow run with the name PR #2 to open a page with more details." },
+  { cat: "Actions & Logs", q: "How do you reveal all the jobs run in a workflow?", opts: ["Click Show all jobs", "Download the artifact", "Click on the user's avatar", "Enable debug logging"], ans: 0, exp: "Expand the run jobs by clicking Show all jobs..." },
+  { cat: "Actions & Logs", q: "For the Python repository in the activity, what is the specific analyze job named?", opts: ["Scan (python)", "Analyze (python)", "CodeQL (python)", "Lint (python)"], ans: 1, exp: "...then click on the Analyze (python) entry." },
+  { cat: "Actions & Logs", q: "What is displayed after clicking on the Analyze (python) entry?", opts: ["A static PDF report", "The list of all workflow steps", "A graphical chart of vulnerabilities", "The repository settings page"], ans: 1, exp: "The list of all workflow steps is now shown." },
+  { cat: "Actions & Logs", q: "Where can you view the detailed output of the analysis step?", opts: ["In the PR description", "In the analysis logs", "In the Security tab overview", "In the repo's README"], ans: 1, exp: "Find the analysis entry and consider reviewing the logs." },
+  { cat: "Actions & Logs", q: "What triggers the workflow run named 'PR #2' in the activity?", opts: ["A scheduled cron job", "The creation of the pull request", "A manual dispatch event", "Merging the code to main"], ans: 1, exp: "(Implied by the workflow run name 'PR #2' resulting from the previous activity creating the PR)." },
+  { cat: "Actions & Logs", q: "Does the CodeQL scan run as a GitHub Action?", opts: ["Yes", "No"], ans: 0, exp: "In the top navigation, select the Actions tab. ... select the CodeQL entry to filter the workflow runs." },
+  { cat: "Actions & Logs", q: "What type of job list includes the Analyze (python) job?", opts: ["A matrix jobs list", "A parallel linting list", "A deployment jobs list", "A scheduled cron list"], ans: 0, exp: "(Reference from image caption: matrix jobs list of codeql jobs)" },
+  { cat: "Actions & Logs", q: "Is the analysis job in the Actions tab the exact same job that reports back to the PR check?", opts: ["Yes", "No"], ans: 0, exp: "CodeQL check in progress (in PR) ... corresponds to the workflow run in Actions." },
+  { cat: "Actions & Logs", q: "What must you expand before you can click on Analyze (python)?", opts: ["The repository settings", "The run jobs", "The source code tree", "The branch list"], ans: 1, exp: "Expand the run jobs by clicking Show all jobs..." },
+  { cat: "Actions & Logs", q: "Why might a user view the CodeQL scanning logs?", opts: ["To delete the repository", "To review the step-by-step process and find analysis details", "To change the repository name", "To upgrade their billing plan"], ans: 1, exp: "Find the analysis entry and consider reviewing the logs." },
+  { cat: "Actions & Logs", q: "What is the final step in the Actions tab activity before Mona checks progress?", opts: ["Deleting the workflow run", "Reviewing the python analysis logs", "Canceling the job", "Rerunning all jobs"], ans: 1, exp: "Find the analysis entry and consider reviewing the logs. ... Mona will check your progress..." },
+  { cat: "Actions & Logs", q: "True or False: The logs for the CodeQL scan are hidden and inaccessible to users.", opts: ["True", "False"], ans: 1, exp: "False. The activity explicitly guides the user to 'consider reviewing the logs'." },
+
+  // ── ALERTS & TRIAGE (61–75) ──────────────────────────────────────
+  { cat: "Alerts & Triage", q: "Which dedicated tab provides tools for securely managing all security related issues?", opts: ["Issues tab", "Actions tab", "Security tab", "Pull Requests tab"], ans: 2, exp: "GitHub provides a dedicated Security tab for securely managing all security related issues." },
+  { cat: "Alerts & Triage", q: "Under what specific area in the Security tab do CodeQL alerts appear?", opts: ["Secret scanning", "Dependabot alerts", "Code scanning", "Security Advisories"], ans: 2, exp: "...with the results showing up under the Code scanning area." },
+  { cat: "Alerts & Triage", q: "Which of the following is NOT typically provided in the main area of a code scanning alert?", opts: ["Resolution status", "Affected branch", "Developer's email address", "CVE identification number"], ans: 2, exp: "The main area of an alert provides the resolution status, affected branch, code location, and classification information like severity and CVE identification number." },
+  { cat: "Alerts & Triage", q: "What is provided after the status information in an alert overview?", opts: ["A detailed description, recommended solutions, and suggested code changes", "A link to delete the repository", "A button to ban the user", "The cost of the vulnerability"], ans: 0, exp: "After the status information, a detailed description of the issue, recommended solutions, and suggested code changes are provided." },
+  { cat: "Alerts & Triage", q: "What does CWE stand for?", opts: ["Code Weakness Evaluator", "Common Weakness Enumeration", "Critical Warning Event", "Cybersecurity Web Engine"], ans: 1, exp: "The Common Weakness Enumeration (CWE) is a category system..." },
+  { cat: "Alerts & Triage", q: "What is the purpose of the CWE system?", opts: ["To categorize hardware and software weaknesses and vulnerabilities", "To automatically fix code", "To bill customers", "To track user activity"], ans: 0, exp: "The Common Weakness Enumeration (CWE) is a category system for hardware and software weaknesses and vulnerabilities." },
+  { cat: "Alerts & Triage", q: "Where do many of the patterns CodeQL scans for originate?", opts: ["From random user suggestions", "From existing databases of vulnerabilities", "From marketing materials", "From the GitHub API limits"], ans: 1, exp: "Many of the patterns CodeQL scans for come from existing databases of vulnerabilities..." },
+  { cat: "Alerts & Triage", q: "Before merging the pull request in the activity, how many alerts are visible in the Security tab?", opts: ["0", "1", "5", "10"], ans: 0, exp: "Notice that there are no alerts. This is expected since the vulnerable code on the pull request has not been merged yet." },
+  { cat: "Alerts & Triage", q: "Why are there no alerts in the main Security tab before merging?", opts: ["CodeQL failed to run", "The vulnerable code has not been merged to the main branch yet", "The alerts were auto-dismissed", "You lack admin permissions"], ans: 1, exp: "This is expected since the vulnerable code on the pull request has not been merged yet." },
+  { cat: "Alerts & Triage", q: "After merging the pull request to main, what indicates an open alert in the left navigation?", opts: ["A red warning banner", "A '1' entry next to the Code Scanning option", "An email icon", "A locked padlock symbol"], ans: 1, exp: "In the left navigation, notice that the Code Scanning option now has a 1 entry next to it, informing us of an open alert." },
+  { cat: "Alerts & Triage", q: "What does the audit trail on an alert page provide?", opts: ["The exact monetary cost of the bug", "The source of the vulnerability and showing it came from a pull request", "A list of all users who viewed the page", "A compiled binary of the project"], ans: 1, exp: "Notice the audit trail provides the source of the vulnerability and shows that it came from our pull request." },
+  { cat: "Alerts & Triage", q: "When dismissing an alert in the activity, which dismissal reason is selected?", opts: ["Won't fix", "False positive", "Used in tests", "Duplicate"], ans: 2, exp: "Select the Used in tests option..." },
+  { cat: "Alerts & Triage", q: "What description was entered when dismissing the alert in the activity?", opts: ["'Not a real bug'", "'This is a playground repository for learning about CodeQL alerts.'", "'Fixing this later'", "'Ignore for now'"], ans: 1, exp: "...and enter the below description. This is a playground repository for learning about CodeQL alerts." },
+  { cat: "Alerts & Triage", q: "What happens to the alert state after clicking the Dismiss alert button?", opts: ["It changes to Deleted", "It changes to Dismissed", "It changes to Resolved", "It changes to Archived"], ans: 1, exp: "The alert state will change to Dismissed." },
+  { cat: "Alerts & Triage", q: "When an alert is dismissed, what is added to the audit trail?", opts: ["A new vulnerability score", "A read-only entry with the description showing who closed it", "A link to a Wikipedia article", "Nothing is added"], ans: 1, exp: "A read-only entry was added with the description to the audit trail showing who closed it." },
+
+  // ── RESOLUTION (76–90) ───────────────────────────────────────────
+  { cat: "Resolution", q: "How do you return a dismissed alert back to an active state?", opts: ["Create a new pull request", "Click the Reopen alert button", "Contact support", "Run the workflow manually"], ans: 1, exp: "In the top right, click the Reopen alert button." },
+  { cat: "Resolution", q: "What does the alert state change to after clicking 'Reopen alert'?", opts: ["New", "Open", "Re-evaluating", "Active"], ans: 1, exp: "The alert state will change back to Open." },
+  { cat: "Resolution", q: "Does reopening an alert create an entry in the audit trail?", opts: ["Yes, showing who opened it", "No, it deletes the previous entries", "Only if you type a new comment", "Yes, but it is hidden from admins"], ans: 0, exp: "A read-only entry was added to the audit trail showing who opened it." },
+  { cat: "Resolution", q: "In the final activity, what file is edited to fix the security vulnerability?", opts: ["index.html", "database.sql", "routes.py", "app.js"], ans: 2, exp: "Ensure you are on the main branch then navigate to the server folder and select the routes.py file." },
+  { cat: "Resolution", q: "How is the SQL injection vulnerability fixed in the `routes.py` file?", opts: ["By deleting the line entirely", "By using a parameterized query format: `\"SELECT * FROM books WHERE name LIKE %s\", name`", "By adding a comment `# ignore-sql`", "By changing the database type"], ans: 1, exp: "Navigate to about line 16 and modify it to the below. \"SELECT * FROM books WHERE name LIKE %s\", name" },
+  { cat: "Resolution", q: "When fixing the vulnerability in the activity, where do you commit the changes?", opts: ["To a new feature branch", "Directly to the main branch", "To a fork", "To a local stash"], ans: 1, exp: "Use the defaults options to commit directly to the main branch." },
+  { cat: "Resolution", q: "What happens automatically after committing the fix directly to the main branch?", opts: ["The repository is marked safe", "CodeQL will initiate another scan", "All developers receive an SMS", "The issue is deleted from history"], ans: 1, exp: "CodeQL will now initiate a another scan." },
+  { cat: "Resolution", q: "After the CodeQL workflow finishes scanning the fixed code, how many open alerts should there be?", opts: ["0", "1", "2", "It depends on the language"], ans: 0, exp: "There should be no open alerts and 1 closed alerts." },
+  { cat: "Resolution", q: "Where does the resolved alert move to in the Code Scanning area?", opts: ["The Deleted tab", "The Closed list", "The Ignored list", "The Archive"], ans: 1, exp: "Click on Closed to show our recently resolved alert." },
+  { cat: "Resolution", q: "If you view a closed alert, what new information does the audit trail contain?", opts: ["The CVSS base score", "How the alert was fixed", "The IP address of the attacker", "The total cost of the bug"], ans: 1, exp: "Open our alert and notice the audit trail now includes how the alert was fixed." },
+  { cat: "Resolution", q: "Who provides the final review once the alert is fixed?", opts: ["Dependabot", "Mona", "A security researcher", "The CodeQL engine"], ans: 1, exp: "With our alert fixed, Mona will check your progress and share a final review." },
+  { cat: "Resolution", q: "Which GitHub feature allows you to edit the `routes.py` file directly in the browser?", opts: ["The Codespaces button", "The Edit button in the top right of the preview", "The Clone button", "The GitHub CLI"], ans: 1, exp: "In the top right of the preview, click the Edit button." },
+  { cat: "Resolution", q: "Does the alert automatically close when the vulnerable code is removed/fixed and merged to main?", opts: ["Yes, after the subsequent CodeQL scan finishes", "No, it must be manually closed", "Yes, instantly upon commit", "No, it requires an admin approval"], ans: 0, exp: "Wait a moment for the CodeQL workflow to finish. ... There should be no open alerts and 1 closed alerts." },
+  { cat: "Resolution", q: "What is the benefit of keeping the audit trail for a fixed vulnerability?", opts: ["It takes up storage space", "It provides a historical record of the vulnerability's lifecycle (creation to fix)", "It prevents future commits", "It automatically bans users who introduce bugs"], ans: 1, exp: "Open our alert and notice the audit trail now includes how the alert was fixed. (This highlights the tracking capability)." },
+  { cat: "Resolution", q: "What is the ultimate goal achieved at the end of Step 4?", opts: ["Triggering a false positive", "Deleting the repository", "Successfully fixing the security vulnerability introduced earlier", "Bypassing branch protections"], ans: 2, exp: "Nice work! You are all done! 🥳 (After seeing 0 open and 1 closed alerts)." }
+];
+
+const catColorMap = {
+  "Basics": "cat-basics",
+  "Setup": "cat-setup",
+  "Pull Requests": "cat-pr",
+  "Actions & Logs": "cat-actions",
+  "Alerts & Triage": "cat-alerts",
+  "Resolution": "cat-resolution"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

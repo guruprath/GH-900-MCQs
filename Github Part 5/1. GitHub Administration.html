@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Administration Quiz — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-team { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-org { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-enterprise { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-bestpractices { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Administration Quiz · 40 Questions</div>
+  <h1>GitHub<br>Administration</h1>
+  <p>Multiple Choice Questions on Team, Org, and Enterprise Levels</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Team',this)">Team Level</button>
+    <button class="filter-btn" onclick="filterCat('Organization',this)">Organization Level</button>
+    <button class="filter-btn" onclick="filterCat('Enterprise',this)">Enterprise Level</button>
+    <button class="filter-btn" onclick="filterCat('Best Practices',this)">Best Practices</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── TEAM LEVEL (1–12) ──────────────────────────────────────────────
+  { cat: "Team", q: "What is the primary goal of a GitHub administrator?", opts: ["To write code for the development team", "To keep everything working smoothly for users", "To manage individual pull request approvals", "To design the application architecture"], ans: 1, exp: "As a GitHub administrator, your goal is to keep everything working smoothly for your users." },
+  { cat: "Team", q: "In GitHub, what is a team primarily useful for?", opts: ["Hosting public websites", "Refining repository permissions on a more granular level and enabling communication", "Bypassing organization security policies", "Creating unlimited organizations for free"], ans: 1, exp: "A team is a useful substructure for refining repository permissions on a more granular level and enabling communication and notification between team members." },
+  { cat: "Team", q: "Which identity provider (IdP) is specifically mentioned as compatible with GitHub team synchronization?", opts: ["Okta", "Google Workspace", "Microsoft Entra ID", "Ping Identity"], ans: 2, exp: "GitHub allows you to sync your teams with identity provider (IdP) groups such as Microsoft Entra ID." },
+  { cat: "Team", q: "What is a major benefit of synchronizing a GitHub team with an IdP like Microsoft Entra ID?", opts: ["It allows you to bypass all billing", "It replicates changes to GitHub automatically, reducing manual updates", "It automatically writes code for new members", "It makes all repositories public automatically"], ans: 1, exp: "When you synchronize a GitHub team with Microsoft Entra ID, you can replicate changes to GitHub automatically, reducing the need for manual updates and custom scripts." },
+  { cat: "Team", q: "Which of the following is required to use team synchronization with Microsoft Entra ID?", opts: ["GitHub Enterprise Cloud and a verified domain", "A public repository and an open-source license", "GitHub Free tier only", "A minimum of 500 organization members"], ans: 0, exp: "The team synchronization feature requires GitHub Enterprise Cloud and a verified domain." },
+  { cat: "Team", q: "Who has the permission to delete or rename a team in GitHub?", opts: ["Any organization member", "Only the organization owner", "Members of a team with team maintainer or repository admin permissions", "Outside collaborators"], ans: 2, exp: "Members of a team with team maintainer or repository admin permissions can delete or rename a team." },
+  { cat: "Team", q: "Can team maintainers add outside collaborators to team repositories?", opts: ["No, only Enterprise Owners can do this", "Yes, they can add or remove outside collaborators from team repositories", "Yes, but only if the collaborator is already an organization owner", "No, outside collaborators are not allowed in team repositories"], ans: 1, exp: "Team maintainers or repository admins can add or remove outside collaborators from team repositories." },
+  { cat: "Team", q: "Who is considered an 'outside collaborator' on GitHub?", opts: ["A bot account used for CI/CD", "People who aren't explicitly members of your organization, such as consultants", "An organization owner from a different enterprise", "A user who only contributes to public open-source projects"], ans: 1, exp: "Outside collaborators are people who aren't explicitly members of your organization, such as consultants or temporary employees." },
+  { cat: "Team", q: "Who can enable or disable team discussions on the team's page?", opts: ["Only the Organization Owner", "Any user with read access to the team's repositories", "Members with team maintainer or repository admin permissions", "Only members of the Enterprise administrators group"], ans: 2, exp: "Members of a team with team maintainer or repository admin permissions can enable or disable team discussions on the team's page." },
+  { cat: "Team", q: "Which tool does GitHub use for automatic code review assignment for pull requests?", opts: ["Round-robin assignment only", "GitHub's review assignment routing algorithm", "Manual selection by the repository owner", "A third-party custom script API"], ans: 1, exp: "Team maintainers can manage automatic code review assignment utilizing GitHub's review assignment routing algorithm." },
+  { cat: "Team", q: "Who is responsible for setting a team's profile picture?", opts: ["The user who created the organization", "GitHub support", "Members of the team with team maintainer or repository admin permissions", "Any member of the team"], ans: 2, exp: "Members with team maintainer or repository admin permissions can set the team profile picture." },
+  { cat: "Team", q: "Who can create a new team and select or change its parent team?", opts: ["Only Enterprise Owners", "Only Organization Owners", "Team maintainers or repository admins", "Any GitHub user"], ans: 2, exp: "Members of a team with team maintainer or repository admin permissions can create a new team and select or change the parent team." },
+
+  // ── ORGANIZATION LEVEL (13–24) ──────────────────────────────────────
+  { cat: "Organization", q: "In GitHub, what is the purpose of an organization?", opts: ["A personal workspace for a single developer", "A shared space enabling users to collaborate across many projects at once", "A deployment environment for cloud hosting", "A billing portal solely for GitHub Actions"], ans: 1, exp: "Organizations are shared spaces enabling users to collaborate across many projects at once." },
+  { cat: "Organization", q: "Who can invite users to join an organization or remove members from it?", opts: ["Any team member", "Members with organization owner permission", "Outside collaborators", "Repository read-only users"], ans: 1, exp: "Members of an organization with the owner permission can invite users to join the organization, and remove members from it." },
+  { cat: "Organization", q: "Who has the authority to grant team maintainer permissions to organization members?", opts: ["Any team member", "Repository admins", "Organization owners", "Enterprise support"], ans: 2, exp: "Organization owners can organize users into a team, and grant team maintainer permissions to organization members." },
+  { cat: "Organization", q: "Can an organization owner add outside collaborators to organizational repositories?", opts: ["Yes, they can add or remove them", "No, this is strictly an Enterprise Owner task", "No, outside collaborators cannot access organizational repositories", "Yes, but only for maximum of 3 repositories"], ans: 0, exp: "Organization owners can add or remove outside collaborators to organizational repositories." },
+  { cat: "Organization", q: "Who defines the base (default) permission level for a given repository within an organization?", opts: ["The repository creator only", "The organization owner", "The team maintainer", "It is hardcoded by GitHub and cannot be changed"], ans: 1, exp: "Organization owners can grant repository permission levels to members, and set the base (default) permission level for a given repository." },
+  { cat: "Organization", q: "Which level of administration is responsible for setting up billing or assigning a billing manager for a single organization?", opts: ["Team maintainer", "Organization owner", "Outside collaborator", "Repository admin"], ans: 1, exp: "Organization owners can set up billing or assign a billing manager for the organization." },
+  { cat: "Organization", q: "How can organization owners extract various types of information about repositories?", opts: ["Through manual data entry only", "By requesting data dumps from GitHub Support", "Via the use of custom scripts", "Using the default repository settings page only"], ans: 2, exp: "Organization owners can extract various types of information about repositories via the use of custom scripts." },
+  { cat: "Organization", q: "How are organization-wide changes, such as migrations, typically applied by organization owners?", opts: ["By manually editing each repository one by one", "Via the use of custom scripts", "By contacting GitHub enterprise support to do it for them", "Through a built-in one-click migration button"], ans: 1, exp: "Organization owners can apply organization-wide changes such as migrations via the use of custom scripts." },
+  { cat: "Organization", q: "Who is responsible for setting up the overall organization security?", opts: ["Team maintainers", "Organization owners", "Enterprise billing managers", "Individual developers"], ans: 1, exp: "Members of an organization with the owner permission can set up organization security." },
+  { cat: "Organization", q: "Are individual users automatically considered 'organization members' before being added to a specific team?", opts: ["No, they must join a team first", "Yes, each user is an organization member that you can add to a team", "Only if they are outside collaborators", "No, teams exist independently of organizations"], ans: 1, exp: "In GitHub, each user is an organization member that you can add to a team." },
+  { cat: "Organization", q: "Which level of access is required to set repository permission levels for members across the org?", opts: ["Team maintainer", "Repository read access", "Organization owner", "Billing manager"], ans: 2, exp: "Organization owners can grant repository permission levels to members." },
+  { cat: "Organization", q: "Who handles the task of organizing users into a team at the top organizational level?", opts: ["The users themselves via self-service", "Organization owners", "GitHub Support", "Outside collaborators"], ans: 1, exp: "Organization owners can organize users into a team." },
+
+  // ── ENTERPRISE LEVEL (25–34) ────────────────────────────────────────
+  { cat: "Enterprise", q: "What do GitHub Enterprise accounts include?", opts: ["Only GitHub Free features", "GitHub Enterprise Cloud and Enterprise Server instances", "Only on-premise servers", "Third-party CI/CD tools only"], ans: 1, exp: "Enterprise accounts include GitHub Enterprise Cloud and Enterprise Server instances." },
+  { cat: "Enterprise", q: "What is the primary function of an enterprise account?", opts: ["To write custom scripts for a single repository", "To enable owners to centrally manage policy and billing for multiple organizations", "To replace all organization owners", "To provide a marketplace for GitHub Apps"], ans: 1, exp: "Enterprise accounts enable owners to centrally manage policy and billing for multiple organizations." },
+  { cat: "Enterprise", q: "Who can enable SAML single sign-on (SSO) for an enterprise account?", opts: ["Organization owners", "Team maintainers", "Enterprise owners", "IdP Administrators directly from the IdP dashboard"], ans: 2, exp: "At the enterprise level, members of an enterprise with the owner permissions can enable SAML single sign-on for their enterprise account." },
+  { cat: "Enterprise", q: "What does enabling SAML single sign-on for an enterprise allow members to do?", opts: ["Bypass all security checks", "Link their external identity on the IdP to their existing GitHub account", "Automatically merge pull requests", "Create unlimited organizations for free"], ans: 1, exp: "It allows each enterprise member to link their external identity on your IdP to their existing GitHub account." },
+  { cat: "Enterprise", q: "Who has the authority to add or remove organizations from the enterprise?", opts: ["Organization owners", "Team maintainers", "Enterprise owners", "Any enterprise member"], ans: 2, exp: "Members of an enterprise with the owner permissions can add or remove organizations from the enterprise." },
+  { cat: "Enterprise", q: "How is billing managed for multiple organizations within an enterprise?", opts: ["Each organization must handle billing entirely separately", "Enterprise owners can set up billing or assign a billing manager for all organizations", "Billing is handled at the team level", "GitHub does not charge for multiple organizations in an enterprise"], ans: 1, exp: "Enterprise owners can set up billing or assign a billing manager for all organizations in the enterprise." },
+  { cat: "Enterprise", q: "Can enterprise owners set policies that apply to all organizations and repositories?", opts: ["No, policies can only be set at the organization level", "Yes, they can set repository, project board, team, and security policies for the entire enterprise", "Yes, but only for public repositories", "No, enterprise owners only handle billing"], ans: 1, exp: "Enterprise owners can set up repository management policies, project board policies, team policies, and other security settings that apply to all organizations, repositories, and members." },
+  { cat: "Enterprise", q: "How can an enterprise owner extract information about multiple organizations?", opts: ["Using the GitHub UI exclusively", "Via the use of custom scripts", "By assigning the task to a team maintainer", "It is not possible to extract data across organizations"], ans: 1, exp: "Enterprise owners can extract various types of information about organizations via the use of custom scripts." },
+  { cat: "Enterprise", q: "How are enterprise-wide changes, such as migrations, typically executed?", opts: ["Manually by the Enterprise owner", "Via the use of custom scripts", "By individual team maintainers", "Using SAML SSO"], ans: 1, exp: "Enterprise owners can apply enterprise-wide changes such as migrations via the use of custom scripts." },
+  { cat: "Enterprise", q: "What is the purpose of GitHub Connect?", opts: ["To connect external cloud providers to GitHub Actions", "To integrate GitHub Enterprise Server with GitHub.com", "To chat with GitHub Support directly", "To sync local IDEs with GitHub repositories"], ans: 1, exp: "Enterprise owners can use GitHub Connect to integrate GitHub Enterprise Server with GitHub.com." },
+
+  // ── BEST PRACTICES (35–40) ──────────────────────────────────────────
+  { cat: "Best Practices", q: "To accurately reflect your group or company's hierarchy on GitHub, what team structure is recommended?", opts: ["A single flat team for everyone", "Create nested teams", "Separate teams for every single repository", "Only use outside collaborators"], ans: 1, exp: "A best practice is to create nested teams to reflect your group or company's hierarchy within your GitHub organization." },
+  { cat: "Best Practices", q: "How can teams be used to streamline the PR review process?", opts: ["By disabling PR reviews entirely", "By creating teams based on interests or specific technology (e.g., JavaScript, data science)", "By forcing all PRs to be reviewed by the Organization Owner", "By assigning reviews randomly to any enterprise member"], ans: 1, exp: "You can help streamline PR review processes by creating teams based on interests or specific technology. Individuals can choose to join these teams according to their interests or skills." },
+  { cat: "Best Practices", q: "How many organizations does GitHub recommend setting up for your users and repositories?", opts: ["One for every department", "Only one organization", "At least two: one for internal, one for external", "As many as possible to isolate billing"], ans: 1, exp: "We recommend setting up only one organization for your users and repositories." },
+  { cat: "Best Practices", q: "What is a major technical drawback of creating multiple organizations?", opts: ["It is illegal under GitHub's Terms of Service", "Duplicating an organization or sharing configurations between two organizations isn't possible", "You cannot use GitHub Actions across organizations", "It prevents you from using SAML SSO"], ans: 1, exp: "Duplicating an organization or sharing configurations between two organizations isn't possible, meaning you must set up everything from scratch." },
+  { cat: "Best Practices", q: "What is a potential financial downside of utilizing multiple organizations?", opts: ["GitHub charges a base fee per organization created", "You might incur extra costs if you need to install some third-party applications in multiple organizations", "You must pay for outside collaborators twice", "Enterprise licensing costs double"], ans: 1, exp: "Depending on your software providers' policies, you might incur extra costs if you need to install some applications in multiple organizations." },
+  { cat: "Best Practices", q: "Why does managing multiple organizations increase the risk of errors?", opts: ["Because configurations cannot be shared, everything must be set up from scratch every time", "Because GitHub randomly deletes settings when multiple orgs exist", "Because team synchronization stops working", "Because you can no longer use custom scripts"], ans: 0, exp: "Since you cannot duplicate configurations, you must set up everything from scratch every time you create an organization, which increases the risk of errors in your settings and introduces additional complexity and setup time." }
+];
+
+const catColorMap = { 
+  "Team":"cat-team",
+  "Organization":"cat-org",
+  "Enterprise":"cat-enterprise",
+  "Best Practices":"cat-bestpractices" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-team';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

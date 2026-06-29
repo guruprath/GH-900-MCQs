@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to GitHub — 90 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-gh-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-branching { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-commits { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-pull-requests { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-merging { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 90 Questions</div>
+  <h1>Introduction to GitHub</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">90</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('GitHub Basics',this)">GitHub Basics</button>
+    <button class="filter-btn" onclick="filterCat('Branching',this)">Branching</button>
+    <button class="filter-btn" onclick="filterCat('Commits',this)">Commits</button>
+    <button class="filter-btn" onclick="filterCat('Pull Requests',this)">Pull Requests</button>
+    <button class="filter-btn" onclick="filterCat('Merging',this)">Merging</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- GITHUB BASICS ---
+  { cat: "GitHub Basics", q: "What is GitHub primarily described as in the text?", opts: ["A programming language", "A collaboration platform that uses Git for versioning", "A cloud storage drive for photos", "An operating system"], ans: 1, exp: "GitHub is a collaboration platform that uses Git for versioning." },
+  { cat: "GitHub Basics", q: "What is a popular use for GitHub mentioned in the text?", opts: ["To share and contribute to open-source software", "To compile C++ code natively", "To host virtual machines", "To manage email databases"], ans: 0, exp: "GitHub is a popular place to share and contribute to open-source software." },
+  { cat: "GitHub Basics", q: "What does a repository contain?", opts: ["Only source code", "Files and folders", "Only binary files", "Only pull requests"], ans: 1, exp: "A repository is a project containing files and folders." },
+  { cat: "GitHub Basics", q: "What is one of the main functions of a repository?", opts: ["It tracks versions of files and folders", "It automatically executes code", "It translates code between languages", "It prevents anyone from editing files"], ans: 0, exp: "A repository tracks versions of files and folders." },
+  { cat: "GitHub Basics", q: "What is a profile README?", opts: ["A mandatory legal document", "Essentially an 'About me' section on your GitHub profile", "A log of all your repository commits", "A file containing your passwords"], ans: 1, exp: "A profile README is essentially an 'About me' section on your GitHub profile where you can share information about yourself." },
+  { cat: "GitHub Basics", q: "Where does GitHub display your profile README?", opts: ["At the bottom of every repository", "Hidden in the settings menu", "At the top of your profile page", "In a separate website entirely"], ans: 2, exp: "GitHub shows your profile README at the top of your profile page." },
+  { cat: "GitHub Basics", q: "Under which tab in the header menu of your repository do you begin when working with branches and files?", opts: ["Issues", "Pull requests", "< > Code", "Settings"], ans: 2, exp: "Navigate to the < > Code tab in the header menu of your repository." },
+  { cat: "GitHub Basics", q: "If you want to create a Markdown file on GitHub, what file extension should you use?", opts: [".txt", ".md", ".markdown", ".html"], ans: 1, exp: ".md is a file extension that creates a Markdown file." },
+  { cat: "GitHub Basics", q: "What underlying system does GitHub use for versioning?", opts: ["Subversion", "Mercurial", "Git", "Docker"], ans: 2, exp: "GitHub is a collaboration platform that uses Git for versioning." },
+  { cat: "GitHub Basics", q: "Which GitHub Docs page is recommended for more information about repositories?", opts: ["About commits", "Managing your profile README", "About repositories", "About branches"], ans: 2, exp: "For more information, see 'About repositories' from GitHub Docs." },
+
+  // --- BRANCHING ---
+  { cat: "Branching", q: "What is a branch in the context of a GitHub repository?", opts: ["A completely separate project", "A parallel version of your repository", "A backup copy stored locally", "A folder within the repository"], ans: 1, exp: "A branch is a parallel version of your repository." },
+  { cat: "Branching", q: "What is the name of the default branch in a repository?", opts: ["master", "trunk", "development", "main"], ans: 3, exp: "By default, your repository has one branch named main." },
+  { cat: "Branching", q: "How is the 'main' branch typically regarded?", opts: ["As experimental code", "As the definitive branch", "As a backup branch only", "As a deleted branch"], ans: 1, exp: "and it is considered to be the definitive branch." },
+  { cat: "Branching", q: "What is the primary benefit of creating an additional branch?", opts: ["It deletes the main branch", "It safely makes changes without disrupting the main project", "It automatically publishes the project to the web", "It reduces the size of the repository"], ans: 1, exp: "Creating additional branches allows you to copy the main branch of your repository and safely make any changes without disrupting the main project." },
+  { cat: "Branching", q: "Why do many people use branches?", opts: ["To work on specific features without affecting any other parts of the project", "To write code faster", "To avoid using Git", "To hide code from collaborators"], ans: 0, exp: "Many people use branches to work on specific features without affecting any other parts of the project." },
+  { cat: "Branching", q: "According to the text, what happens to everyone's work while you contribute on a separate branch?", opts: ["It is locked", "It is deleted temporarily", "It is safe", "It is automatically merged"], ans: 2, exp: "everyone's work is safe while you contribute." },
+  { cat: "Branching", q: "In the activity, what was the name of the branch you were instructed to create?", opts: ["new-feature", "development", "my-first-branch", "test-branch"], ans: 2, exp: "In the text box Find or create a branch..., enter my-first-branch." },
+  { cat: "Branching", q: "Where do you click to start the process of creating a new branch via the GitHub UI?", opts: ["The 'New Branch' button", "The 'Settings' tab", "The main branch drop-down", "The 'Pull requests' tab"], ans: 2, exp: "Click on the main branch drop-down." },
+  { cat: "Branching", q: "After creating a new branch, what happens automatically?", opts: ["A pull request is opened", "The branch will automatically switch to the one you just created", "A commit is forced", "The repository is locked"], ans: 1, exp: "The branch will automatically switch to the one you just created." },
+  { cat: "Branching", q: "Which GitHub Docs page is recommended for more information on branches?", opts: ["About repositories", "About commits", "About branches", "About pull requests"], ans: 2, exp: "For more information, see 'About branches'." },
+  { cat: "Branching", q: "What text must you click inside the drop-down menu to confirm creating the branch?", opts: ["Save branch", "Create branch: [name] from main", "Confirm branch creation", "Execute branch"], ans: 1, exp: "Click the text Create branch: my-first-branch from main to create your branch." },
+  { cat: "Branching", q: "If you want to edit your project without changing the main branch, what is the prerequisite step?", opts: ["Creating a branch", "Creating a pull request", "Deleting a file", "Merging a branch"], ans: 0, exp: "Creating a branch allows you to edit your project without changing the main branch." },
+  { cat: "Branching", q: "What does the main branch drop-down menu display after successfully creating a new branch?", opts: ["'main'", "'error'", "Your new branch name", "A blank space"], ans: 2, exp: "The main branch drop-down menu will display your new branch name." },
+  { cat: "Branching", q: "Who is the bot/character mentioned that checks your work during the exercise?", opts: ["GitHub Copilot", "Hubot", "Mona", "Octocat"], ans: 2, exp: "Mona should already be busy checking your work." },
+  { cat: "Branching", q: "When you create an additional branch, what are you fundamentally copying?", opts: ["A pull request", "The main branch of your repository", "The entire GitHub server", "A single file"], ans: 1, exp: "Creating additional branches allows you to copy the main branch of your repository." },
+
+  // --- COMMITS ---
+  { cat: "Commits", q: "What is a commit?", opts: ["A request to merge code", "A branch", "A set of changes to the files and folders in your project", "A deleted repository"], ans: 2, exp: "A commit is a set of changes to the files and folders in your project." },
+  { cat: "Commits", q: "Where does a commit exist?", opts: ["Only in the cloud", "In a branch", "In a pull request only", "In an issue"], ans: 1, exp: "A commit exists in a branch." },
+  { cat: "Commits", q: "What does a commit record?", opts: ["The time you logged in", "Changes to the project such as adding/removing/renaming files and modifying file content", "The number of branches", "The profile README"], ans: 1, exp: "A commit records changes to the project such as adding/removing/renaming files and modifying file content." },
+  { cat: "Commits", q: "In the activity, what specific change was being committed?", opts: ["Deleting a file", "Renaming a file", "Adding a new file to the new branch", "Modifying existing code"], ans: 2, exp: "For this exercise, committing a change will be adding a new file to your new branch." },
+  { cat: "Commits", q: "How do you start adding a new file in the GitHub UI?", opts: ["Select the Add file drop-down and click Create new file", "Click the 'Commit' button", "Use the terminal exclusively", "Click 'New pull request'"], ans: 0, exp: "Select the Add file drop-down and click Create new file." },
+  { cat: "Commits", q: "In the activity, what name were you instructed to give the new file?", opts: ["README.md", "index.html", "PROFILE.md", "about.txt"], ans: 2, exp: "In the Name your file... field, enter PROFILE.md." },
+  { cat: "Commits", q: "What text were you instructed to add to the contents of PROFILE.md?", opts: ["Hello World!", "Welcome to my GitHub profile!", "This is a test.", "My first commit."], ans: 1, exp: "copy the following content to your file: Welcome to my GitHub profile!" },
+  { cat: "Commits", q: "Where is the 'Commit changes...' button located when adding a file?", opts: ["In the bottom left", "In the center of the page", "In the upper right corner above the contents box", "Hidden in a menu"], ans: 2, exp: "Click Commit changes... in the upper right corner above the contents box." },
+  { cat: "Commits", q: "Does GitHub suggest a commit message automatically?", opts: ["No, it must always be entered manually", "Yes, GitHub will suggest a commit message", "Only for error fixes", "Only if you have an Enterprise account"], ans: 1, exp: "GitHub will suggest a commit message, but let's set one ourselves for practice." },
+  { cat: "Commits", q: "What commit message were you instructed to enter for practice?", opts: ["Add PROFILE.md", "Create file", "Initial commit", "Update README"], ans: 0, exp: "Enter Add PROFILE.md in the Commit message field." },
+  { cat: "Commits", q: "What is the purpose of a commit message and an optional extended description?", opts: ["To write code documentation", "To help provide clarity for your changes", "To encrypt the commit", "To tag other users"], ans: 1, exp: "A commit message and optional extended description help provide clarity for your changes." },
+  { cat: "Commits", q: "When is providing a clear commit message particularly useful?", opts: ["When the commit is small", "When your commit involves several files", "When you delete a repository", "When you merge to main"], ans: 1, exp: "This is particularly useful when your commit involves several files." },
+  { cat: "Commits", q: "Before creating a new file, what must you ensure regarding your current branch?", opts: ["You are on the main branch", "You are on your new branch (my-first-branch)", "The branch is locked", "The branch has no other files"], ans: 1, exp: "make sure you're on your new branch my-first-branch." },
+  { cat: "Commits", q: "Which GitHub Docs page is recommended for more information about commits?", opts: ["About repositories", "About pull requests", "About commits", "Merging a pull request"], ans: 2, exp: "For more information, see 'About commits'." },
+  { cat: "Commits", q: "What appears after you click 'Commit changes...' above the contents box?", opts: ["A syntax error", "The pull request screen", "A dialog will appear", "The repository is deleted"], ans: 2, exp: "A dialog will appear." },
+  { cat: "Commits", q: "What happens in the dialog after entering your commit message?", opts: ["You must enter a password", "You click 'Commit changes' to finalize", "You must write code", "The dialog closes automatically"], ans: 1, exp: "In this lesson, we'll ignore the other fields for now and click Commit changes." },
+  { cat: "Commits", q: "If you want to learn more about Markdown, which skill exercise is recommended?", opts: ["Communicating using Markdown", "Advanced Git Techniques", "GitHub Pages setup", "Writing Code in Markdown"], ans: 0, exp: "or by taking the 'Communicating using Markdown' Skills Exercise." },
+  { cat: "Commits", q: "What happens if you do NOT change the suggested commit message?", opts: ["The commit fails", "The suggested message is used", "An error occurs", "The branch is deleted"], ans: 1, exp: "GitHub will suggest a commit message (implicitly, it uses the suggestion if left unchanged)." },
+  { cat: "Commits", q: "According to the text, a commit records changes to a project such as adding, removing, renaming files, and what else?", opts: ["Changing the repository owner", "Modifying file content", "Changing billing information", "Changing privacy settings"], ans: 1, exp: "A commit records changes to the project such as adding/removing/renaming files and modifying file content." },
+
+  // --- PULL REQUESTS ---
+  { cat: "Pull Requests", q: "Where does collaboration happen?", opts: ["On a branch directly", "On the main branch", "On a pull request", "In the repository settings"], ans: 2, exp: "Collaboration happens on a pull request." },
+  { cat: "Pull Requests", q: "What does a pull request primarily show?", opts: ["The repository statistics", "The changes in your branch to other people", "The billing history", "The commit log of the main branch"], ans: 1, exp: "The pull request shows the changes in your branch to other people." },
+  { cat: "Pull Requests", q: "What actions does a pull request allow other people to take regarding your branch?", opts: ["Delete your branch without review", "Accept, reject, or suggest additional changes", "Change the repository name", "Fork the entire server"], ans: 1, exp: "allows people to accept, reject, or suggest additional changes to your branch." },
+  { cat: "Pull Requests", q: "How are the changes displayed in a pull request?", opts: ["As a list of filenames", "In a side by side comparison", "As an executable binary", "In a zipped folder"], ans: 1, exp: "In a side by side comparison, this pull request is going to keep the changes..." },
+  { cat: "Pull Requests", q: "What is the ultimate goal proposed by a pull request?", opts: ["To delete the compare branch", "To apply the changes you just made on your branch to the main project branch", "To create a new repository", "To revert a commit"], ans: 1, exp: "propose applying them to the main project branch." },
+  { cat: "Pull Requests", q: "What button may appear automatically after your commit to quickly create a pull request?", opts: ["New issue", "Compare & pull request", "Merge now", "Commit changes"], ans: 1, exp: "a message displayed indicating your recent push to your branch and providing a button that says Compare & pull request." },
+  { cat: "Pull Requests", q: "To manually create a pull request, which tab do you click in the header menu?", opts: ["Code", "Issues", "Pull requests", "Actions"], ans: 2, exp: "In the header menu of your repository, click the Pull requests tab." },
+  { cat: "Pull Requests", q: "After clicking the 'Pull requests' tab, what button starts the manual creation process?", opts: ["Create commit", "New pull request", "Start review", "Compare branches"], ans: 1, exp: "Click the New pull request button." },
+  { cat: "Pull Requests", q: "When creating a pull request, what should the 'base' branch be set to?", opts: ["my-first-branch", "development", "main", "master"], ans: 2, exp: "base: main" },
+  { cat: "Pull Requests", q: "When creating a pull request, what should the 'compare' branch be set to?", opts: ["main", "my-first-branch", "origin", "upstream"], ans: 1, exp: "compare: my-first-branch" },
+  { cat: "Pull Requests", q: "What does the 'base' branch represent in a pull request?", opts: ["The branch with new changes", "The branch you want to merge changes INTO", "The deleted branch", "The remote server"], ans: 1, exp: "Propose applying them to the main project branch (which is the base)." },
+  { cat: "Pull Requests", q: "What is the default title for a new pull request?", opts: ["'New Pull Request'", "The name of the branch", "Your commit message", "The repository name"], ans: 2, exp: "By default, the title will be your commit message." },
+  { cat: "Pull Requests", q: "What title were you instructed to enter for the pull request in the activity?", opts: ["Add PROFILE.md", "Add my first file", "Initial PR", "My changes"], ans: 1, exp: "For this exercise, let's edit the field to say Add my first file." },
+  { cat: "Pull Requests", q: "What is the purpose of the description field in a pull request?", opts: ["To write code", "To provide a description of the changes you made", "To tag the repository owner", "To assign the pull request"], ans: 1, exp: "The next field helps you provide a description of the changes you made." },
+  { cat: "Pull Requests", q: "According to the activity reminder, what three things have you accomplished so far before creating the PR?", opts: ["Created a repo, deleted a file, merged a branch", "Created a new branch, created a file, and made a commit", "Forked a repo, created a gist, opened an issue", "Cloned a repo, added CSS, deployed to Pages"], ans: 1, exp: "As a reminder, you have: created a new branch, created a file, and made a commit." },
+  { cat: "Pull Requests", q: "What button finalizes the creation of the pull request?", opts: ["Merge pull request", "Confirm merge", "Create pull request", "Save draft"], ans: 2, exp: "Click Create pull request." },
+  { cat: "Pull Requests", q: "What happens if someone 'rejects' changes in a pull request?", opts: ["The branch is automatically deleted", "The changes are not merged into the main branch", "The repository is locked", "The user is banned from the repository"], ans: 1, exp: "allows people to accept, reject, or suggest additional changes (implying rejected changes aren't merged)." },
+  { cat: "Pull Requests", q: "Which GitHub Docs page is recommended for more information about pull requests?", opts: ["About branches", "About commits", "About pull requests", "Merging a pull request"], ans: 2, exp: "For more information about pull requests, see 'About pull requests'." },
+  { cat: "Pull Requests", q: "What action does a pull request explicitly initiate?", opts: ["A code deletion", "Collaboration", "A server reboot", "A billing cycle"], ans: 1, exp: "Collaboration happens on a pull request." },
+
+  // --- MERGING ---
+  { cat: "Merging", q: "What does a merge do?", opts: ["Deletes a branch without saving changes", "Adds the changes in your pull request and branch into the main branch", "Creates a new repository", "Reverts the last commit"], ans: 1, exp: "A merge adds the changes in your pull request and branch into the main branch." },
+  { cat: "Merging", q: "What button initiates the merge process on a pull request page?", opts: ["Confirm merge", "Merge pull request", "Close pull request", "Delete branch"], ans: 1, exp: "Click Merge pull request." },
+  { cat: "Merging", q: "Why might the merge button be temporarily inactive?", opts: ["Because you don't have permission", "Because workflows are running on your new pull request", "Because the repository is private", "Because you haven't written a description"], ans: 1, exp: "Note: You may see workflows running on your new pull request, causing the merge button to be inactive." },
+  { cat: "Merging", q: "What should you do if workflows are running and the merge button is inactive?", opts: ["Cancel the pull request", "Just wait a moment for them to finish", "Force the merge via terminal", "Delete the branch"], ans: 1, exp: "Just wait a moment for them to finish and the merge button will activate." },
+  { cat: "Merging", q: "After clicking 'Merge pull request', what is the immediate next step required?", opts: ["Click Confirm merge", "Delete the branch", "Close the browser tab", "Create a new branch"], ans: 0, exp: "Click Confirm merge." },
+  { cat: "Merging", q: "What concept is a merge likened to in the tip?", opts: ["A branch deletion", "A kind of commit", "A repository clone", "An issue creation"], ans: 1, exp: "Tip: Did you notice this dialog looks similar to adding a file? A merge is also a kind of commit!" },
+  { cat: "Merging", q: "Once your branch has been successfully merged, what is recommended you do with it?", opts: ["Keep it forever", "Delete it because you don't need it anymore", "Rename it", "Push more commits to it"], ans: 1, exp: "Once your branch has been merged, you don't need it anymore. To delete this branch, click Delete branch." },
+  { cat: "Merging", q: "Which button is clicked to clean up the repository after a merge?", opts: ["Remove branch", "Delete branch", "Discard branch", "Archive branch"], ans: 1, exp: "To delete this branch, click Delete branch." },
+  { cat: "Merging", q: "What does deleting a branch after a merge accomplish?", opts: ["It deletes the merged code from main", "It removes the branch since it is no longer needed", "It closes the repository", "It reverts the merge"], ans: 1, exp: "Once your branch has been merged, you don't need it anymore." },
+  { cat: "Merging", q: "Which GitHub Docs page is recommended for more information about merges?", opts: ["About branches", "About commits", "Merging a pull request", "About repositories"], ans: 2, exp: "For more information about merges, see 'Merging a pull request.'" },
+  { cat: "Merging", q: "Who confirms your work and shares final review content after the merge is complete?", opts: ["The repository owner", "Mona", "GitHub Support", "The community"], ans: 1, exp: "Now that your work is merged, Mona will confirm and share some final review content." },
+  { cat: "Merging", q: "If the 'Merge pull request' button is green, what does that indicate?", opts: ["There are merge conflicts", "Workflows are still running", "It is ready and active to be clicked", "The pull request is closed"], ans: 2, exp: "screenshot of green merge pull request button (indicates it is active and ready)." },
+  { cat: "Merging", q: "Is a merge considered a commit?", opts: ["No, it is a completely separate concept", "Yes, a merge is also a kind of commit", "Only if it is a fast-forward merge", "Only if it is done via CLI"], ans: 1, exp: "A merge is also a kind of commit!" },
+  { cat: "Merging", q: "What happens to the changes from your branch after a successful merge?", opts: ["They are lost", "They become part of the main branch", "They are moved to a new repository", "They are converted into an issue"], ans: 1, exp: "A merge adds the changes in your pull request and branch into the main branch." },
+  { cat: "Merging", q: "What is the final action completed in the entire 'Introduction to GitHub' workflow?", opts: ["Creating a branch", "Committing a file", "Opening a pull request", "Deleting the merged branch"], ans: 3, exp: "To delete this branch, click Delete branch (the final instruction before Mona's review)." }
+];
+
+const catColorMap = {
+  "GitHub Basics": "cat-gh-basics",
+  "Branching": "cat-branching",
+  "Commits": "cat-commits",
+  "Pull Requests": "cat-pull-requests",
+  "Merging": "cat-merging"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-gh-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

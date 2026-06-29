@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Flow & Git Flow — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-states { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-prs { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-ghflow { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-gitflow-branches { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-gitflow-process { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 60 Questions</div>
+  <h1>GitHub Flow & Git Flow</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('File States',this)">File States</button>
+    <button class="filter-btn" onclick="filterCat('Pull Requests',this)">Pull Requests</button>
+    <button class="filter-btn" onclick="filterCat('GitHub Flow',this)">GitHub Flow</button>
+    <button class="filter-btn" onclick="filterCat('Git Flow Branches',this)">Git Flow Branches</button>
+    <button class="filter-btn" onclick="filterCat('Git Flow Process',this)">Git Flow Process</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- BASICS & BRANCHES ---
+  { cat: "Basics", q: "What foundational concept does GitHub Flow build directly upon?", opts: ["Subversion", "Mercurial", "Git", "Docker"], ans: 2, exp: "GitHub Flow builds directly on Git’s foundational concepts." },
+  { cat: "Basics", q: "What does Git provide tools to do?", opts: ["Manage database schemas", "Track and manage changes in your code over time", "Host websites automatically", "Monitor server health"], ans: 1, exp: "Git provides tools to track and manage changes in your code over time." },
+  { cat: "Basics", q: "How does GitHub make it easier to use Git's tools?", opts: ["By removing the need for a command line entirely", "With features like branches, commits, pull requests, and visual interfaces", "By forcing all repositories to be public", "By automatically writing code for developers"], ans: 1, exp: "GitHub builds on this by making it easier to use those tools with features like branches, commits, pull requests, and visual interfaces for collaboration." },
+  { cat: "Basics", q: "What is the primary purpose of a branch in GitHub?", opts: ["To delete old code permanently", "To serve as a safe place to experiment with new features or fixes", "To bypass code review", "To store heavy binary files"], ans: 1, exp: "Your branch is a safe place to experiment with new features or fixes." },
+  { cat: "Basics", q: "When do the changes you make on a branch update the default branch?", opts: ["Immediately upon saving", "As soon as you commit them", "Until you merge your branch", "When you delete the branch"], ans: 2, exp: "Your changes won't update on the default branch until you merge your branch." },
+  { cat: "Basics", q: "What happens if you make a mistake on a branch?", opts: ["The repository is corrupted", "You can revert your changes or push more changes to fix the mistake", "You must delete the entire repository", "The default branch is automatically locked"], ans: 1, exp: "If you make a mistake, you can revert your changes or push more changes to fix the mistake." },
+  { cat: "Basics", q: "Which terminal command is used to create and checkout a new branch?", opts: ["git new-branch name", "git branch -new name", "git checkout -b newBranchName", "git switch -new newBranchName"], ans: 2, exp: "The command would be git checkout -b newBranchName" },
+  { cat: "Basics", q: "What is a commit?", opts: ["A request to review code", "A change to one or more files on a branch", "A server configuration file", "A message sent to a collaborator"], ans: 1, exp: "A commit is a change to one or more files on a branch." },
+  { cat: "Basics", q: "How is each commit tracked in Git?", opts: ["By a file name and size", "By a unique ID, timestamp, and contributor", "By the branch name only", "By a random string of numbers only"], ans: 1, exp: "Each commit is tracked by a unique ID, timestamp, and contributor." },
+  { cat: "Basics", q: "What do commits provide for anyone reviewing the history of a file?", opts: ["A clear audit trail", "A graphical user interface", "A deployment environment", "A new branch"], ans: 0, exp: "Commits provide a clear audit trail for anyone reviewing the history of a file." },
+  { cat: "Basics", q: "Which command is used to create a commit using Git in the terminal?", opts: ["git push -m 'message'", "git save -m 'message'", "git commit -m 'message'", "git add -m 'message'"], ans: 2, exp: "You can create a commit using Git in your terminal with: git commit -m 'Add a helpful commit message'" },
+  { cat: "Basics", q: "Can commits only be made via the command line?", opts: ["Yes", "No, they can also be made directly in GitHub's web interface", "Only in Git flow, not GitHub Flow", "Only by repository administrators"], ans: 1, exp: "regardless of whether it's made via the command line or directly in GitHub's web interface." },
+
+  // --- FILE STATES ---
+  { cat: "File States", q: "What is an 'Untracked' file?", opts: ["A file that has been deleted", "An initial state of a file when it isn't yet part of the Git repository", "A file with syntax errors", "A file that has been staged"], ans: 1, exp: "Untracked: An initial state of a file when it isn't yet part of the Git repository. Git is unaware of its existence." },
+  { cat: "File States", q: "What is a 'Tracked' file?", opts: ["A file Git is actively monitoring", "A file that is ignored by Git", "A file exclusively in the main branch", "A file that cannot be modified"], ans: 0, exp: "Tracked: A tracked file is one that Git is actively monitoring." },
+  { cat: "File States", q: "Which substate describes a file that is tracked but hasn't been changed since the last commit?", opts: ["Staged", "Modified", "Unmodified", "Untracked"], ans: 2, exp: "Unmodified: The file is tracked, but it hasn't been modified since the last commit." },
+  { cat: "File States", q: "Which substate describes a file that has been changed since the last commit, but NOT yet staged?", opts: ["Untracked", "Modified", "Staged", "Committed"], ans: 1, exp: "Modified: The file has been changed since the last commit, but these changes aren't yet staged for the next commit." },
+  { cat: "File States", q: "What does it mean if a file is in the 'Staged' state?", opts: ["It has been deleted from the repository", "It is ready to be committed to the repository database", "It is ignored by version control", "It has been merged to the default branch"], ans: 1, exp: "Staged: The file has been modified, and the changes have been added to the staging area... These changes are ready to be committed." },
+  { cat: "File States", q: "What is another name for the staging area in Git?", opts: ["The repository", "The index", "The cache", "The workspace"], ans: 1, exp: "added to the staging area (also known as the index)." },
+  { cat: "File States", q: "Which file state represents the latest version of the file saved in the repository's database?", opts: ["Committed", "Modified", "Staged", "Untracked"], ans: 0, exp: "Committed: The file is in the repository's database. It represents the latest committed version of the file." },
+  { cat: "File States", q: "Why are these file states helpful to your team?", opts: ["They automatically fix bugs", "They help your team understand the status of each file and where it is in the version control process", "They prevent unauthorized access", "They compile the code automatically"], ans: 1, exp: "These states help your team understand the status of each file and where it is in the version control process." },
+
+  // --- PULL REQUESTS ---
+  { cat: "Pull Requests", q: "What is a pull request?", opts: ["A command to download files", "A mechanism to signal that commits from one branch are ready to be merged into another", "A request to delete a branch", "A way to force push changes"], ans: 1, exp: "A pull request is the mechanism used to signal that the commits from one branch are ready to be merged into another branch." },
+  { cat: "Pull Requests", q: "Who is asked to verify the code and approve the merge in a pull request?", opts: ["The CEO", "Automated bots only", "One or more reviewers", "The person who submitted the PR"], ans: 2, exp: "The team member submitting the pull request asks one or more reviewers to verify the code and approve the merge." },
+  { cat: "Pull Requests", q: "What actions can a reviewer take during a pull request?", opts: ["Only approve the code", "Only reject the code", "Comment on changes, add their own, or use it for further discussion", "Delete the repository"], ans: 2, exp: "These reviewers have the opportunity to comment on changes, add their own, or use the pull request itself for further discussion." },
+  { cat: "Pull Requests", q: "What feature allows you to open a pull request that isn't ready for review yet?", opts: ["Invisible Pull Requests", "Draft Pull Requests", "Pending Commits", "Private Pull Requests"], ans: 1, exp: "GitHub also supports Draft Pull Requests, which let you open a pull request that's not yet ready for review." },
+  { cat: "Pull Requests", q: "What happens once the changes in a pull request have been approved?", opts: ["The source branch is merged into the base branch", "The base branch is merged into the source branch", "The repository is locked", "The branch is automatically deleted without merging"], ans: 0, exp: "Once the changes have been approved (if required), the pull request's source branch (the compare branch) is merged into the base branch." },
+  { cat: "Pull Requests", q: "In the context of a pull request, what is the 'compare branch'?", opts: ["The default branch", "The base branch", "The source branch containing the new commits", "The remote branch"], ans: 2, exp: "the pull request's source branch (the compare branch) is merged into the base branch." },
+
+  // --- GITHUB FLOW ---
+  { cat: "GitHub Flow", q: "How is the GitHub flow described in the text?", opts: ["A complex and rigorous release process", "A simple workflow that helps you safely make and share changes", "A workflow exclusively for hotfixes", "A branching model with long-lived feature branches"], ans: 1, exp: "The GitHub flow is a simple workflow that helps you safely make and share changes." },
+  { cat: "GitHub Flow", q: "What is the very first step of the GitHub flow?", opts: ["Merge to main", "Open a pull request", "Create a branch", "Delete a branch"], ans: 2, exp: "Start by creating a branch so your changes, features, or fixes don’t affect the main branch." },
+  { cat: "GitHub Flow", q: "Why do you create a branch as the first step of GitHub flow?", opts: ["To immediately push to production", "So your changes, features, or fixes don't affect the main branch", "To lock the main branch", "To delete old code"], ans: 1, exp: "Start by creating a branch so your changes, features, or fixes don’t affect the main branch." },
+  { cat: "GitHub Flow", q: "After making your updates in the branch, what can you optionally do if your workflow supports it?", opts: ["Merge immediately without review", "Deploy changes from this branch to test them before merging", "Delete the main branch", "Revert all commits automatically"], ans: 1, exp: "If your workflow supports it, you can deploy changes from this branch to test them before merging." },
+  { cat: "GitHub Flow", q: "What is the purpose of opening a pull request in the GitHub flow?", opts: ["To invite feedback and begin a review", "To instantly merge the code", "To deploy to production", "To track issues"], ans: 0, exp: "Now, open a pull request to invite feedback and begin a review." },
+  { cat: "GitHub Flow", q: "What should you do after reviewing comments on your pull request?", opts: ["Delete the pull request", "Make any necessary updates based on your team’s feedback", "Force push to main", "Ignore the comments and merge"], ans: 1, exp: "Then, review the comments and make any necessary updates based on your team’s feedback." },
+  { cat: "GitHub Flow", q: "When do you merge the pull request into the main branch in GitHub flow?", opts: ["Immediately after opening it", "Before making updates", "Once you’re confident in your changes and get approval", "Only during scheduled release windows"], ans: 2, exp: "Finally, once you’re confident in your changes, get approval and merge the pull request into the main branch." },
+  { cat: "GitHub Flow", q: "What is the final step in the GitHub flow after merging?", opts: ["Create a new repository", "Delete the branch", "Deploy to testing", "Close all issues"], ans: 1, exp: "After that, delete the branch to keep your repository clean and avoid using outdated branches." },
+  { cat: "GitHub Flow", q: "Why should you delete the branch after merging?", opts: ["To save hard drive space", "To keep your repository clean and avoid using outdated branches", "Because GitHub charges for branches", "To prevent developers from seeing old code"], ans: 1, exp: "After that, delete the branch to keep your repository clean and avoid using outdated branches." },
+  { cat: "GitHub Flow", q: "Are GitHub Flow and Git flow the same thing?", opts: ["Yes, they are identical", "No, Git flow is one of several other popular workflows", "Yes, just named differently by different companies", "No, GitHub Flow is for open source and Git flow is for enterprise"], ans: 1, exp: "GitHub flow is one of several popular workflows. Others include Git flow and trunk-based development." },
+
+  // --- GIT FLOW BRANCHES ---
+  { cat: "Git Flow Branches", q: "What is Git flow designed for?", opts: ["Continuous delivery", "Release-driven environments", "Single-developer projects", "Static websites"], ans: 1, exp: "Git flow is a more structured branching model often used in release-driven environments." },
+  { cat: "Git Flow Branches", q: "Which branching model has been around longer?", opts: ["GitHub Flow", "Git flow", "Trunk-based development", "They were created simultaneously"], ans: 1, exp: "Git flow has been around longer than GitHub Flow." },
+  { cat: "Git Flow Branches", q: "In Git flow, what legacy term might you see used instead of 'main' for the default branch?", opts: ["primary", "trunk", "master", "production"], ans: 2, exp: "you may still see the term master used instead of main as the default branch." },
+  { cat: "Git Flow Branches", q: "In Git flow, what does the 'master' branch always reflect?", opts: ["Experimental code", "The latest development work", "Production-ready code", "Code waiting for review"], ans: 2, exp: "master: Always reflects production-ready code." },
+  { cat: "Git Flow Branches", q: "In Git flow, which branch contains the latest development work for the next release?", opts: ["master", "feature/*", "release/*", "develop"], ans: 3, exp: "develop: Contains the latest development work for the next release." },
+  { cat: "Git Flow Branches", q: "Where do 'feature/*' branches branch from in Git flow?", opts: ["master", "develop", "release/*", "hotfix/*"], ans: 1, exp: "feature/*: Used to create new features; branched from develop and merged back when complete." },
+  { cat: "Git Flow Branches", q: "What happens to 'feature/*' branches when work is complete in Git flow?", opts: ["They are merged into master", "They are deployed directly to production", "They are merged back into develop", "They become release branches"], ans: 2, exp: "branched from develop and merged back when complete." },
+  { cat: "Git Flow Branches", q: "What is the purpose of 'release/*' branches in Git flow?", opts: ["To patch critical production issues", "To prepare a new production release from develop, allowing final testing and minor bug fixes", "To develop new features", "To act as a backup of the master branch"], ans: 1, exp: "release/*: Prepares a new production release from develop; allows final testing and minor bug fixes." },
+  { cat: "Git Flow Branches", q: "Where do 'release/*' branches originate from in Git flow?", opts: ["master", "feature/*", "develop", "hotfix/*"], ans: 2, exp: "release/*: Prepares a new production release from develop" },
+  { cat: "Git Flow Branches", q: "What is a 'hotfix/*' branch used for in Git flow?", opts: ["To build new features", "To prepare for a scheduled release", "To quickly patch production issues", "To test infrastructure changes"], ans: 2, exp: "hotfix/*: Used to quickly patch production issues; branched from master." },
+  { cat: "Git Flow Branches", q: "Where do 'hotfix/*' branches originate from in Git flow?", opts: ["develop", "feature/*", "master", "release/*"], ans: 2, exp: "hotfix/*: Used to quickly patch production issues; branched from master." },
+
+  // --- GIT FLOW PROCESS ---
+  { cat: "Git Flow Process", q: "Why is a release branch created in Git flow?", opts: ["To isolate release preparation work so development can continue uninterrupted", "To delete old feature branches", "To push directly to production immediately", "To bypass QA testing"], ans: 0, exp: "This isolates release preparation work so development can continue uninterrupted." },
+  { cat: "Git Flow Process", q: "Can major features be added directly to a release branch in Git flow?", opts: ["Yes, anytime", "No, major features should wait for a future release", "Only if approved by the CEO", "Yes, if they are fast"], ans: 1, exp: "Bug fixes can be added to the release branch, but major features should wait for a future release." },
+  { cat: "Git Flow Process", q: "Once ready, where is the release branch merged in Git flow?", opts: ["Only into develop", "Into master and tagged with a version number", "Into feature branches", "Into hotfix branches"], ans: 1, exp: "Once ready, the release branch is merged into master and tagged with a version number." },
+  { cat: "Git Flow Process", q: "How can GitHub utilize the version tags placed on the master branch in Git flow?", opts: ["To lock the branch", "To generate release notes", "To delete the repository automatically", "To alert users via SMS"], ans: 1, exp: "GitHub can use these tags to help you generate release notes." },
+  { cat: "Git Flow Process", q: "Why must a release branch also be merged back into develop?", opts: ["To delete develop", "To keep it in sync with the bug fixes added during the release", "To overwrite all existing features", "To change the branch name"], ans: 1, exp: "The same release branch should be merged back into develop to keep it in sync." },
+  { cat: "Git Flow Process", q: "If a critical production bug arises in Git flow, what kind of branch is created?", opts: ["feature branch", "release branch", "hotfix branch", "develop branch"], ans: 2, exp: "If a critical production bug arises, a hotfix branch is created from master." },
+  { cat: "Git Flow Process", q: "Once a hotfix is fixed in Git flow, where is it merged?", opts: ["Only master", "Only develop", "Into both master and develop", "Into the current release branch only"], ans: 2, exp: "Once fixed, it’s merged into both master and develop." },
+  { cat: "Git Flow Process", q: "When is Git flow best suited for a project?", opts: ["When deploying multiple times a day", "For projects with scheduled or versioned releases", "For single-file projects", "When developers work completely alone"], ans: 1, exp: "Best suited for projects with scheduled or versioned releases" },
+  { cat: "Git Flow Process", q: "Why might Git flow be ideal for enterprise or regulated environments?", opts: ["Because it forces continuous deployment", "Because it is ideal for slower, more structured development cycles", "Because it uses fewer branches", "Because it doesn't require testing"], ans: 1, exp: "Ideal for slower, more structured development cycles (e.g., enterprise or regulated environments)" },
+  { cat: "Git Flow Process", q: "Why is Git flow considered more 'heavyweight' than GitHub Flow?", opts: ["It requires larger file sizes", "It requires specialized servers", "Due to additional branch management", "It requires an enterprise license"], ans: 2, exp: "Considered more 'heavyweight' than GitHub Flow due to additional branch management" },
+  { cat: "Git Flow Process", q: "What merge strategy does Git flow assume you are using?", opts: ["Rebase", "Squash merges", "Merge commits", "Fast-forward only"], ans: 2, exp: "Git flow assumes merge commits for integrating branches." },
+  { cat: "Git Flow Process", q: "Why might using rebase or squash merges be problematic in Git flow?", opts: ["They delete the repository", "They can interfere with its branch structure and history tracking", "They are not supported by Git", "They bypass code review"], ans: 1, exp: "Using rebase or squash merges can interfere with its branch structure and history tracking." },
+  { cat: "Git Flow Process", q: "For teams valuing predictability and extensive release planning, which workflow is recommended?", opts: ["GitHub Flow", "Git flow", "Trunk-based development", "No workflow"], ans: 1, exp: "But if your team values predictability and needs more release planning, Git flow may be a better fit." },
+  { cat: "Git Flow Process", q: "Which workflow is generally simpler and faster for continuous delivery?", opts: ["Git flow", "GitHub Flow", "Subversion", "Water-fall"], ans: 1, exp: "GitHub Flow is a lightweight workflow designed for continuous delivery... For many teams using GitHub, GitHub Flow is simpler and faster." }
+];
+
+const catColorMap = {
+  "Basics": "cat-basics",
+  "File States": "cat-states",
+  "Pull Requests": "cat-prs",
+  "GitHub Flow": "cat-ghflow",
+  "Git Flow Branches": "cat-gitflow-branches",
+  "Git Flow Process": "cat-gitflow-process"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Org & Permissions Quiz — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-repoperms { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-forking { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-insights { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-access { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-auditing { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-teams { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Administration Quiz · 60 Questions</div>
+  <h1>GitHub Organization<br>& Permissions</h1>
+  <p>Test your knowledge on repository settings, forking, teams, and auditing.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Repo Permissions',this)">Repo Permissions</button>
+    <button class="filter-btn" onclick="filterCat('Forking',this)">Forking</button>
+    <button class="filter-btn" onclick="filterCat('Insights',this)">Insights</button>
+    <button class="filter-btn" onclick="filterCat('Access',this)">Access</button>
+    <button class="filter-btn" onclick="filterCat('Auditing',this)">Auditing</button>
+    <button class="filter-btn" onclick="filterCat('Teams',this)">Teams</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── REPO PERMISSIONS (1–12) ──────────────────────────────────────────────
+  { cat: "Repo Permissions", q: "How many standard repository-level permissions does GitHub offer?", opts: ["Three", "Four", "Five", "Six"], ans: 2, exp: "There are five standard repository-level permissions: Read, Triage, Write, Maintain, and Admin." },
+  { cat: "Repo Permissions", q: "Which permission level is recommended for non-code contributors who only want to view or discuss your project?", opts: ["Read", "Triage", "Write", "Admin"], ans: 0, exp: "Read is recommended for non-code contributors who want to view or discuss your project." },
+  { cat: "Repo Permissions", q: "What is the Triage permission level best suited for?", opts: ["Developers actively pushing code", "Project managers who need to manage issues without write access", "Administrators deleting the repository", "External users who only want to view the code"], ans: 1, exp: "Triage is recommended for contributors who need to proactively manage issues and pull requests without write access." },
+  { cat: "Repo Permissions", q: "Which permission level is standard for most developers who actively push code to a project?", opts: ["Triage", "Maintain", "Write", "Admin"], ans: 2, exp: "Write is recommended for contributors who actively push to your project and is standard for most developers." },
+  { cat: "Repo Permissions", q: "The Maintain permission is primarily recommended for whom?", opts: ["Non-code contributors", "Users managing the repository without access to sensitive or destructive actions", "Developers needing push access only", "Administrators needing to manage billing"], ans: 1, exp: "Maintain is recommended for project managers who need to manage the repository without access to sensitive or destructive actions." },
+  { cat: "Repo Permissions", q: "Who should be granted the Admin permission level?", opts: ["Only outside collaborators", "People who need full access, including sensitive and destructive actions", "Anyone assigned to review code", "Developers pushing code to production"], ans: 1, exp: "Admin is recommended for people who need full access to the project, including sensitive and destructive actions." },
+  { cat: "Repo Permissions", q: "Which of the following acts is considered a 'destructive action' under the Admin permission?", opts: ["Labeling an issue", "Approving a pull request", "Deleting a repository", "Cloning the repository locally"], ans: 2, exp: "Deleting a repository is explicitly mentioned as a sensitive and destructive action reserved for Admins." },
+  { cat: "Repo Permissions", q: "Can administrators create custom roles in GitHub?", opts: ["No, custom roles are not supported", "Yes, but only in GitHub Free", "Yes, in GitHub Enterprise", "Yes, but only for outside collaborators"], ans: 2, exp: "Administrators can also create custom roles in GitHub Enterprise." },
+  { cat: "Repo Permissions", q: "How are custom roles created in GitHub Enterprise?", opts: ["By modifying the GitHub source code", "By extending one of the base roles with additional permissions", "By removing all default permissions", "Through the GitHub mobile app only"], ans: 1, exp: "Administrators can create custom roles by extending one of the base roles with additional permissions." },
+  { cat: "Repo Permissions", q: "What principle should guide you when choosing a permission level for a user or team?", opts: ["Give maximum access just in case", "Give everyone Admin access", "Choose the level that best fits their role without giving more access than necessary", "Always use the Triage role first"], ans: 2, exp: "Choose the level that best fits each person or team's role in your project without giving more access to the project than necessary." },
+  { cat: "Repo Permissions", q: "Which permission level allows users to push to branches but usually restricts them from pushing to protected branches?", opts: ["Read", "Triage", "Write", "Admin"], ans: 2, exp: "Users with Write permission can push to branches (except protected branches)." },
+  { cat: "Repo Permissions", q: "Which users cannot delete or transfer the repository, but can manage repository settings, issues, and pull requests?", opts: ["Triage", "Write", "Maintain", "Admin"], ans: 2, exp: "Maintain permission allows users to manage repository settings, issues, and pull requests, but they cannot delete or transfer the repository." },
+
+  // ── FORKING (13–24) ──────────────────────────────────────────────────────
+  { cat: "Forking", q: "What does forking a repository do?", opts: ["Deletes the original repository", "Creates a personal copy of someone else's repository under your own account", "Merges two repositories together", "Restricts access to the original repository"], ans: 1, exp: "Forking is a way to create a personal copy of someone else's repository under your own GitHub account." },
+  { cat: "Forking", q: "Why is forking considered a common workflow?", opts: ["To save money on GitHub billing", "To contribute to open source or experiment safely without affecting the original project", "To bypass two-factor authentication", "To permanently take ownership of someone else's code"], ans: 1, exp: "This process is a common workflow for contributing to open source or experimenting with changes safely." },
+  { cat: "Forking", q: "What is the original repository typically called in a fork workflow?", opts: ["Downstream repo", "Upstream repo", "Base repo", "Root repo"], ans: 1, exp: "You can pull in changes from the original repository, often called the “upstream” repo." },
+  { cat: "Forking", q: "Where is the Fork button located on a GitHub repository page?", opts: ["Lower-left corner", "Center of the page", "Upper-right corner", "Hidden inside Settings"], ans: 2, exp: "In the upper-right corner, select Fork." },
+  { cat: "Forking", q: "When creating a fork, what can you optionally choose to do?", opts: ["Delete the upstream repo", "Rename the forked repository or include all branches", "Change the repository's primary programming language", "Change the upstream repository's owner"], ans: 1, exp: "Optionally, rename the forked repository or include all branches." },
+  { cat: "Forking", q: "For public repositories, what is the default fork policy?", opts: ["Forking is disabled", "Forking requires admin approval", "Forking is always allowed", "Only organization members can fork"], ans: 2, exp: "Public repositories: Forking is always allowed." },
+  { cat: "Forking", q: "For private repositories, what options do administrators have regarding forking?", opts: ["Forking is permanently disabled", "Forking can be disabled or restricted to organization members only", "Forking is completely open to the internet", "Only outside collaborators can fork"], ans: 1, exp: "Private repositories: Forking can be disabled or restricted to organization members only." },
+  { cat: "Forking", q: "Who can fork internal repositories?", opts: ["Anyone on GitHub", "Only outside collaborators", "They can only be forked within the same enterprise account", "No one can fork an internal repository"], ans: 2, exp: "Internal repositories: These can only be forked within the same enterprise account." },
+  { cat: "Forking", q: "Where do you configure fork settings for an organization repository?", opts: ["Profile Settings > Security", "Organization repository’s Settings > Access > Member privileges", "Enterprise Settings > Billing", "Repository Insights > Commits"], ans: 1, exp: "Go to the Organization repository’s Settings. In the left sidebar, under Access, click Member privileges." },
+  { cat: "Forking", q: "If you disable forking for a private repository, who is able to fork it?", opts: ["Only Organization Owners", "Only Organization Members", "Only Enterprise Admins", "No one"], ans: 3, exp: "If you disable forking for a private repository, no one (including organization members) will be able to fork it." },
+  { cat: "Forking", q: "Which step is required directly before clicking 'Create fork'?", opts: ["Deleting your current branches", "Choosing an owner for the fork (personal account or organization)", "Writing a detailed pull request", "Providing billing information"], ans: 1, exp: "Choose an owner for the fork (your personal account or an organization)." },
+  { cat: "Forking", q: "In the fork workflow, what does pulling in changes help achieve?", opts: ["It keeps your fork up to date with the original upstream repo", "It permanently deletes your local changes", "It transfers ownership of the repo", "It converts the repo from public to private"], ans: 0, exp: "You can also keep your fork up to date by pulling in changes from the original repository." },
+
+  // ── INSIGHTS (25–32) ─────────────────────────────────────────────────────
+  { cat: "Insights", q: "What is the primary purpose of Repository insights on GitHub?", opts: ["To change billing plans", "To monitor and analyze a project's activity, contributions, and dependencies", "To delete old issues automatically", "To write code directly in the browser"], ans: 1, exp: "Repository insights offer a powerful way to monitor and analyze your project's activity, contributions, and dependencies." },
+  { cat: "Insights", q: "Where can you find the Insights tab for a repository?", opts: ["Under the user profile", "In the organization billing settings", "Under the repository name", "Inside the PR review window"], ans: 2, exp: "Navigate to the repository... Under the repository name, click on the Insights tab." },
+  { cat: "Insights", q: "In the Insights tab, what information does the Contributors section display?", opts: ["The repository's financial budget", "A graph of contributions over time, including commits, additions, and deletions by each contributor", "A list of users who viewed the repository but didn't contribute", "Unique visitors and page views"], ans: 1, exp: "Contributors: View a graph of contributions over time, including commits, additions, and deletions by each contributor." },
+  { cat: "Insights", q: "Which Insights section allows you to monitor unique visitors and page views?", opts: ["Traffic", "Commits", "Code Frequency", "Dependency Graph"], ans: 0, exp: "Traffic: Monitor repository traffic, including unique visitors and page views." },
+  { cat: "Insights", q: "What does the Code Frequency section track?", opts: ["The number of branches created", "The number of lines added and deleted over time", "The frequency of PR merges", "The unique visitors per day"], ans: 1, exp: "Code Frequency: Track the number of lines added and deleted over time." },
+  { cat: "Insights", q: "Which section in Insights is used to view dependencies and identify potential security vulnerabilities?", opts: ["Commits", "Contributors", "Dependency Graph", "Traffic"], ans: 2, exp: "Dependency Graph: View the dependencies of your repository and identify potential security vulnerabilities." },
+  { cat: "Insights", q: "According to best practices, how should you use the Contributors section?", opts: ["To identify active contributors and areas of the repo receiving the most attention", "To ban users who haven't committed in 30 days", "To calculate developer salaries", "To track external website traffic"], ans: 0, exp: "Monitor Contributions: Use the Contributors section to identify active contributors and areas of the repository that are receiving the most attention." },
+  { cat: "Insights", q: "According to best practices, how can you ensure your repository remains secure via Insights?", opts: ["Regularly review the Dependency Graph", "Ignore traffic spikes", "Delete old branches manually", "Monitor the Code Frequency graph daily"], ans: 0, exp: "Address Vulnerabilities: Regularly review the Dependency Graph to ensure your repository remains secure." },
+
+  // ── ACCESS (33–42) ───────────────────────────────────────────────────────
+  { cat: "Access", q: "Which of the following factors influences a user's effective permissions in a repository?", opts: ["Repository Role, Team Membership, and Organization Membership", "Their GitHub username length", "The repository programming language", "Their geographic location"], ans: 0, exp: "A user’s effective permissions in a repository are influenced by various factors, including Repository Role, Team Membership, and Organization Membership." },
+  { cat: "Access", q: "If a user has Read access through a team but also has Write access directly assigned, what is their effective permission?", opts: ["Read", "Write", "Admin", "None"], ans: 1, exp: "GitHub applies the highest level of access granted to the user... they will effectively have Write permissions." },
+  { cat: "Access", q: "How does GitHub resolve conflicting permission sources for a single user?", opts: ["It applies the lowest level of access", "It applies the highest level of access granted", "It removes all access to be safe", "It defaults to Triage access"], ans: 1, exp: "When you combine these different permission sources, GitHub applies the highest level of access granted to the user." },
+  { cat: "Access", q: "What is a 'Direct Collaborator'?", opts: ["A user who inherits access from an organization", "A user added explicitly to the repository with a specific role", "A user who forks the repo", "An admin of the enterprise"], ans: 1, exp: "Direct Collaborator: Added explicitly to the repository with a specific role." },
+  { cat: "Access", q: "Direct Collaborator status is generally recommended for whom?", opts: ["Every member of a large enterprise", "External contributors or small teams", "Automated bots only", "Enterprise owners"], ans: 1, exp: "Recommended for external contributors or small teams." },
+  { cat: "Access", q: "How are team permissions typically managed for consistent, scalable management?", opts: ["By modifying the local git config", "Set at the organization level", "Set individually per repository file", "Through external identity providers only"], ans: 1, exp: "Team permissions are often set at the organization level for consistent, scalable management." },
+  { cat: "Access", q: "What is an 'Organization Default Permission'?", opts: ["A hardcoded write permission for all public repos", "A base permission level for all organization members (e.g., None, Read)", "A temporary permission granted by GitHub support", "A permission strictly for billing managers"], ans: 1, exp: "If the repository is part of an organization, there may be a default permission level for all organization members (e.g., None, Read)." },
+  { cat: "Access", q: "Who can override organization default permissions for specific teams or users?", opts: ["Any team member", "Outside collaborators", "Organization owners", "Enterprise support"], ans: 2, exp: "Owners can override these defaults for specific teams or users." },
+  { cat: "Access", q: "What defines an 'Outside Collaborator'?", opts: ["A user who is not a member of the org but has explicit access to a repository", "An org member who only has Read access", "An enterprise admin", "A user who only contributes to public open source"], ans: 0, exp: "Outside Collaborator: A user who is not a member of the organization but has explicit access to a repository." },
+  { cat: "Access", q: "For which group is the Outside Collaborator role most useful?", opts: ["Organization owners", "Contractors, freelancers, or open-source contributors needing limited access", "The core development team", "Billing managers"], ans: 1, exp: "Useful for contractors, freelancers, or open-source contributors needing limited access." },
+
+  // ── AUDITING (43–48) ─────────────────────────────────────────────────────
+  { cat: "Auditing", q: "To view a list of users and teams with access to a specific repository, where should you navigate?", opts: ["Insights > Contributors", "Settings > Manage access (for the repository)", "Profile > Security", "Organization Settings > Billing"], ans: 1, exp: "Navigate to Settings > Manage access (for the repository). Review the list of users and teams..." },
+  { cat: "Auditing", q: "Who has the ability to view changes to membership and permissions in the Organization Audit Log?", opts: ["All organization members", "Team maintainers", "Organization owners", "Outside collaborators"], ans: 2, exp: "Organization owners can view changes to membership, repository access, and permissions in the Audit log." },
+  { cat: "Auditing", q: "If you manage multiple organizations, what tool helps track changes across all of them?", opts: ["The Enterprise Audit Log", "The Repository Traffic Graph", "Individual repository logs", "The Code Frequency chart"], ans: 0, exp: "If you manage multiple organizations, use the Enterprise account’s audit log to track changes across all organizations and repositories." },
+  { cat: "Auditing", q: "The Enterprise Audit Log is especially valuable for what purposes?", opts: ["Debugging code errors", "Compliance reporting or large-scale security reviews", "Writing custom CSS for GitHub pages", "Monitoring CPU usage"], ans: 1, exp: "This is especially valuable for compliance reporting or large-scale security reviews." },
+  { cat: "Auditing", q: "How can you programmatically monitor access and list collaborators?", opts: ["By emailing GitHub support daily", "Using automated scripting via the GitHub REST API or GraphQL API", "By exporting PDFs from the Insights tab", "Using a browser extension"], ans: 1, exp: "Automated Scripting: Use the GitHub REST API or GraphQL API to programmatically list collaborators, teams, and permissions." },
+  { cat: "Auditing", q: "What GitHub feature provides an additional layer of security and accountability for code changes?", opts: ["Profile pictures", "Branch protection rules and required reviews", "Team discussion boards", "Forking public repos"], ans: 1, exp: "Tip: Set up branch protection rules and required reviews to add another layer of security and accountability for all code changes." },
+
+  // ── TEAMS (49–60) ────────────────────────────────────────────────────────
+  { cat: "Teams", q: "In a GitHub organization, what is a team?", opts: ["A group of organizations", "A group of users who collaborate on shared repositories", "A single developer with admin rights", "An automated bot pipeline"], ans: 1, exp: "A team in a GitHub organization is a group of users who collaborate on shared repositories." },
+  { cat: "Teams", q: "What is a primary benefit of 'Centralized Access Control' through teams?", opts: ["Assign repository permissions to an entire team instead of managing users individually", "It bypasses two-factor authentication", "It automatically writes code reviews", "It gives everyone Enterprise Owner access"], ans: 0, exp: "Centralized Access Control: Assign repository permissions (e.g., Read, Write) to the entire team instead of managing each user individually." },
+  { cat: "Teams", q: "To improve visibility and communication, what can each team have?", opts: ["A dedicated local server", "Its own discussion board", "A separate billing account", "A standalone GitHub enterprise instance"], ans: 1, exp: "Each team can have its own discussion board, making it easier to share updates." },
+  { cat: "Teams", q: "How do child teams handle permissions relative to a parent team?", opts: ["They ignore parent permissions", "Members of a child team inherit the permission settings of the parent team", "They must have lower permissions than the parent", "They overwrite the parent's permissions"], ans: 1, exp: "Members of a child team also inherit the permission settings of the parent team." },
+  { cat: "Teams", q: "What are the two specific levels of permissions at the team level?", opts: ["Admin and Write", "Member and Maintainer", "Read and Triage", "Owner and Collaborator"], ans: 1, exp: "There are two levels of permissions at the team level: Member and Maintainer." },
+  { cat: "Teams", q: "What abilities do 'Member' level users have within a team context?", opts: ["They can delete the organization", "They have the same set of abilities as organization members", "They can manage team billing", "They can promote others to team maintainer"], ans: 1, exp: "Member: Team members have the same set of abilities as organization members." },
+  { cat: "Teams", q: "Which of the following can a Team Maintainer do?", opts: ["Change the team's name, description, and visibility", "Delete the GitHub Enterprise account", "Delete the organization", "Disable 2FA for the entire enterprise"], ans: 0, exp: "Team maintainers can... Change the team's name, description, and visibility." },
+  { cat: "Teams", q: "Can a Team Maintainer set the team profile picture?", opts: ["No, only org owners can", "Yes, they can set the team profile picture", "Yes, but only for child teams", "No, teams do not have profile pictures"], ans: 1, exp: "Maintainers can do everything team members can, plus: ... Set the team profile picture." },
+  { cat: "Teams", q: "Who can promote a team member to have the team maintainer permission?", opts: ["Any team member", "A Team Maintainer or an Organization Owner", "Outside collaborators", "Only GitHub Support"], ans: 1, exp: "Maintainers can: Promote team members to also have the team maintainer permission. An organization owner can also promote any member..." },
+  { cat: "Teams", q: "Can a Team Maintainer remove the team's access to repositories?", opts: ["No", "Yes", "Only for public repositories", "Only if they are also an enterprise admin"], ans: 1, exp: "Maintainers can... Remove the team's access to repositories." },
+  { cat: "Teams", q: "What is the 'Principle of Least Privilege' in the context of team permissions?", opts: ["Assign everyone admin rights to avoid bottlenecks", "Assign the lowest permission level necessary for each team to perform its tasks effectively", "Never use the write permission", "Only give access to outside collaborators"], ans: 1, exp: "Tip: Always follow the Principle of Least Privilege—assign the lowest permission level necessary for each team to perform its tasks effectively." },
+  { cat: "Teams", q: "Why is following the Principle of Least Privilege important?", opts: ["It speeds up GitHub's servers", "It makes billing cheaper", "It reduces the risk of accidental or unauthorized changes", "It automatically merges pull requests"], ans: 2, exp: "This approach reduces the risk of accidental or unauthorized changes." }
+];
+
+const catColorMap = { 
+  "Repo Permissions":"cat-repoperms",
+  "Forking":"cat-forking",
+  "Insights":"cat-insights",
+  "Access":"cat-access",
+  "Auditing":"cat-auditing",
+  "Teams":"cat-teams"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-repoperms';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

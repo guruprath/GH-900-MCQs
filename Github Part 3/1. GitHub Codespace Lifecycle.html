@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Codespace Lifecycle — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-lifecycle { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-creation { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-saving { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-timeout { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-stopping { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-rebuild { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+  .cat-deletion { color: #ff79c6; border-color: rgba(255,121,198,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 60 Questions</div>
+  <h1>The Codespace Lifecycle</h1>
+  <p>Comprehensive Multiple Choice Questions & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Lifecycle',this)">Lifecycle Basics</button>
+    <button class="filter-btn" onclick="filterCat('Creation',this)">Creation</button>
+    <button class="filter-btn" onclick="filterCat('Saving',this)">Saving & Opening</button>
+    <button class="filter-btn" onclick="filterCat('Timeout',this)">Timeouts & Connection</button>
+    <button class="filter-btn" onclick="filterCat('Stopping',this)">Stopping</button>
+    <button class="filter-btn" onclick="filterCat('Rebuild',this)">Rebuilding</button>
+    <button class="filter-btn" onclick="filterCat('Deletion',this)">Deletion</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- LIFECYCLE BASICS (1-5) ---
+  { cat: "Lifecycle", q: "What does configuring a custom development environment in GitHub Codespaces allow you to have?", opts: ["A repeatable configuration for all users", "Unlimited CPU processing power", "Free storage for all organizations", "A locally hosted web server"], ans: 0, exp: "By configuring a custom development environment for your project, you can have a repeatable Codespace configuration for all users of your project." },
+  { cat: "Lifecycle", q: "When does a Codespace's lifecycle officially begin?", opts: ["When you push your first commit", "When you create a Codespace", "When you enable AutoSave", "When you connect an IDE"], ans: 1, exp: "A Codespace's lifecycle begins when you create a Codespace." },
+  { cat: "Lifecycle", q: "When does a Codespace's lifecycle end?", opts: ["After 30 minutes of inactivity", "When you stop the virtual machine", "When you delete it", "When you merge a pull request"], ans: 2, exp: "A Codespace's lifecycle... ends when you delete it." },
+  { cat: "Lifecycle", q: "What happens if you disconnect and reconnect to an active Codespace?", opts: ["All running processes are terminated", "It does not affect its running processes", "The Codespace is automatically rebuilt", "Unsaved changes are permanently lost"], ans: 1, exp: "You can disconnect and reconnect to an active Codespace without affecting its running processes." },
+  { cat: "Lifecycle", q: "Can you stop and restart a Codespace without losing your project changes?", opts: ["No, stopping it clears the workspace", "Yes, you can stop and restart without losing changes", "Only if you perform a full rebuild", "Only if you connect via SSH"], ans: 1, exp: "You can stop and restart a Codespace without losing the changes that you make to your project." },
+
+  // --- CREATION (6-20) ---
+  { cat: "Creation", q: "Which of the following is NOT one of the specified ways you can create a Codespace?", opts: ["On GitHub.com", "In Visual Studio Code", "By GitHub CLI", "Using the GitHub Mobile App"], ans: 3, exp: "You can create a Codespace on GitHub.com, in Visual Studio Code, or by GitHub CLI." },
+  { cat: "Creation", q: "How many specific source types (ways) are listed to create a Codespace for a project?", opts: ["Two", "Three", "Four", "Five"], ans: 2, exp: "There are four ways to create a Codespace: template, branch, open pull request, or commit." },
+  { cat: "Creation", q: "Why might you create a Codespace from a branch in your repository?", opts: ["To investigate a bug at a specific time", "For new feature work", "To start a completely new project from scratch", "To permanently archive the code"], ans: 1, exp: "From a branch in your repository, for new feature work." },
+  { cat: "Creation", q: "What is a primary reason to create a Codespace from an open pull request?", opts: ["To start a new project", "To explore work-in-progress", "To delete old commits", "To reset the repository's default branch"], ans: 1, exp: "From an open pull request, to explore work-in-progress." },
+  { cat: "Creation", q: "Why would you create a Codespace from a commit in a repository's history?", opts: ["To investigate a bug at a specific point in time", "To explore an open pull request", "To start a brand new repository", "To apply prebuilds"], ans: 0, exp: "From a commit in a repository's history to investigate a bug at a specific point in time." },
+  { cat: "Creation", q: "Can you create more than one Codespace per repository or branch?", opts: ["Yes", "No", "Only on the default branch", "Only with an Enterprise account"], ans: 0, exp: "You can create more than one Codespace per repository or even per branch." },
+  { cat: "Creation", q: "What happens if you reach the maximum number of Codespaces and try to create another?", opts: ["It automatically deletes your oldest Codespace", "You are billed automatically for the extra space", "A message tells you an existing Codespace needs to be removed/deleted", "The system crashes"], ans: 2, exp: "The message tells you that an existing Codespace needs to be removed/deleted before a new Codespace can be created." },
+  { cat: "Creation", q: "If you start a new project by creating a Codespace from a template, what should you do later?", opts: ["Delete the Codespace immediately", "Publish it to a repository on GitHub", "Disable AutoSave", "Submit a pull request to the template owner"], ans: 1, exp: "If starting a new project, create a Codespace from a template and publish it to a repository on GitHub later." },
+  { cat: "Creation", q: "Why should you regularly push your changes when creating a new Codespace each time you work?", opts: ["To prevent the 30-minute timeout", "To clear the cache", "To ensure that any new commits are on GitHub", "To update the prebuilds"], ans: 2, exp: "When creating a new Codespace each time you work on a project, you should regularly push your changes to ensure that any new commits are on GitHub." },
+  { cat: "Creation", q: "What should you do each time you start working in a long-running Codespace for a new project?", opts: ["Rebuild the container", "Pull from the repository's default branch to get the latest commits", "Delete the Codespace and make a new one", "Change the machine type"], ans: 1, exp: "When using a long-running Codespace... pull from the repository's default branch each time you start working in Codespace to enable your environment to get the latest commits." },
+  { cat: "Creation", q: "What feature can repository administrators enable to speed up Codespace creation?", opts: ["Codespaces prebuilds", "Turbo mode", "Auto-rebuilds", "Continuous Integration"], ans: 0, exp: "Repository administrators can enable GitHub Codespaces prebuilds for a repository to speed up Codespace creation." },
+  { cat: "Creation", q: "How many main processes occur when you create a GitHub Codespace?", opts: ["Two", "Three", "Four", "Five"], ans: 2, exp: "When you create a GitHub Codespace, four processes occur." },
+  { cat: "Creation", q: "Which of the following is the first process that occurs when creating a Codespace?", opts: ["A post-creation setup is made", "A container is created", "A connection to the Codespace is made", "A virtual machine and storage are assigned"], ans: 3, exp: "1. A virtual machine and storage are assigned to your Codespace." },
+  { cat: "Creation", q: "During Codespace creation, what is created immediately after the virtual machine and storage are assigned?", opts: ["A post-creation setup", "A container", "An internet connection", "A pull request"], ans: 1, exp: "2. A container is created." },
+  { cat: "Creation", q: "What is the final process that occurs when creating a GitHub Codespace?", opts: ["A virtual machine is assigned", "A connection is made", "A container is created", "A post-creation setup is made"], ans: 3, exp: "4. A post-creation setup is made." },
+
+  // --- SAVING & OPENING (21-30) ---
+  { cat: "Saving", q: "When connecting to a Codespace through the web, how is AutoSave configured?", opts: ["It must be manually enabled", "It is disabled by default", "It is automatically enabled", "It requires a premium account"], ans: 2, exp: "When you connect to a Codespace through the web, AutoSave is automatically enabled." },
+  { cat: "Saving", q: "What is required regarding AutoSave when you connect to a Codespace through Visual Studio Code running on your desktop?", opts: ["It is automatically enabled", "You must enable AutoSave", "It is permanently disabled", "It only saves every 60 minutes"], ans: 1, exp: "When you connect to a Codespace through Visual Studio Code running on your desktop, you must enable AutoSave." },
+  { cat: "Saving", q: "Where does your work actively save when using GitHub Codespaces?", opts: ["On your local hard drive", "To a virtual machine in the cloud", "Directly to the remote GitHub repository on every keystroke", "To your browser's local storage"], ans: 1, exp: "Your work saves to a virtual machine in the cloud." },
+  { cat: "Saving", q: "What happens if you try to exit a Codespace with unsaved changes?", opts: ["The changes are automatically deleted", "You receive a prompt to save them", "The Codespace refuses to close", "The changes are committed automatically"], ans: 1, exp: "If you have unsaved changes, you receive a prompt to save them before exiting." },
+  { cat: "Saving", q: "Under what specific condition is your saved work completely lost?", opts: ["If the Codespace times out", "If your internet connection drops", "If your Codespace is deleted", "If you close your browser tab"], ans: 2, exp: "However, if your Codespace is deleted, then your work is lost." },
+  { cat: "Saving", q: "How do you permanently save your work to the remote repository so it isn't lost if the Codespace is deleted?", opts: ["Click the 'Save' button in the browser", "Download the files locally", "Commit your changes and push them to your remote repository", "Enable AutoSave"], ans: 2, exp: "To save your work, you must commit your changes and push them to your remote repository." },
+  { cat: "Saving", q: "Which IDE is explicitly mentioned as an option to reopen an existing Codespace?", opts: ["Eclipse IDE", "JetBrains IDE", "Xcode", "Android Studio"], ans: 1, exp: "You can reopen any of your active or stopped Codespaces on GitHub.com, in a JetBrains IDE, in Visual Studio Code, or by using GitHub CLI." },
+  { cat: "Saving", q: "From a repository page on GitHub.com, what keyboard key can you press to quickly access the option to resume a Codespace?", opts: ["The `/` key", "The `,` key", "The `.` key", "The `c` key"], ans: 1, exp: "you can go to the repository where the Codespace exists, select the , key and then select Resume this codespace." },
+  { cat: "Saving", q: "What URL can you visit to see a list of your existing Codespaces?", opts: ["https://github.com/my-codespaces", "https://github.com/codespaces", "https://codespaces.github.com", "https://github.com/settings/codespaces"], ans: 1, exp: "Or, you can open https://github.com/codespaces in the browser." },
+  { cat: "Saving", q: "Can you reopen a Codespace that has been stopped?", opts: ["Yes, you can reopen active or stopped Codespaces", "No, stopped Codespaces are deleted", "Only if it stopped within the last 5 minutes", "Only via the GitHub CLI"], ans: 0, exp: "You can reopen any of your active or stopped Codespaces." },
+
+  // --- TIMEOUTS & CONNECTION (31-38) ---
+  { cat: "Timeout", q: "What happens if a Codespace is inactive and you exit without explicitly stopping it?", opts: ["It runs indefinitely", "It times out after a period of inactivity and stops running", "It is deleted immediately", "It commits your code automatically"], ans: 1, exp: "If a Codespace is inactive, or if you exit your Codespace without explicitly stopping, the application times out after a period of inactivity and stops running." },
+  { cat: "Timeout", q: "What is the default inactivity timeout period for a Codespace?", opts: ["15 minutes", "30 minutes", "1 hour", "24 hours"], ans: 1, exp: "The default timeout is after 30 minutes of inactivity." },
+  { cat: "Timeout", q: "What happens to your data when a Codespace times out?", opts: ["It is erased", "It is pushed to the repository", "It is kept from the last time your changes were saved", "It is emailed to you as a backup"], ans: 2, exp: "When a Codespace times out, your data is kept from the last time your changes were saved." },
+  { cat: "Timeout", q: "Does working in a Codespace require an internet connection?", opts: ["No, it works completely offline", "Yes, a Codespace requires an internet connection", "Only when pushing commits", "Only if you are using VS Code desktop"], ans: 1, exp: "A Codespace requires an internet connection." },
+  { cat: "Timeout", q: "What happens immediately if your internet connection is lost while working in a Codespace?", opts: ["The Codespace deletes itself", "You aren't able to access your Codespace", "You can continue coding locally without interruption", "Your uncommitted changes are discarded"], ans: 1, exp: "If the connection to the internet is lost while working in a Codespace, you aren't able to access your Codespace." },
+  { cat: "Timeout", q: "If your internet connection drops, what happens to your uncommitted changes?", opts: ["They are lost", "They are saved", "They are automatically pushed", "They are reverted to the last commit"], ans: 1, exp: "However, any uncommitted changes are saved." },
+  { cat: "Timeout", q: "When you reestablish your internet connection after a drop, in what state will you find your Codespace?", opts: ["Restarted from the last commit", "In the same state that it was left in when the connection was lost", "Rebuilt completely", "Empty"], ans: 1, exp: "When you reestablish the internet connection, you can access the Codespace in the same state that it was left in when the connection was lost." },
+  { cat: "Timeout", q: "What is strongly recommended if you are working with an unstable internet connection?", opts: ["Disable AutoSave", "Switch to an offline text editor", "Frequently commit and push your changes", "Increase the inactivity timeout limit"], ans: 2, exp: "If you have an unstable internet connection, you should frequently commit and push your changes." },
+
+  // --- STOPPING (39-45) ---
+  { cat: "Stopping", q: "Who can overrule a personal timeout setting you define for your Codespaces?", opts: ["Nobody", "Your organization's timeout policy", "GitHub Support", "The repository creator"], ans: 1, exp: "You can define your personal timeout setting... but an organization's timeout policy can overrule the setting." },
+  { cat: "Stopping", q: "Which state of a Codespace incurs CPU charges?", opts: ["Deleted Codespaces", "Only running Codespaces", "Stopped Codespaces", "Both running and stopped Codespaces"], ans: 1, exp: "Only running Codespaces incur CPU charges." },
+  { cat: "Stopping", q: "What kind of costs does a stopped Codespace incur?", opts: ["CPU costs", "Networking costs", "Only storage costs", "No costs at all"], ans: 2, exp: "A stopped Codespace incurs only storage costs." },
+  { cat: "Stopping", q: "If you change the machine type used for your Codespace, what action must you take for it to take effect?", opts: ["Rebuild the container", "Stop and restart the Codespace", "Delete and recreate the Codespace", "Push your commits"], ans: 1, exp: "if you change the machine type used for your Codespace, you need to stop and restart it for the change to take effect." },
+  { cat: "Stopping", q: "What happens to uncommitted changes when you close or stop your Codespace?", opts: ["They are deleted permanently", "They are preserved until you connect to the Codespace again", "They are automatically committed as 'WIP'", "They are discarded unless you have a premium account"], ans: 1, exp: "When you close or stop your Codespace, all uncommitted changes are preserved until you connect to the Codespace again." },
+  { cat: "Stopping", q: "If you encounter an error or something unexpected in your Codespace, what action is suggested?", opts: ["Stop it and choose to restart or delete it", "Unplug your router", "Wait 30 days for it to auto-delete", "Downgrade your machine type"], ans: 0, exp: "You can also stop Codespace and choose to restart or delete it if you encounter an error or something unexpected." },
+  { cat: "Stopping", q: "What command stops the Codespace from the terminal (inferred context from exiting)?", opts: ["Running the stop command", "Closing the browser without saving", "Hitting Ctrl+C", "Typing 'exit'"], ans: 0, exp: "If you exit the Codespace without running the stop command... the Codespace and its running processes continue." },
+
+  // --- REBUILDING (46-52) ---
+  { cat: "Rebuild", q: "Why would you typically rebuild your Codespace?", opts: ["To save money on storage", "To implement changes to your dev container configuration", "To push commits to the main branch", "To change the repository name"], ans: 1, exp: "You can rebuild your Codespace to implement changes to your dev container configuration." },
+  { cat: "Rebuild", q: "For most uses, what is provided as an alternative to rebuilding a Codespace?", opts: ["Creating a new Codespace", "Changing the machine type", "Deleting the repository", "Stopping the Codespace for 30 minutes"], ans: 0, exp: "For most uses, you can create a new Codespace as an alternative to rebuilding a Codespace." },
+  { cat: "Rebuild", q: "During a standard rebuild, what helps speed up the process?", opts: ["Images from the cache", "A faster internet connection", "Using a smaller machine type", "Skipping the post-creation setup"], ans: 0, exp: "When you rebuild your Codespace, images from the cache speed-up the rebuild process." },
+  { cat: "Rebuild", q: "What is the primary effect of performing a 'full rebuild'?", opts: ["It pushes all commits forcefully", "It clears the cache and rebuilds the container with fresh images", "It deletes the remote repository", "It resets the timeout period to zero"], ans: 1, exp: "You can also perform a full rebuild to clear the cache and rebuild the container with fresh images." },
+  { cat: "Rebuild", q: "When you rebuild a container, changes made OUTSIDE of which directory are cleared?", opts: ["/home", "/root", "/workspaces", "/github"], ans: 2, exp: "When you rebuild the container in a Codespace, changes you made outside the /workspaces directory are cleared." },
+  { cat: "Rebuild", q: "Are changes you made inside the `/workspaces` directory preserved over a rebuild?", opts: ["No, everything is cleared", "Yes, they are preserved", "Only if they were committed", "Only during a full rebuild"], ans: 1, exp: "Changes you made inside the /workspaces directory... are preserved over a rebuild." },
+  { cat: "Rebuild", q: "Is the clone of the repository preserved during a rebuild?", opts: ["Yes, because it is inside the /workspaces directory", "No, it must be cloned again", "Only if it is a public repository", "Only if you select 'preserve clone'"], ans: 0, exp: "Changes you made inside the /workspaces directory, including the clone of the repository or template you created the Codespace from, are preserved over a rebuild." },
+
+  // --- DELETION (53-60) ---
+  { cat: "Deletion", q: "When is it generally safe to delete a Codespace created for a particular task?", opts: ["After 30 minutes", "Before pushing changes", "After you push your changes to a remote branch", "When you lose internet connection"], ans: 2, exp: "After you push your changes to a remote branch, then you can safely delete that Codespace." },
+  { cat: "Deletion", q: "What happens if you try to delete a Codespace that has unpushed git commits?", opts: ["It deletes immediately without warning", "The editor notifies you that you have changes that aren't yet pushed", "It automatically pushes them for you", "It throws a fatal error and locks the Codespace"], ans: 1, exp: "If you try to delete a Codespace with unpushed git commits, the editor notifies you that you have changes that aren't yet pushed to a remote branch." },
+  { cat: "Deletion", q: "If you have unpushed commits and want to delete the Codespace, what alternative does the editor offer besides pushing them?", opts: ["Export the code to a new branch without creating a new Codespace", "Download a ZIP file of the repository", "Email the patch to a reviewer", "Rebuild the dev container"], ans: 0, exp: "You can also continue to delete your Codespace and any uncommitted changes or export the code to a new branch without creating a new Codespace." },
+  { cat: "Deletion", q: "Are stopped Codespaces ever deleted automatically?", opts: ["No, you must delete them manually", "Yes, if they remain inactive for a specified amount of time", "Yes, they are deleted every weekend", "Yes, immediately upon stopping"], ans: 1, exp: "Stopped Codespaces that remain inactive for a specified amount of time are deleted automatically." },
+  { cat: "Deletion", q: "What is the default retention period before an inactive Codespace is automatically deleted?", opts: ["7 days", "14 days", "30 days", "60 days"], ans: 2, exp: "Inactive Codespaces delete after 30 days." },
+  { cat: "Deletion", q: "Can you change the default 30-day auto-deletion rule for inactive Codespaces?", opts: ["No, 30 days is a strict limit", "Yes, you can customize your Codespace retention intervals", "Only organization admins can change it", "Yes, but only to make it shorter"], ans: 1, exp: "Inactive Codespaces delete after 30 days, but you can customize your Codespace retention intervals." },
+  { cat: "Deletion", q: "What happens to your uncommitted changes if you proceed with deleting a Codespace?", opts: ["They are saved in a backup folder", "They are lost", "They are automatically merged", "They are moved to a template"], ans: 1, exp: "You can also continue to delete your Codespace and any uncommitted changes (implying they are lost)." },
+  { cat: "Deletion", q: "If you create a new Codespace from a template, how do you prevent losing your work when deleting the Codespace?", opts: ["Publish your work to a new repository first", "Run the AutoSave command", "Stop the Codespace instead", "Rebuild the Codespace"], ans: 0, exp: "(From 'Save changes' section) To save your work, you must... publish your work to a new one if you created your Codespace from a template." }
+];
+
+const catColorMap = {
+  "Lifecycle": "cat-lifecycle",
+  "Creation": "cat-creation",
+  "Saving": "cat-saving",
+  "Timeout": "cat-timeout",
+  "Stopping": "cat-stopping",
+  "Rebuild": "cat-rebuild",
+  "Deletion": "cat-deletion"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-lifecycle';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

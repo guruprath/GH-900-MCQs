@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Scanning & SARIF — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-setup { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-sarif { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-cli { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-actions { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-billing { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 60 Questions</div>
+  <h1>Code Scanning & SARIF</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Setup',this)">Setup Options</button>
+    <button class="filter-btn" onclick="filterCat('SARIF',this)">SARIF & API</button>
+    <button class="filter-btn" onclick="filterCat('CLI',this)">CodeQL CLI</button>
+    <button class="filter-btn" onclick="filterCat('Actions',this)">GitHub Actions</button>
+    <button class="filter-btn" onclick="filterCat('Billing',this)">Billing</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- BASICS ---
+  { cat: "Basics", q: "What is the primary purpose of code scanning in GitHub?", opts: ["To monitor server uptime", "To format code syntax automatically", "To find security vulnerabilities and coding errors", "To track user activity on repositories"], ans: 2, exp: "Code scanning uses CodeQL to analyze the code in a GitHub repository to find security vulnerabilities and coding errors." },
+  { cat: "Basics", q: "Which engine does GitHub use by default for code scanning?", opts: ["SonarQube", "ESLint", "CodeQL", "Dependabot"], ans: 2, exp: "Code scanning uses CodeQL to analyze the code in a GitHub repository..." },
+  { cat: "Basics", q: "For which repositories is code scanning available by default without requiring Advanced Security?", opts: ["All private repositories", "All public repositories", "Only organization repositories", "Only enterprise repositories"], ans: 1, exp: "Code scanning is available for all public repositories, and for private repositories owned by organizations where GitHub Advanced Security is enabled." },
+  { cat: "Basics", q: "Where does GitHub display an alert if a vulnerability or error is found?", opts: ["In the Issues tab", "In the Actions tab", "In the Security tab", "In the Settings tab"], ans: 2, exp: "If code scanning finds a potential vulnerability or error in your code, GitHub displays an alert in the repository's Security tab." },
+  { cat: "Basics", q: "What happens to a code scanning alert after you fix the code that triggered it?", opts: ["It remains open for 30 days", "GitHub closes the alert", "You must manually delete it", "It is converted to an Issue"], ans: 1, exp: "After you fix the code that triggered the alert, GitHub closes the alert." },
+  { cat: "Basics", q: "What is one way code scanning helps the development lifecycle?", opts: ["It prevents developers from introducing new problems", "It writes unit tests for you", "It compiles the application faster", "It generates documentation"], ans: 0, exp: "Code scanning also prevents developers from introducing new problems." },
+  { cat: "Basics", q: "Can you schedule code scans to occur automatically?", opts: ["No, they only run on a push", "Yes, you can schedule scans for certain days and times", "Yes, but only for private repositories", "No, they must be triggered manually"], ans: 1, exp: "You can schedule scans for certain days and times..." },
+  { cat: "Basics", q: "What is an example of an event that can trigger a code scan in a repository?", opts: ["Creating a wiki page", "Starring a repository", "A push", "Downloading a release"], ans: 2, exp: "...or trigger scans when a specific event occurs in the repository, such as a push." },
+  { cat: "Basics", q: "In what conceptual form does CodeQL analyze code?", opts: ["It treats code like raw text", "It treats code like data", "It compiles the code into binary first", "It converts code to UML diagrams"], ans: 1, exp: "CodeQL treats code like data, allowing you to find potential vulnerabilities in your code..." },
+  { cat: "Basics", q: "How does CodeQL identify problems in a codebase?", opts: ["By running regex searches", "By relying entirely on third-party APIs", "By generating a database representation and running queries on it", "By executing the application in a sandbox"], ans: 2, exp: "You generate a CodeQL database to represent your codebase, then run CodeQL queries on that database to identify problems..." },
+
+  // --- SETUP OPTIONS ---
+  { cat: "Setup", q: "How many main ways are there to set up CodeQL analysis for code scanning?", opts: ["One", "Two", "Three", "Four"], ans: 2, exp: "There are three main ways to set up CodeQL analysis for code scanning:" },
+  { cat: "Setup", q: "Which setup option quickly configures CodeQL and handles choosing languages and events automatically?", opts: ["Advanced setup", "Default setup", "External CI setup", "Third-party setup"], ans: 1, exp: "Use default setup to quickly configure CodeQL analysis... The default setup handles choosing the languages to analyze, query suite to run, and events that trigger scans..." },
+  { cat: "Setup", q: "Does the Default setup require you to maintain a customizable workflow file in your repository?", opts: ["Yes, it adds a visible workflow file", "No, it runs code scans as a GitHub Action without needing to maintain a workflow file", "Yes, but it is read-only", "No, it runs entirely on an external server"], ans: 1, exp: "...enabled code scanning using the default setup, which runs code scans as a GitHub Action without needing to maintain a workflow file." },
+  { cat: "Setup", q: "Which setup option adds a customizable workflow file directly into your repository?", opts: ["Default setup", "Advanced setup", "SARIF upload setup", "REST API setup"], ans: 1, exp: "Use advanced setup to add the CodeQL workflow directly to your repository... generates a customizable workflow file..." },
+  { cat: "Setup", q: "What GitHub action does the Advanced setup workflow file use to run the CodeQL CLI?", opts: ["github/upload-sarif", "github/codeql-action", "actions/checkout", "github/security-scan"], ans: 1, exp: "...generates a customizable workflow file, which uses the github/codeql-action to run the CodeQL CLI as a GitHub Action." },
+  { cat: "Setup", q: "What is the third way to set up CodeQL analysis besides default and advanced setup?", opts: ["Run the CodeQL CLI directly in an external CI system and upload the results", "Email the code to GitHub Support", "Use the GitHub Pages build pipeline", "Install a local VS Code extension"], ans: 0, exp: "Run the CodeQL CLI directly in an external CI system and upload the results to GitHub." },
+  { cat: "Setup", q: "Which of the following is NOT a supported language for CodeQL?", opts: ["Python", "Java/Kotlin", "Rust", "JavaScript/TypeScript"], ans: 2, exp: "CodeQL supports... C/C++, C#, Go, Java/Kotlin, JS/TS, Python, Ruby, Swift. (Rust is not listed)." },
+  { cat: "Setup", q: "If you don't see the 'Set up code scanning' option under the Security tab, what might be the reason?", opts: ["You are using a public repository", "GitHub Advanced Security needs to be enabled for your organization", "You need to push a commit first", "CodeQL does not support your language"], ans: 1, exp: "If this option isn't available, ask an organization owner or repository administrator to enable GitHub Advanced Security." },
+  { cat: "Setup", q: "Which triggers are the default for code scanning when using the Default setup?", opts: ["on:push and on:release", "on:pull_request and on:push", "on:schedule and on:workflow_dispatch", "on:pull_request and on:issue_comment"], ans: 1, exp: "The on:pull_request and on:push triggers are the default for code scanning..." },
+  { cat: "Setup", q: "In the default CodeQL analysis workflow, when does code scanning run regarding pull requests?", opts: ["Whenever a pull request is closed", "Whenever a pull request is raised against the default branch", "Only if the pull request has a specific label", "Whenever a pull request is drafted"], ans: 1, exp: "...analyze your code each time you either push a change to any protected branches or raise a pull request against the default branch." },
+
+  // --- SARIF & API ---
+  { cat: "SARIF", q: "What does SARIF stand for?", opts: ["Static Analysis Results Interchange Format", "Security Assessment Report Interchange File", "System Analysis and Remediation Format", "Standard Application Resource Integration File"], ans: 0, exp: "You can upload Static Analysis Results Interchange Format (SARIF) files..." },
+  { cat: "SARIF", q: "What version of SARIF is strictly required for uploading results to GitHub?", opts: ["1.0.0", "2.0.0", "2.1.0", "3.0.0"], ans: 2, exp: "The results must use SARIF version 2.1.0." },
+  { cat: "SARIF", q: "Which of the following is a valid method for uploading SARIF results to GitHub?", opts: ["Emailing the file", "Code-scanning API", "FTP upload", "WebDAV"], ans: 1, exp: "You can upload the results using the code-scanning API, the CodeQL CLI, or GitHub Actions." },
+  { cat: "SARIF", q: "How do alerts generated from external third-party tools appear in GitHub?", opts: ["They are hidden until a maintainer approves them", "They are sent via email only", "They are displayed in the same way as those you run within GitHub", "They appear as standard repository Issues"], ans: 2, exp: "Alerts for code scanning that you run externally are displayed in the same way as those you run within GitHub." },
+  { cat: "SARIF", q: "What is the base URL for accessing the GitHub API over HTTPS?", opts: ["https://github.com/api", "https://api.github.com", "https://rest.github.com", "https://graphql.github.com"], ans: 1, exp: "You can access the GitHub API over HTTPS from https://api.github.com." },
+  { cat: "SARIF", q: "What format is all data sent and received as when using the GitHub API?", opts: ["XML", "YAML", "JSON", "Protobuf"], ans: 2, exp: "All data is sent and received as JSON." },
+  { cat: "SARIF", q: "What is the supported custom media type for the code scanning REST API?", opts: ["application/vnd.github+json", "application/sarif+json", "application/json+sarif", "application/security+json"], ans: 1, exp: "There's one supported custom media type for the code scanning REST API, application/sarif+json." },
+  { cat: "SARIF", q: "When you use the `application/sarif+json` media type with a GET request, what extra data is included in the response?", opts: ["A full clone of the repository", "Only a high-level summary", "A subset of the actual uploaded data, plus github/alertNumber and github/alertUrl", "The developer's contact information"], ans: 2, exp: "When you use this media type... response includes a subset of the actual data that was uploaded... also includes additional data such as the github/alertNumber and github/alertUrl properties." },
+  { cat: "SARIF", q: "What is the purpose of custom media types in the GitHub API?", opts: ["To upload large video files", "To let consumers choose the format of the data they wish to receive", "To restrict API access by region", "To encrypt API payloads"], ans: 1, exp: "The API uses custom media types to let consumers choose the format of the data they wish to receive." },
+  { cat: "SARIF", q: "In the provided example cURL command, what HTTP header is used to pass the authorization token?", opts: ["Authorization: Bearer <YOUR-TOKEN>", "X-GitHub-Token: <YOUR-TOKEN>", "Token: <YOUR-TOKEN>", "Auth: <YOUR-TOKEN>"], ans: 0, exp: "-H \"Authorization: Bearer <YOUR-TOKEN>\"" },
+
+  // --- CLI ---
+  { cat: "CLI", q: "What is the main purpose of the standalone CodeQL CLI?", opts: ["To deploy code to production", "To generate a database representation of a codebase", "To manage GitHub repository settings", "To run unit tests automatically"], ans: 1, exp: "Its main purpose is to generate a database representation of a codebase, a CodeQL database." },
+  { cat: "CLI", q: "Is the CodeQL CLI free to use on customer-owned private repositories?", opts: ["Yes, for everyone", "No, it requires an Advanced Security license", "Yes, but only for up to 5 users", "No, it is strictly for public repos"], ans: 1, exp: "...available to use on customer owned private repositories with an Advanced Security license." },
+  { cat: "CLI", q: "Is the CodeQL CLI free to use on public repositories maintained on GitHub.com?", opts: ["Yes, it is free to use", "No, it requires a paid plan", "Only for open-source organizations", "Only up to 500 scans per month"], ans: 0, exp: "The CodeQL CLI is free to use on public repositories maintained on GitHub.com..." },
+  { cat: "CLI", q: "What should you download to ensure compatibility and better performance when using the CodeQL CLI?", opts: ["The source code directly", "The CodeQL bundle", "A Docker container", "A third-party plugin"], ans: 1, exp: "You should always use the CodeQL bundle, because this ensures compatibility and also gives much better performance..." },
+  { cat: "CLI", q: "Which of the following is NOT included in the CodeQL bundle?", opts: ["CodeQL CLI product", "A compatible version of queries and libraries", "Precompiled versions of all the queries", "A dedicated local web server for dashboards"], ans: 3, exp: "The bundle contains: CodeQL CLI product, A compatible version of the queries..., Precompiled versions of all the queries..." },
+  { cat: "CLI", q: "What is the maximum number of results supported per SARIF upload to GitHub?", opts: ["1,000", "5,000", "10,000", "Unlimited"], ans: 1, exp: "SARIF upload supports a maximum of 5,000 results per upload." },
+  { cat: "CLI", q: "What happens to results that exceed the 5,000 limit in a SARIF upload?", opts: ["They are saved in a separate file", "They are ignored", "The upload is completely rejected", "They overwrite the oldest results"], ans: 1, exp: "Any results over this limit are ignored." },
+  { cat: "CLI", q: "What is the maximum file size supported for a gzip-compressed SARIF file upload?", opts: ["5 MB", "10 MB", "50 MB", "100 MB"], ans: 1, exp: "For each upload, SARIF upload supports a maximum size of 10 MB for the gzip-compressed SARIF file." },
+  { cat: "CLI", q: "What happens if an uploaded SARIF file exceeds the 10 MB limit?", opts: ["It will be truncated", "It will be rejected", "It will incur an extra charge", "It will be stored uncompressed"], ans: 1, exp: "Any uploads over this limit will be rejected." },
+  { cat: "CLI", q: "If your SARIF file is too large due to too many results, what does the text recommend doing?", opts: ["Compress it using zip instead of gzip", "Upload it in chunks", "Update the configuration to focus on results for the most important rules or queries", "Contact GitHub support to raise the limit"], ans: 2, exp: "If your SARIF file is too large because it contains too many results, you should update the configuration to focus on results for the most important rules or queries." },
+
+  // --- ACTIONS ---
+  { cat: "Actions", q: "In what directory are GitHub Actions workflows stored in a repository?", opts: ["/.actions", "/.github/workflows", "/src/workflows", "/workflows"], ans: 1, exp: "Workflows are stored in the .github/workflows directory for your repository." },
+  { cat: "Actions", q: "What action is used to upload a SARIF file within a GitHub Actions workflow?", opts: ["upload-artifact", "upload-sarif", "codeql-upload", "publish-results"], ans: 1, exp: "Your workflow uses the upload-sarif action, which is part of the github/codeql-action repository." },
+  { cat: "Actions", q: "What is the main input parameter for the `upload-sarif` action?", opts: ["file-path", "sarif-file", "results-path", "upload-dir"], ans: 1, exp: "The main input parameter is sarif-file, which configures the file or directory of SARIF files to be uploaded." },
+  { cat: "Actions", q: "The path provided to the `sarif-file` parameter must be relative to what?", opts: ["The user's home directory", "The .github directory", "The root of the repository", "The build output directory"], ans: 2, exp: "The directory or file path is relative to the root of the repository." },
+  { cat: "Actions", q: "Which property in the SARIF file does GitHub use to match results across runs and prevent duplicate alerts?", opts: ["alertID", "uniqueIdentifier", "partialFingerprints", "runHash"], ans: 2, exp: "...uses fingerprints to match results across various runs... SARIF files created by the CodeQL analysis workflow include this fingerprint data in the partialFingerprints field." },
+  { cat: "Actions", q: "What happens if a SARIF file uploaded via the `upload-sarif` action is missing the `partialFingerprints` field?", opts: ["The upload fails immediately", "The action calculates it and attempts to prevent duplicate alerts", "GitHub creates a duplicate alert for every run", "The alerts are hidden from the Security tab"], ans: 1, exp: "If your SARIF file doesn't include partialFingerprints, the upload-sarif action will calculate the partialFingerprints field for you and attempt to prevent duplicate alerts." },
+  { cat: "Actions", q: "What two things must a repository contain for GitHub to successfully calculate missing `partialFingerprints`?", opts: ["The SARIF file and the original build artifacts", "The SARIF file and the source code used in the static analysis", "The compiled binary and the SARIF file", "The workflow file and the CodeQL bundle"], ans: 1, exp: "GitHub can only create partialFingerprints when the repository contains both the SARIF file and the source code used in the static analysis." },
+  { cat: "Actions", q: "If you want the Action to pause until the uploaded SARIF is fully processed by GitHub, which input parameter should you use?", opts: ["await-processing", "wait-for-processing", "block-until-done", "sync-upload"], ans: 1, exp: "wait-for-processing: description: If true, the Action will wait for the uploaded SARIF to be processed before completing." },
+  { cat: "Actions", q: "In the provided ESLint workflow example, what step must happen before uploading the SARIF file?", opts: ["Run ESLint to generate the results.sarif file", "Compile the code using GCC", "Download the CodeQL bundle", "Run a Docker container"], ans: 0, exp: "The Run ESLint step runs the ESLint tool and outputs the results.sarif file. The workflow then uploads the results.sarif file..." },
+  { cat: "Actions", q: "In the ESLint workflow example, what does `|| true` do at the end of the `run: node_modules/.bin/eslint ...` command?", opts: ["It deletes the results file", "It ensures the step doesn't fail the workflow even if ESLint finds errors (exits 1)", "It forces ESLint to fix all errors automatically", "It prints a success message"], ans: 1, exp: "eslint exits 1 if it finds anything to report... run: node_modules/.bin/eslint ... || true (prevents the workflow from stopping before the upload step)." },
+
+  // --- BILLING ---
+  { cat: "Billing", q: "What resource is consumed when running a code-scanning workflow using GitHub Actions?", opts: ["CodeQL licenses", "GitHub Actions minutes", "Advanced Security tokens", "Database read units"], ans: 1, exp: "Code scanning uses GitHub Actions, and each run of a code-scanning workflow consumes minutes for GitHub Actions." },
+  { cat: "Billing", q: "For which of the following is GitHub Actions usage completely free?", opts: ["Public repositories and self-hosted runners", "All enterprise accounts", "All private repositories", "Only open-source organizations"], ans: 0, exp: "GitHub Actions usage is free for both public repositories and self-hosted runners." },
+  { cat: "Billing", q: "How is GitHub Actions billed for private repositories?", opts: ["A flat fee per repository", "Each account receives a certain number of free minutes and storage depending on the product", "It is completely free and unlimited", "You pay per line of code analyzed"], ans: 1, exp: "For private repositories, each GitHub account receives a certain number of free minutes and storage, depending on the product used with the account." },
+  { cat: "Billing", q: "What happens to your included GitHub Actions minutes at the end of the month?", opts: ["They roll over to the next month", "They reset every month", "They expire after 90 days", "They are converted to storage credits"], ans: 1, exp: "Minutes reset every month..." },
+  { cat: "Billing", q: "Does GitHub Actions storage usage reset every month like minutes do?", opts: ["Yes", "No", "Only for public repos", "Only if you pay by invoice"], ans: 1, exp: "Minutes reset every month, while storage usage doesn't." },
+  { cat: "Billing", q: "If you are a monthly billed customer, what is the default spending limit on your account for Actions?", opts: ["$10 USD", "$50 USD", "Unlimited", "Zero US dollars (USD)"], ans: 3, exp: "If you're a monthly billed customer, your account has a default spending limit of zero US dollars (USD)..." },
+  { cat: "Billing", q: "What does the default spending limit of $0 USD prevent?", opts: ["It prevents any code scanning from running at all", "It prevents extra usage of minutes or storage for private repos beyond the included amounts", "It prevents you from using public repositories", "It prevents external contributors from creating PRs"], ans: 1, exp: "...which prevents extra usage of minutes or storage for private repositories beyond the amounts included with your account." },
+  { cat: "Billing", q: "If your account is paid by invoice, what is the default spending limit?", opts: ["Zero US dollars", "Unlimited", "$1,000 USD", "$10,000 USD"], ans: 1, exp: "If you pay your account by invoice, your account will have an unlimited default spending limit." },
+  { cat: "Billing", q: "What mechanism controls any GitHub Actions usage that goes beyond your included free amounts?", opts: ["Spending limits", "Action quotas", "Rate limiting", "The CodeQL CLI"], ans: 0, exp: "Spending limits control any usage beyond the included amounts." },
+  { cat: "Billing", q: "When using the 'Advanced setup' for code scanning, what is generated that you must maintain?", opts: ["A billing invoice", "A local Dockerfile", "A default workflow file", "A SARIF generator script"], ans: 2, exp: "The other option is Advanced setup, which generates the default workflow file you can edit for advanced configuration..." }
+];
+
+const catColorMap = {
+  "Basics": "cat-basics",
+  "Setup": "cat-setup",
+  "SARIF": "cat-sarif",
+  "CLI": "cat-cli",
+  "Actions": "cat-actions",
+  "Billing": "cat-billing"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

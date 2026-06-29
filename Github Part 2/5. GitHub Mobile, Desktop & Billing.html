@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Mobile, Desktop & Billing — 75 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-mobile { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-desktop { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-billing { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-actions { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-orgplans { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-platform { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 75 Questions</div>
+  <h1>GitHub Mobile, Desktop & Billing</h1>
+  <p>Comprehensive MCQs on client tools, billing models, and plans</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">75</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Mobile',this)">Mobile</button>
+    <button class="filter-btn" onclick="filterCat('Desktop',this)">Desktop</button>
+    <button class="filter-btn" onclick="filterCat('Billing',this)">Billing Basics</button>
+    <button class="filter-btn" onclick="filterCat('Actions',this)">Actions Pricing</button>
+    <button class="filter-btn" onclick="filterCat('Org Plans',this)">Org Plans</button>
+    <button class="filter-btn" onclick="filterCat('Platform',this)">New Platform</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── MOBILE (1–15) ────────────────────────────────────────────────
+  { cat: "Mobile", q: "Which operating systems are supported by GitHub Mobile?", opts: ["Windows and macOS", "Linux and Android", "iOS and Android", "ChromeOS and iOS"], ans: 2, exp: "GitHub Mobile is available for both iOS and Android devices." },
+  { cat: "Mobile", q: "Is GitHub Mobile a third-party application?", opts: ["Yes, it is developed by the community", "No, it is a trusted, first-party client application", "Yes, it is maintained by a third-party vendor", "No, it is an open-source web wrapper"], ans: 1, exp: "GitHub Mobile is a safe and secure way to access your GitHub data through a trusted, first-party client application." },
+  { cat: "Mobile", q: "Can you clear notifications using GitHub Mobile?", opts: ["No, notifications are read-only", "Yes, by marking them as read, muting threads, or filtering by type", "Only on the Android version", "Yes, but they reappear on Desktop"], ans: 1, exp: "Manage, triage, and clear notifications from github.com by marking them as read, muting threads, or filtering notifications by type." },
+  { cat: "Mobile", q: "What action can you take on notification threads using GitHub Mobile?", opts: ["Delete them permanently", "Mute them", "Forward them to an email", "Export them to a CSV"], ans: 1, exp: "Manage, triage, and clear notifications from github.com by marking them as read, muting threads, or filtering notifications by type." },
+  { cat: "Mobile", q: "How can you sort or view specific notifications in GitHub Mobile?", opts: ["By downloading them", "By filtering notifications by type", "By assigning them to colleagues", "By exporting them to external tools"], ans: 1, exp: "Manage, triage, and clear notifications from github.com by... filtering notifications by type." },
+  { cat: "Mobile", q: "What can you do with issues and pull requests on GitHub Mobile?", opts: ["Read, review, and collaborate on them", "Only view them in read-only mode", "Only approve them", "Permanently delete them"], ans: 0, exp: "Read, review, and collaborate on issues and pull requests." },
+  { cat: "Mobile", q: "Can you edit code files using GitHub Mobile?", opts: ["Yes, you can edit files in pull requests", "No, code editing requires GitHub Desktop", "Yes, but only in the main branch", "Yes, but only markdown files"], ans: 0, exp: "Edit files in pull requests." },
+  { cat: "Mobile", q: "What can you search for and browse within GitHub Mobile?", opts: ["Only your own repositories", "Users, repositories, and organizations", "External git hosting sites", "Only public gists"], ans: 1, exp: "Search for, browse, and interact with users, repositories, and organizations." },
+  { cat: "Mobile", q: "Under what condition does GitHub Mobile automatically send you a push notification?", opts: ["Every time a commit is pushed", "When someone mentions your username", "When a pull request is merged", "When a GitHub Action fails"], ans: 1, exp: "Receive a push notification when someone mentions your username." },
+  { cat: "Mobile", q: "Can you control when you receive push notifications on GitHub Mobile?", opts: ["No, they are always on", "Yes, you can schedule your push notifications for specific custom hours", "Only by turning off your phone's internet", "Yes, but only for weekends"], ans: 1, exp: "Schedule your push notifications for specific custom hours." },
+  { cat: "Mobile", q: "Which security feature can be facilitated through GitHub Mobile?", opts: ["Hardware security keys", "Securing your GitHub.com account with two-factor authentication", "Generating SSH keys", "Managing SAML SSO configurations"], ans: 1, exp: "Secure your GitHub.com account with two-factor authentication." },
+  { cat: "Mobile", q: "How does GitHub Mobile help protect your account from unauthorized access?", opts: ["By automatically changing your password", "By verifying your sign in attempts on unrecognized devices", "By blocking all web browser access", "By logging out other active sessions randomly"], ans: 1, exp: "Verify your sign in attempts on unrecognized devices." },
+  { cat: "Mobile", q: "How are the tasks performed on GitHub Mobile categorized in the text?", opts: ["Heavy computing tasks", "Administrative root tasks", "Lightweight GitHub tasks", "Intensive coding tasks"], ans: 2, exp: "Perform lightweight GitHub tasks when you're away from your desktop." },
+  { cat: "Mobile", q: "Is GitHub Mobile designed to fully replace GitHub Desktop?", opts: ["Yes, it has all Desktop features", "No, it is meant to perform lightweight GitHub tasks when away from your desktop", "Yes, but only on iOS", "No, it is only for reading notifications"], ans: 1, exp: "Perform lightweight GitHub tasks when you're away from your desktop." },
+  { cat: "Mobile", q: "Which of the following best describes GitHub Mobile's goal?", opts: ["To write complex algorithms on the go", "To do high-impact work on GitHub quickly and from anywhere", "To replace all web browsers", "To act as a local git repository"], ans: 1, exp: "GitHub Mobile gives you a way to do high-impact work on GitHub quickly and from anywhere." },
+
+  // ── DESKTOP (16–30) ────────────────────────────────────────────────
+  { cat: "Desktop", q: "Is GitHub Desktop a proprietary or open-source application?", opts: ["Proprietary", "Open-source", "Freemium", "Closed-source"], ans: 1, exp: "GitHub Desktop is an open-source application that helps streamline your Git workflow." },
+  { cat: "Desktop", q: "Which operating systems is GitHub Desktop officially available for?", opts: ["Windows and Linux", "macOS and Linux", "Windows and macOS", "Android and iOS"], ans: 2, exp: "GitHub Desktop is available for Windows and macOS." },
+  { cat: "Desktop", q: "What is the primary purpose of GitHub Desktop?", opts: ["To host repositories in the cloud", "To streamline your Git workflow and facilitate collaboration", "To replace the GitHub website entirely", "To provide a command-line interface only"], ans: 1, exp: "GitHub Desktop is an open-source application that helps streamline your Git workflow. It facilitates collaboration..." },
+  { cat: "Desktop", q: "How does GitHub Desktop help teams internally?", opts: ["By sharing Git and GitHub best practices within your team", "By enforcing strict working hours", "By tracking developer keystrokes", "By automatically writing documentation"], ans: 0, exp: "It facilitates collaboration between you and your team and the sharing of Git and GitHub best practices within your team." },
+  { cat: "Desktop", q: "What can you do with existing local projects using GitHub Desktop?", opts: ["Upload them securely to external servers", "Add repositories to GitHub Desktop to manage them locally", "Automatically rewrite them in a new language", "Lock them from other users"], ans: 1, exp: "Add repositories to GitHub Desktop to manage existing projects locally." },
+  { cat: "Desktop", q: "How can you quickly set up a project locally from GitHub using Desktop?", opts: ["By downloading a zip file manually", "By cloning repositories from GitHub", "By copying the code text", "By generating an SSH key"], ans: 1, exp: "Clone repositories from GitHub to quickly set up projects locally and start working." },
+  { cat: "Desktop", q: "How does GitHub Desktop handle adding changes to a commit?", opts: ["It automatically commits every saved file", "You add changes to your commit interactively", "It requires using the command line", "It commits everything once a day"], ans: 1, exp: "Add changes to your commit interactively, making it easier to manage and review changes before committing." },
+  { cat: "Desktop", q: "Why would you add changes interactively on GitHub Desktop?", opts: ["To bypass code reviews", "To make it easier to manage and review changes before committing", "To hide changes from collaborators", "To force a merge conflict"], ans: 1, exp: "Add changes to your commit interactively, making it easier to manage and review changes before committing." },
+  { cat: "Desktop", q: "What feature in GitHub Desktop ensures proper attribution in collaborative projects?", opts: ["The ability to quickly add coauthors to your commit", "The automated licensing tool", "The issue tracker integration", "The team chat feature"], ans: 0, exp: "Quickly add coauthors to your commit, ensuring proper attribution in collaborative projects." },
+  { cat: "Desktop", q: "How does GitHub Desktop assist with reviewing code changes from others?", opts: ["By automatically approving all changes", "By letting you check out branches with pull requests to review and collaborate", "By converting code to PDF", "By sending an automated email to the author"], ans: 1, exp: "Check out branches with pull requests to review and collaborate on code changes." },
+  { cat: "Desktop", q: "What helps ensure code quality and streamline collaboration directly within GitHub Desktop?", opts: ["Viewing CI statuses", "The built-in linter", "The automated code generator", "The spell checker"], ans: 0, exp: "View CI statuses to ensure code quality and streamline collaboration." },
+  { cat: "Desktop", q: "What unique visual feature does GitHub Desktop provide for design updates?", opts: ["3D model rendering", "Comparing changed images visually", "Video playback comparison", "Color palette extraction"], ans: 1, exp: "Compare changed images to visually review updates in image files." },
+  { cat: "Desktop", q: "According to the text, is GitHub Desktop available for Linux?", opts: ["Yes", "No, it is available for Windows and macOS", "Only via web browser", "Only for Enterprise customers"], ans: 1, exp: "GitHub Desktop is available for Windows and macOS. (Linux is not mentioned)" },
+  { cat: "Desktop", q: "Does GitHub Desktop allow you to manage existing local projects that are not yet on GitHub?", opts: ["No, they must be cloned first", "Yes, you can add repositories to manage existing projects locally", "Only if they are written in JavaScript", "Yes, but it requires a paid license"], ans: 1, exp: "Add repositories to GitHub Desktop to manage existing projects locally." },
+  { cat: "Desktop", q: "What is a major benefit of viewing CI statuses in GitHub Desktop?", opts: ["It bypasses the need for tests", "To ensure code quality and streamline collaboration", "It automatically fixes broken code", "It increases GitHub Actions minutes"], ans: 1, exp: "View CI statuses to ensure code quality and streamline collaboration." },
+
+  // ── BILLING BASICS (31–41) ────────────────────────────────────────
+  { cat: "Billing", q: "What is the primary factor that determines how GitHub bills accounts?", opts: ["The number of repositories", "Account type (personal, organization, or enterprise)", "The amount of code written", "The geographic location"], ans: 1, exp: "GitHub bills accounts based on type—personal, organization, or enterprise." },
+  { cat: "Billing", q: "How do personal accounts and most organizations typically receive their bills?", opts: ["Combined into one global bill", "They receive separate bills", "They do not receive bills", "They are billed annually by default"], ans: 1, exp: "Personal accounts and most organizations receive separate bills..." },
+  { cat: "Billing", q: "Which account type has the ability to consolidate billing across multiple organizations?", opts: ["Personal accounts", "Organization accounts", "Enterprise accounts", "Free accounts"], ans: 2, exp: "...while enterprise accounts can consolidate billing across multiple organizations..." },
+  { cat: "Billing", q: "How can enterprise accounts handle charges internally?", opts: ["By routing charges to different cost centers based on internal configuration", "By ignoring usage limits", "By pushing costs to individual developers", "By freezing all billing accounts automatically"], ans: 0, exp: "...or route charges to different cost centers based on internal configuration." },
+  { cat: "Billing", q: "What two types of charges combine to make up a GitHub bill?", opts: ["Hardware and software charges", "Subscriptions and usage-based charges", "Overage and penalty charges", "Flat fees and variable bandwidth charges"], ans: 1, exp: "Each bill reflects a combination of subscriptions and usage-based charges:" },
+  { cat: "Billing", q: "Which of the following is considered a 'Subscription' charge?", opts: ["GitHub Actions runtime", "GitHub Packages storage", "Your account's plan (e.g., GitHub Pro) and fixed monthly costs", "Extra CI/CD minutes"], ans: 2, exp: "Subscriptions include your account’s plan (such as GitHub Pro or GitHub Team)..." },
+  { cat: "Billing", q: "Is GitHub Copilot billed as a subscription or a usage-based charge?", opts: ["Usage-based charge", "Subscription (fixed monthly cost)", "One-time perpetual fee", "It is free for everyone"], ans: 1, exp: "Subscriptions include... fixed monthly costs for products like GitHub Copilot or Marketplace apps." },
+  { cat: "Billing", q: "Are Marketplace apps typically billed as subscriptions or usage-based charges?", opts: ["Subscriptions", "Usage-based charges", "Both equally", "Neither"], ans: 0, exp: "Subscriptions include... fixed monthly costs for products like GitHub Copilot or Marketplace apps." },
+  { cat: "Billing", q: "What defines 'usage-based billing' on GitHub?", opts: ["A flat fee regardless of use", "Costs that scale with use", "A fee based on the number of users", "Costs fixed at the beginning of the year"], ans: 1, exp: "Usage-based billing applies to products where cost scales with use..." },
+  { cat: "Billing", q: "Which product is subject to usage-based billing based on runtime minutes and artifact storage?", opts: ["GitHub Pro", "GitHub Copilot", "GitHub Actions", "Marketplace apps"], ans: 2, exp: "...usage-based billing applies to... GitHub Actions (based on runtime minutes and artifact storage)..." },
+  { cat: "Billing", q: "How can you manage usage overages if you exceed your free minutes or storage?", opts: ["By deleting the account", "By setting spending limits", "By requesting a refund", "By turning off the internet"], ans: 1, exp: "You can manage overages by setting spending limits." },
+
+  // ── ACTIONS PRICING (42–50) ───────────────────────────────────────
+  { cat: "Actions", q: "What do GitHub Actions allow you to do?", opts: ["Automate workflows directly within repositories", "Host physical servers", "Write code for you", "Manage your company's payroll"], ans: 0, exp: "GitHub Actions enable automation of workflows directly within repositories." },
+  { cat: "Actions", q: "What two factors determine the pricing model for GitHub Actions?", opts: ["Code language and framework", "Repository visibility and account type", "Team size and location", "Commit frequency and lines of code"], ans: 1, exp: "Its pricing model varies based on repository visibility and account type:" },
+  { cat: "Actions", q: "How much does GitHub Actions usage cost for public repositories?", opts: ["$10 per month", "It is free (unlimited minutes on GitHub-hosted runners)", "Billed per minute after 2000 minutes", "It is not available for public repos"], ans: 1, exp: "Public repositories – GitHub Actions usage is free for public repositories, providing unlimited minutes on GitHub-hosted runners." },
+  { cat: "Actions", q: "For public repositories, where are the unlimited free minutes executed?", opts: ["Self-hosted runners", "Third-party cloud providers", "GitHub-hosted runners", "Local desktop clients"], ans: 2, exp: "...providing unlimited minutes on GitHub-hosted runners." },
+  { cat: "Actions", q: "How are private repositories billed for GitHub Actions?", opts: ["They are also free and unlimited", "They receive a certain number of free minutes based on the account's plan", "They pay for every single minute from the start", "They cannot use GitHub Actions"], ans: 1, exp: "Private repositories – Each account receives a certain number of free minutes and storage for GitHub-hosted runners, depending on the account's plan." },
+  { cat: "Actions", q: "How many CI/CD minutes per month are included in GitHub Free for personal accounts?", opts: ["500", "1,000", "2,000", "3,000"], ans: 2, exp: "For example, GitHub Free for personal accounts includes 2,000 CI/CD minutes per month." },
+  { cat: "Actions", q: "What happens if a private repository exceeds its included GitHub Actions minutes?", opts: ["The repository is deleted", "Usage beyond the included amounts is managed by spending limits", "The account is locked", "Actions are permanently disabled"], ans: 1, exp: "Usage beyond the included amounts is managed by spending limits." },
+  { cat: "Actions", q: "Why is it important to monitor GitHub Actions usage for private repositories?", opts: ["To increase your follower count", "To avoid unexpected costs, especially with high activity", "To speed up the runners", "To prevent your code from becoming public"], ans: 1, exp: "It's important to monitor usage to avoid unexpected costs, especially for private repositories with high activity." },
+  { cat: "Actions", q: "If an organization wants more than 2,000 free minutes, what dictates how many free minutes they get?", opts: ["The number of commits they make", "The account's plan", "Their geographic region", "The age of the repository"], ans: 1, exp: "Each account receives a certain number of free minutes and storage... depending on the account's plan." },
+
+  // ── ORG PLANS (51–65) ─────────────────────────────────────────────
+  { cat: "Org Plans", q: "What type of support is included with 'GitHub Free for Organizations'?", opts: ["Email support", "24/7 support", "Community support", "Dedicated enterprise support"], ans: 2, exp: "GitHub Free for Organizations Features: ... Community support." },
+  { cat: "Org Plans", q: "How many public and private repositories can an organization have on the Free plan?", opts: ["Unlimited public, 10 private", "Unlimited public and private", "100 public, unlimited private", "Unlimited public, 0 private"], ans: 1, exp: "GitHub Free for Organizations Features: Unlimited public/private repositories." },
+  { cat: "Org Plans", q: "How many CI/CD minutes per month are included in GitHub Free for Organizations?", opts: ["1,000", "2,000", "3,000", "Unlimited"], ans: 1, exp: "GitHub Free for Organizations Features: ... 2,000 CI/CD minutes per month." },
+  { cat: "Org Plans", q: "Which plan introduces the 'Code owners' feature for organizations?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise", "GitHub Mobile"], ans: 1, exp: "GitHub Team Features: Everything in Free, plus: ... Code owners." },
+  { cat: "Org Plans", q: "Which organizational plan includes 'Required reviews'?", opts: ["GitHub Free", "GitHub Team", "GitHub Personal", "GitHub Basic"], ans: 1, exp: "GitHub Team Features: ... Required reviews." },
+  { cat: "Org Plans", q: "Under which plan are 'Enforced branch protections' first introduced for organizations?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise", "GitHub Open Source"], ans: 1, exp: "GitHub Team Features: ... Enforced branch protections." },
+  { cat: "Org Plans", q: "What level of support does the GitHub Team plan provide?", opts: ["Community support", "Email support", "24/7 support", "Phone support"], ans: 1, exp: "GitHub Team Features: ... Email support." },
+  { cat: "Org Plans", q: "Which plan provides SAML single sign-on?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise", "All plans"], ans: 2, exp: "GitHub Enterprise Features: Everything in Team, plus: SAML... single sign-on." },
+  { cat: "Org Plans", q: "Which plan provides 'Advanced auditing'?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise", "GitHub Desktop"], ans: 2, exp: "GitHub Enterprise Features: ... Advanced auditing." },
+  { cat: "Org Plans", q: "Which organizational plan includes 'GitHub Connect'?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise", "GitHub Mobile"], ans: 2, exp: "GitHub Enterprise Features: ... GitHub Connect." },
+  { cat: "Org Plans", q: "What kind of support is included in GitHub Enterprise?", opts: ["Community support", "Email support", "24/7 support", "No support"], ans: 2, exp: "GitHub Enterprise Features: ... 24/7 support." },
+  { cat: "Org Plans", q: "Which plan is necessary if an organization requires Enterprise-level security features?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise", "GitHub Copilot"], ans: 2, exp: "GitHub Enterprise Features: ... Enterprise-level security features." },
+  { cat: "Org Plans", q: "Where can you find more detailed information about available features and pricing tiers?", opts: ["GitHub's pricing page", "The local git repository", "GitHub Desktop settings", "The GitHub Mobile app store page"], ans: 0, exp: "For more information about available features and pricing tiers, see GitHub’s pricing page." },
+  { cat: "Org Plans", q: "What should organizations evaluate to choose the plan that best fits their goals?", opts: ["Hardware limitations", "Collaboration needs and security priorities", "Number of lines of code", "Internet speed requirements"], ans: 1, exp: "Organizations should evaluate their collaboration needs and security priorities to choose the plan that best fits their goals." },
+  { cat: "Org Plans", q: "Does the GitHub Team plan include everything from the GitHub Free plan?", opts: ["No, it removes public repositories", "Yes, it includes everything in Free, plus extra features", "No, it replaces community support completely", "Yes, but it reduces the CI/CD minutes"], ans: 1, exp: "GitHub Team Features: Everything in Free, plus: ..." },
+
+  // ── NEW PLATFORM & METERED BILLING (66–75) ────────────────────────
+  { cat: "Platform", q: "How frequently are organizations billed under the usage-based billing model for licenses?", opts: ["Daily", "Weekly", "Monthly", "Annually"], ans: 2, exp: "Monthly billing – Organizations are billed monthly for the exact number of GitHub Enterprise and GitHub Advanced Security licenses used." },
+  { cat: "Platform", q: "How does the usage-based billing model charge for licenses used?", opts: ["Based on a predefined tier (e.g., 50, 100 users)", "Based on the exact number of licenses used", "A flat annual fee", "Based on the number of commits"], ans: 1, exp: "Organizations are billed monthly for the exact number of GitHub Enterprise and GitHub Advanced Security licenses used." },
+  { cat: "Platform", q: "What happens if a user starts consuming a license partway through the month?", opts: ["The organization is charged for the full month", "The user is denied access until the 1st of the next month", "The organization is charged a pro rata amount", "The first month is completely free"], ans: 2, exp: "Pro rata charges – If a user starts consuming a license partway through the month, the organization is charged a pro rata amount for that user's usage." },
+  { cat: "Platform", q: "What happens to the billing if a user stops consuming a license during the month?", opts: ["Dynamic adjustments reflect the change in the following month", "The organization pays for them forever", "A cancellation fee is applied", "The account is locked automatically"], ans: 0, exp: "Dynamic adjustments – If a user stops consuming a license during the month, the billing for the following month reflects this change..." },
+  { cat: "Platform", q: "What does the usage-based (metered) model eliminate the need for?", opts: ["Security compliance", "Purchasing a predefined number of licenses in advance", "Using GitHub Actions", "Managing teams"], ans: 1, exp: "This model eliminates the need to purchase a predefined number of licenses in advance, offering flexibility, and cost efficiency." },
+  { cat: "Platform", q: "How can administrators prevent unexpected overages for services like Actions and Packages?", opts: ["By disabling the services entirely", "By setting granular spending controls", "By deleting repositories", "By upgrading to Enterprise automatically"], ans: 1, exp: "Granular spending controls – Administrators can set specific spending limits for services like GitHub Actions and GitHub Packages, preventing unexpected overages." },
+  { cat: "Platform", q: "What feature of the enhanced billing platform allows organizations to monitor consumption patterns?", opts: ["Automated reporting", "Granular spending controls", "Detailed usage insights", "GitHub Connect"], ans: 2, exp: "Detailed usage insights – The platform offers in-depth visibility into product usage, allowing organizations to monitor consumption patterns and optimize resource allocation." },
+  { cat: "Platform", q: "What feature helps streamline financial oversight and facilitate internal chargebacks?", opts: ["Detailed usage insights", "Automated reporting", "Granular spending controls", "Pro rata charges"], ans: 1, exp: "Automated reporting – Features for automating usage reporting streamline financial oversight and facilitate internal chargebacks." },
+  { cat: "Platform", q: "What incurs extra charges when using GitHub Codespaces?", opts: ["The number of branches created", "Storage and compute time", "The programming language used", "The number of collaborators invited"], ans: 1, exp: "GitHub Codespaces – Using GitHub Codespaces incurs extra charges based on storage and compute time, depending on your plan." },
+  { cat: "Platform", q: "How can admins receive billing alerts when approaching spending limits?", opts: ["Only via SMS", "Through the GitHub UI and by email notifications", "Via phone calls", "Through a printed letter"], ans: 1, exp: "Billing alerts – Admins can receive alerts when approaching spending limits through the GitHub UI and by email notifications." }
+];
+
+const catColorMap = {
+  "Mobile": "cat-mobile",
+  "Desktop": "cat-desktop",
+  "Billing": "cat-billing",
+  "Actions": "cat-actions",
+  "Org Plans": "cat-orgplans",
+  "Platform": "cat-platform"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-mobile';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

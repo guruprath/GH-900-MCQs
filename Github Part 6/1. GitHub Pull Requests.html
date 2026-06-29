@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Pull Requests — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-branches { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-pr-basics { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-creating-prs { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-pr-statuses { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-merging { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-advanced { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+  .cat-navigation { color: #ff7b72; border-color: rgba(255,123,114,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 60 Questions</div>
+  <h1>GitHub Pull Requests</h1>
+  <p>Branches, Merging, and Advanced Options</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Branches',this)">Branches</button>
+    <button class="filter-btn" onclick="filterCat('PR Basics',this)">PR Basics</button>
+    <button class="filter-btn" onclick="filterCat('Creating PRs',this)">Creating PRs</button>
+    <button class="filter-btn" onclick="filterCat('PR Statuses',this)">PR Statuses</button>
+    <button class="filter-btn" onclick="filterCat('Merging',this)">Merging</button>
+    <button class="filter-btn" onclick="filterCat('Advanced',this)">Advanced</button>
+    <button class="filter-btn" onclick="filterCat('Navigation',this)">Navigation</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BRANCHES (1–7) ────────────────────────────────────────────────
+  { cat: "Branches", q: "What is an isolated workspace where you can develop work without affecting others in the repository?", opts: ["A commit","A branch","A pull request","A merge"], ans: 1, exp: "Branches are isolated workspaces where you can develop your work without affecting others in the repository." },
+  { cat: "Branches", q: "Why do developers primarily use branches?", opts: ["To delete old code securely","To back up the entire repository locally","To develop features, fix bugs, and safely experiment","To assign tasks to other team members"], ans: 2, exp: "They allow you to develop features, fix bugs, and safely experiment with new ideas in a contained area of your repository." },
+  { cat: "Branches", q: "What are the individual changes made by a developer on their branch called?", opts: ["Pulls","Forks","Commits","Merges"], ans: 2, exp: "By having their own branch, a developer can make any changes, called commits, without worrying about affecting others." },
+  { cat: "Branches", q: "Why is working on independent branches beneficial for developers?", opts: ["It automatically reviews their code for errors","They can make commits without worrying about how it affects other developers","It prevents the need for pull requests completely","It increases the size of the repository"], ans: 1, exp: "A developer can make any changes... without worrying about how their commits affect other developers working on their own branches." },
+  { cat: "Branches", q: "What is the main challenge that arises when multiple developers work on separate branches?", opts: ["The repository can run out of storage space","Branches automatically delete themselves over time","At some point, each developer's branch needs to be merged into a common branch","Developers cannot see who created which branch"], ans: 2, exp: "At some point, each developer's branch needs to be merged into a common branch, like main." },
+  { cat: "Branches", q: "What is a common name for the base branch that developer branches are ultimately merged into?", opts: ["test","main","origin","head"], ans: 1, exp: "Each developer's branch needs to be merged into a common branch, like main." },
+  { cat: "Branches", q: "Why do pull requests become increasingly important as projects scale?", opts: ["Because repositories get deleted randomly","Because GitHub requires them for billing purposes","Because there are many merges happening, and it's important to track and review them","Because developers forget their passwords"], ans: 2, exp: "As projects scale, there can be many merges... and it becomes increasingly important to track and review each merge. Needing to keep track of multiple changes... is where pull requests come in." },
+
+  // ── PR BASICS (8–14) ────────────────────────────────────────────────
+  { cat: "PR Basics", q: "What is the primary definition of a pull request?", opts: ["A command to download code to your local machine","A tool to forcefully overwrite the main branch","A way to document branch changes and communicate they are ready to be merged","A system check that looks for syntax errors"], ans: 2, exp: "A pull request is a way to document branch changes and communicate that the changes from the developer’s branch are ready to be merged." },
+  { cat: "PR Basics", q: "What do pull requests enable stakeholders to do?", opts: ["Review and discuss proposed changes to ensure code quality","Directly edit the developer's local machine code","Ban users from the repository","Bypass all branch protection rules"], ans: 0, exp: "Pull requests enable stakeholders to review and discuss the proposed changes to ensure that the code quality in the base branch is kept as high as possible." },
+  { cat: "PR Basics", q: "A pull request compares changes between which two components?", opts: ["Two different repositories","Two branches (the compare branch and the base branch)","A branch and a fork","The local drive and the cloud server"], ans: 1, exp: "A pull request compares changes between two branches: The compare branch... and the base branch." },
+  { cat: "PR Basics", q: "In a pull request, what is the 'compare branch'?", opts: ["The branch that acts as the final destination for the code","The main branch of the repository","The developer’s own branch containing specific changes","The branch that contains branch protection rules"], ans: 2, exp: "The compare branch is the developer’s own branch, which contains the specific changes they made." },
+  { cat: "PR Basics", q: "In a pull request, what is the 'base branch'?", opts: ["The branch containing the new experimental commits","The branch that the changes need to be merged into","The developer's local working directory","A temporary branch deleted immediately after creation"], ans: 1, exp: "The base branch, also referred to as the main branch, is the branch that the changes need to be merged into." },
+  { cat: "PR Basics", q: "What is another common name for the base branch?", opts: ["The main branch","The compare branch","The draft branch","The isolated workspace"], ans: 0, exp: "The base branch, also referred to as the main branch..." },
+  { cat: "PR Basics", q: "What does GitHub automatically show when you start a pull request?", opts: ["The code review history","The branch comparison view","The branch protection settings","The list of all open issues"], ans: 1, exp: "When starting a pull request, GitHub automatically shows the branch comparison view." },
+
+  // ── CREATING PRs (15–22) ─────────────────────────────────────────────
+  { cat: "Creating PRs", q: "Where do you first navigate to start creating a pull request on GitHub?", opts: ["The user profile page","The main page of the repository","The repository settings","The GitHub homepage"], ans: 1, exp: "On GitHub.com, navigate to the main page of the repository." },
+  { cat: "Creating PRs", q: "Which menu do you use to select the branch containing your commits before creating a PR?", opts: ["The Issues menu","The Branch menu","The Settings dropdown","The Code dropdown"], ans: 1, exp: "In the Branch menu, select the branch that contains your commits." },
+  { cat: "Creating PRs", q: "What button do you click in the yellow banner above the list of files to start a PR?", opts: ["Merge branch","Compare & pull request","Squash commits","Review code"], ans: 1, exp: "Above the list of files, in the yellow banner, select the Compare & pull request button." },
+  { cat: "Creating PRs", q: "After clicking 'Compare & pull request', what must you select in the base branch dropdown?", opts: ["Your personal branch","The branch you'd like to merge your changes into","A repository to fork","A specific commit hash"], ans: 1, exp: "In the base branch dropdown menu, select the branch you'd like to merge your changes into." },
+  { cat: "Creating PRs", q: "What goes into the compare branch dropdown when creating a PR?", opts: ["The main branch","The branch you made your changes in","The repository's default branch","The previous version of the repository"], ans: 1, exp: "Select the compare branch dropdown menu to select the branch you made your changes in." },
+  { cat: "Creating PRs", q: "What text fields must you fill out for your pull request?", opts: ["A commit hash and a URL","A title and description","A branch name and a password","An email address and a review summary"], ans: 1, exp: "Enter a title and description for your pull request." },
+  { cat: "Creating PRs", q: "Which button do you select to create a standard pull request that’s immediately ready for review?", opts: ["Create Draft Pull Request","Create Pull Request","Confirm Merge","Request Reviewers"], ans: 1, exp: "To create a pull request that’s ready for review, select the Create Pull Request button." },
+  { cat: "Creating PRs", q: "How do you specifically create a draft pull request?", opts: ["Leave the description blank","Select the dropdown next to the Create button, choose Create Draft Pull Request, then click it","Change the base branch to 'draft'","Draft PRs are created automatically for every branch"], ans: 1, exp: "Select the dropdown and select Create Draft Pull Request, then select Draft Pull Request." },
+
+  // ── PR STATUSES (23–28) ──────────────────────────────────────────────
+  { cat: "PR Statuses", q: "What is a key restriction of a Draft pull request?", opts: ["It deletes itself after 24 hours","It can’t be merged","It cannot contain more than 10 commits","It cannot have a description"], ans: 1, exp: "A pull request with a draft status can’t be merged." },
+  { cat: "PR Statuses", q: "Are code owners automatically requested to review draft pull requests?", opts: ["Yes, immediately","Yes, after 1 hour","No, they are not automatically requested","Only if the repository is public"], ans: 2, exp: "code owners aren’t automatically requested to review draft pull requests." },
+  { cat: "PR Statuses", q: "What does an 'Open' pull request status mean?", opts: ["The PR is active and not yet merged","The PR has been fully reviewed and approved","The PR has been merged into main","The PR was rejected by an administrator"], ans: 0, exp: "An open status means the pull request is active and not yet merged to the base branch." },
+  { cat: "PR Statuses", q: "Can you still add commits to an Open pull request?", opts: ["No, open PRs are locked","Yes, you can still make commits and discuss potential changes","Only if you have admin privileges","Only if the PR has zero comments"], ans: 1, exp: "You can still make commits and discuss and review potential changes with collaborators." },
+  { cat: "PR Statuses", q: "Why might you choose to 'Close' a pull request without merging it?", opts: ["Because it has too many lines of code","Because the changes proposed are no longer needed, or another solution was proposed","Because GitHub requires older PRs to be closed","Because you want to change the title"], ans: 1, exp: "This option is useful if the changes proposed in the branch are no longer needed, or if another solution is proposed in another branch." },
+  { cat: "PR Statuses", q: "What does a 'Merged' pull request status signify?", opts: ["The commits were deleted","The PR was converted into a draft","The updates and commits from the compare branch were combined with the base branch","The base branch was overwritten completely"], ans: 2, exp: "The merged pull request status means that the updates and commits from the compare branch were combined with the base branch." },
+
+  // ── MERGING (29–40) ──────────────────────────────────────────────
+  { cat: "Merging", q: "Who is typically able to complete a merge on a pull request?", opts: ["Anyone with a GitHub account","Anyone with push access to the repository","Only the repository owner","Only the person who created the PR"], ans: 1, exp: "Anyone with push access to the repository can complete the merge." },
+  { cat: "Merging", q: "Where do you click to view a list of all pull requests in a repository?", opts: ["The Settings tab","The Actions tab","The Pull requests tab under the repository name","The Insights tab"], ans: 2, exp: "Under your repository name, select Pull requests." },
+  { cat: "Merging", q: "To find the merge options on a pull request page, where do you need to look?", opts: ["At the very top of the page","In the right-hand sidebar","Scroll down to the bottom of the pull request","In the repository's main settings"], ans: 2, exp: "Scroll down to the bottom of the pull request." },
+  { cat: "Merging", q: "What does the standard 'Merge pull request' button do?", opts: ["Combines all commits into one single commit","Merges all of the commits into the base branch","Rebases the commits and removes the merge commit","Deletes the compare branch automatically"], ans: 1, exp: "Merge all of the commits into the base branch by selecting the Merge pull request button." },
+  { cat: "Merging", q: "If the standard 'Merge pull request' button isn't shown, how do you access it?", opts: ["It means you don't have permission","Select the merge dropdown menu and choose 'Create a merge commit'","Refresh the page 3 times","You must close the PR and open a new one"], ans: 1, exp: "If the Merge pull request option isn’t shown, select the merge dropdown menu, choose the Create a merge commit option..." },
+  { cat: "Merging", q: "What is the primary function of the 'Squash and merge' option?", opts: ["It deletes all commits without merging","It takes all of your commits and combines them into one","It copies the commits to a new repository","It reverts the last commit made"], ans: 1, exp: "Squash and merge allows you to take all of your commits and combine them into one." },
+  { cat: "Merging", q: "What is a major benefit of using 'Squash and merge'?", opts: ["It bypasses branch protection rules","It keeps your repository history more readable and organized","It makes the code run faster","It prevents any bugs from being merged"], ans: 1, exp: "This option helps keep your repository history more readable and organized." },
+  { cat: "Merging", q: "What is the primary function of the 'Rebase and merge' option?", opts: ["It makes commits without a merge commit, maintaining a linear project history","It scrambles the commit history","It requires at least 3 approving reviews","It squashes all commits into one"], ans: 0, exp: "The Rebase and merge option allows you to make commits without a merge commit. This maintains a linear project history." },
+  { cat: "Merging", q: "After selecting your preferred merge option, what are you prompted to enter or accept?", opts: ["Your GitHub password","A commit message","The name of the new branch","A billing method"], ans: 1, exp: "If prompted, enter a commit message, or accept the default message." },
+  { cat: "Merging", q: "If you have multiple emails, which ones appear in the author email dropdown for a merge commit?", opts: ["All emails ever used on the internet","Only verified email addresses","Only corporate email addresses","Only the primary email address"], ans: 1, exp: "Only verified email addresses appear in this dropdown menu." },
+  { cat: "Merging", q: "What happens if you have enabled email address privacy when merging?", opts: ["You cannot merge the PR","A no-reply GitHub email is used as the default commit author email address","It uses your username instead of an email","It prompts you to disable privacy first"], ans: 1, exp: "If you enabled email address privacy, a no-reply GitHub email is used as the default commit author email address." },
+  { cat: "Merging", q: "After confirming the merge, what optional step helps keep your repository clean?", opts: ["Starring the repository","Deleting the base branch","Deleting the compare branch","Creating a new draft PR"], ans: 2, exp: "Optionally, you can delete the compare branch to keep the list of branches in your repository tidy." },
+
+  // ── ADVANCED (41–53) ──────────────────────────────────────────────
+  { cat: "Advanced", q: "When requesting reviewers for a pull request, who can be selected?", opts: ["Anyone on GitHub","Specific collaborators with write access to the repository","Only repository administrators","Only the person who created the PR"], ans: 1, exp: "Only collaborators with write access to the repository can be selected as reviewers." },
+  { cat: "Advanced", q: "Where is the 'Reviewers' section located when viewing a PR?", opts: ["At the very bottom of the page","In the left-hand sidebar","In the right-hand sidebar","Inside the commit message box"], ans: 2, exp: "find the Reviewers section in the right-hand sidebar." },
+  { cat: "Advanced", q: "What happens immediately after you select someone as a reviewer?", opts: ["The pull request is merged automatically","The reviewer's code is added to your branch","The selected reviewers will receive a notification to review your pull request","They are granted admin access"], ans: 2, exp: "The selected reviewers will receive a notification to review your pull request." },
+  { cat: "Advanced", q: "What is the purpose of branch protection rules?", opts: ["To prevent anyone from viewing the code","To require pull requests to meet certain conditions before they can be merged","To automatically merge all PRs at midnight","To delete branches that are inactive for 30 days"], ans: 1, exp: "Some repositories use branch protection rules that require pull requests to meet certain conditions before they can be merged." },
+  { cat: "Advanced", q: "Which of the following is a common branch protection requirement?", opts: ["Writing the code in Python","At least one approving review from another collaborator","A minimum of 50 commits","Starring the repository first"], ans: 1, exp: "Common requirements include: At least one approving review from another collaborator." },
+  { cat: "Advanced", q: "If a pull request doesn't meet the required branch protection conditions, what happens?", opts: ["The pull request is automatically deleted","The merge button will be disabled until all conditions are satisfied","It bypasses the rules and merges anyway","It is converted back to a draft"], ans: 1, exp: "If a pull request doesn't meet these requirements, the merge button will be disabled until all conditions are satisfied." },
+  { cat: "Advanced", q: "Where can you see the required rules for a repository on the pull request page?", opts: ["At the top of the page","In the right-hand sidebar","At the bottom of the pull request page, under the Merge section","In the commit history"], ans: 2, exp: "You can see the required rules for a repository at the bottom of the pull request page, under the Merge section." },
+  { cat: "Advanced", q: "Who typically configures branch protection rules for a repository?", opts: ["Any collaborator with read access","GitHub Support","Repository administrators","The author of the pull request"], ans: 2, exp: "These rules are typically configured by repository administrators in the branch protection settings." },
+  { cat: "Advanced", q: "What does 'CI' stand for in the context of GitHub status checks?", opts: ["Code Integration","Continuous Integration","Collaborative Input","Common Interface"], ans: 1, exp: "Passing all required status checks, such as continuous integration (CI) workflows." },
+  { cat: "Advanced", q: "When do status checks typically run?", opts: ["Only when manually triggered by an admin","Automatically when changes are made (if a CI system is used)","Once a month","Only after the PR is merged"], ans: 1, exp: "If your repository uses GitHub Actions or another CI system, pull requests may automatically run status checks when changes are made." },
+  { cat: "Advanced", q: "Which of the following is an example of an automated status check?", opts: ["Requesting a human review","Deleting a branch","Running unit tests","Closing an issue"], ans: 2, exp: "Examples include: Running unit tests, Checking code formatting, Verifying security scans." },
+  { cat: "Advanced", q: "Which of the following is another example of a status check mentioned in the text?", opts: ["Forking the repository","Verifying security scans","Renaming the repository","Adding a profile picture"], ans: 1, exp: "Examples include: ... Verifying security scans" },
+  { cat: "Advanced", q: "Where are failed status checks displayed?", opts: ["Only in the developer's email inbox","Directly on the pull request page","In the repository wiki","On the GitHub homepage"], ans: 1, exp: "Failed checks are shown directly on the pull request page." },
+
+  // ── NAVIGATION (54–60) ──────────────────────────────────────────────
+  { cat: "Navigation", q: "What does starring a repository on GitHub do?", opts: ["Makes you an administrator of the repo","Automatically forks the repo to your account","Saves it to your personal list of favorites and shows appreciation to maintainers","Notifies all your followers"], ans: 2, exp: "Starring a repository saves it to your personal list of favorites and shows your appreciation to the repository maintainers." },
+  { cat: "Navigation", q: "Where is the Star button located on a repository page?", opts: ["In the bottom-left corner","In the top-right corner","In the middle of the README file","Inside the Branch menu"], ans: 1, exp: "In the top-right corner, select the ⭐ Star button." },
+  { cat: "Navigation", q: "How do you view all the repositories you've starred?", opts: ["Search for 'stars' in the search bar","Select your profile picture, then 'Your stars'","Click the 'Issues' tab","Go to the Settings page and select 'Favorites'"], ans: 1, exp: "You can view all repositories you've starred by selecting your profile picture, then Your stars." },
+  { cat: "Navigation", q: "How can you view a list of all available keyboard shortcuts on GitHub.com?", opts: ["Press Ctrl+S","Type 'help' in the search bar","Press '?' anywhere on GitHub.com","Press F1"], ans: 2, exp: "Press ? anywhere on GitHub.com. You'll see a list of shortcuts..." },
+  { cat: "Navigation", q: "What tool helps you quickly jump to pages, run common actions, or search without taking your hands off the keyboard?", opts: ["The Command Palette","The Actions Tab","The Issue Tracker","The Insights Graph"], ans: 0, exp: "The Command Palette on GitHub helps you quickly jump to pages, run common actions, or search repositories without taking your hands off the keyboard." },
+  { cat: "Navigation", q: "What is the keyboard shortcut to open the Command Palette on Windows/Linux?", opts: ["Ctrl+P","Ctrl+K","Alt+C","Shift+K"], ans: 1, exp: "Press Ctrl+K (Windows/Linux) ... to open the Command Palette." },
+  { cat: "Navigation", q: "What is the keyboard shortcut to open the Command Palette on a Mac?", opts: ["Option+K","Cmd+Space","Cmd+K","Ctrl+Cmd+C"], ans: 2, exp: "Press ... ⌘+K (Mac)." }
+];
+
+const catColorMap = { 
+  "Branches": "cat-branches",
+  "PR Basics": "cat-pr-basics",
+  "Creating PRs": "cat-creating-prs",
+  "PR Statuses": "cat-pr-statuses",
+  "Merging": "cat-merging",
+  "Advanced": "cat-advanced",
+  "Navigation": "cat-navigation" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-branches';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

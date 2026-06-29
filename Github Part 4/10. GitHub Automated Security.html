@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Automated Security — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-dependabot { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-updates { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-versioning { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 60 Questions</div>
+  <h1>Dependabot Security & Versioning</h1>
+  <p>Supply Chain Security & Automation</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Dependabot',this)">Dependabot</button>
+    <button class="filter-btn" onclick="filterCat('Updates',this)">Updates</button>
+    <button class="filter-btn" onclick="filterCat('Versioning',this)">Versioning</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS (Dependency Graphs, Supply Chain) ────────────────────────────────────────────────
+  { cat: "Basics", q: "Why is securing your repository's supply chain critical?", opts: ["Dependencies can be vulnerable, posing risks of supply chain attacks.", "It makes the UI load faster.", "It creates more contributors.", "It is required to host the code on GitHub."], ans: 0, exp: "Dependencies can be vulnerable, which puts your users at risk of a supply chain attack." },
+  { cat: "Basics", q: "What is a dependency graph?", opts: ["A diagram of your company office.", "A summary of manifest and lock files in a repository.", "A graph of GitHub contributor activity.", "A list of all users in the repo."], ans: 1, exp: "The dependency graph is a summary of the manifest and lock files stored in a repository." },
+  { cat: "Basics", q: "What two things does a dependency graph show?", opts: ["Dependencies and Dependents.", "Alerts and Advisories.", "Branches and Pull Requests.", "Commits and Issues."], ans: 0, exp: "For each repository, it shows: Dependencies and Dependents." },
+  { cat: "Basics", q: "Are dependency graphs enabled by default for new public repositories?", opts: ["No, must be configured.", "Yes, by default.", "Only for Enterprise.", "Only for private ones."], ans: 1, exp: "Dependency graph is enabled by default for all new public repositories." },
+  { cat: "Basics", q: "Where can you verify if the dependency graph is enabled?", opts: ["Code tab.", "Settings tab > Advanced Security.", "Insights tab.", "Security tab."], ans: 1, exp: "Navigate to the Settings tab, click Advanced Security, and verify Dependency Graph is enabled." },
+  { cat: "Basics", q: "What key key on your keyboard can open the lightweight editor in github.com?", opts: ["Shift", "Tab", ".", "Esc"], ans: 2, exp: "You can hit the . key to open the lightweight editor." },
+  { cat: "Basics", q: "What file extension is commonly associated with manifest files tracked by the dependency graph?", opts: [".json", ".css", ".html", ".exe"], ans: 0, exp: "GitHub scans common package manifests, such as package.json." },
+  { cat: "Basics", q: "How are 'Dependents' defined in the dependency graph?", opts: ["Repositories and packages that depend on your project.", "The maintainers of the project.", "Users who starred the repo.", "Servers hosting the project."], ans: 0, exp: "Dependents are the repositories and packages that depend on it." },
+  { cat: "Basics", q: "Which of the following is an example of a manifest file?", opts: ["README.md", "requirements.txt", "CONTRIBUTING.md", "CODEOWNERS"], ans: 1, exp: "Manifests include package.json, requirements.txt, and others." },
+  { cat: "Basics", q: "What is the primary goal of supply chain security features on GitHub?", opts: ["To automate project marketing.", "To identify, understand, and patch vulnerable dependencies.", "To increase the star count of the repo.", "To restrict file access."], ans: 1, exp: "GitHub offers features to help you understand dependencies, know about vulnerabilities, and patch them." },
+  { cat: "Basics", q: "How can you view the dependency graph in your repository?", opts: ["Under the Settings tab.", "Under the Insights tab.", "Under the Actions tab.", "Under the Wiki tab."], ans: 1, exp: "Navigate to the Insights tab, then select Dependency graph from the side navigation." },
+  { cat: "Basics", q: "Are dependency manifests required for the graph?", opts: ["Yes, to track dependencies.", "No, it is manual.", "Only for binary files.", "Only for private repos."], ans: 0, exp: "The graph is a summary of the manifest and lock files." },
+  { cat: "Basics", q: "What is the primary action recommended to protect your supply chain?", opts: ["Delete all dependencies.", "Patch vulnerable dependencies and replace malware.", "Make all repositories private.", "Stop using external code."], ans: 1, exp: "One of the most important things you can do to protect your supply chain is to patch your vulnerable dependencies and replace any malware." },
+  { cat: "Basics", q: "What information does the dependency graph NOT show directly?", opts: ["Dependencies.", "Dependents.", "Individual lines of code.", "Ecosystems."], ans: 2, exp: "The graph shows ecosystems, packages, and dependents, not individual line-level history." },
+  { cat: "Basics", q: "Where can you view the dependencies list after navigating to the dependency graph?", opts: ["The Overview tab.", "The Dependencies tab.", "The Settings tab.", "The Pull Requests tab."], ans: 1, exp: "Review all the dependencies on the Dependencies tab." },
+
+  // ── DEPENDABOT (Alerts, Database, Activity) ────────────────────────────────────────────────
+  { cat: "Dependabot", q: "What do Dependabot alerts notify you about?", opts: ["Successful builds.", "Security vulnerabilities in dependencies.", "New contributors.", "Pull requests ready to merge."], ans: 1, exp: "Dependabot alerts tell you that your code depends on a package that is insecure." },
+  { cat: "Dependabot", q: "What database does Dependabot cross-reference to find vulnerabilities?", opts: ["GitHub Advisory Database.", "Common Vulnerabilities and Exposures (CVE).", "Internal company logs.", "Public domain databases."], ans: 0, exp: "Dependabot alerts reference the GitHub Advisory Database." },
+  { cat: "Dependabot", q: "What are the two categories of vulnerabilities in the GitHub Advisory Database?", opts: ["Public and Private.", "Reviewed and Unreviewed advisories.", "New and Old.", "Code and Infrastructure."], ans: 1, exp: "The database contains GitHub reviewed advisories and unreviewed advisories." },
+  { cat: "Dependabot", q: "What should you do if your code uses malware?", opts: ["Ignore it.", "Wait for a patch.", "Replace the package with a secure alternative.", "Delete the code."], ans: 2, exp: "If your code uses malware, you need to replace the package with a secure alternative." },
+  { cat: "Dependabot", q: "Where can you enable Dependabot alerts?", opts: ["Settings > Advanced Security.", "Security tab.", "Insights tab.", "Pull Requests tab."], ans: 0, exp: "Navigate to the Settings tab > Display the settings for Advanced Security > Enable Dependabot alerts." },
+  { cat: "Dependabot", q: "How long should you wait for Dependabot to check for alerts after enabling?", opts: ["1 second.", "60 seconds.", "1 hour.", "24 hours."], ans: 1, exp: "Wait about 60 seconds for Dependabot to check for alerts." },
+  { cat: "Dependabot", q: "Where can you view a list of Dependabot alerts for the default branch?", opts: ["Settings tab.", "Security tab.", "Insights tab.", "Code tab."], ans: 1, exp: "Navigate to the Security tab > select Dependabot to view a list of the Dependabot alerts." },
+  { cat: "Dependabot", q: "What is the benefit of Dependabot alerts being grouped?", opts: ["It slows down the scan.", "It makes it easier to track malware and known vulnerabilities.", "It deletes the files automatically.", "It is a requirement for private repos."], ans: 1, exp: "Dependabot alerts reference the GitHub Advisory Database, which lists known security vulnerabilities and malware." },
+  { cat: "Dependabot", q: "What should you do as soon as possible if your code depends on an insecure package?", opts: ["Upgrade to a secure version.", "Contact the maintainer.", "Delete the project.", "Merge the PR."], ans: 0, exp: "You should upgrade to a secure version of the package as soon as possible." },
+  { cat: "Dependabot", q: "Are Dependabot alerts enabled by default on all repositories?", opts: ["Yes.", "No, they must be enabled in Settings.", "Only for private ones.", "Only for Enterprise."], ans: 1, exp: "The exercise instructs users to 'Enable Dependabot alerts' in settings." },
+  { cat: "Dependabot", q: "How do you search for specific dependencies in the Advisory Database?", opts: ["Type the name into the search box.", "Check the Wiki.", "Use the pull requests tab.", "Run a Git command."], ans: 0, exp: "Type or paste [dependency] into the advisory search box." },
+  { cat: "Dependabot", q: "What information is NOT usually found in an advisory?", opts: ["Patches.", "Workaround.", "References.", "Contributor bank accounts."], ans: 3, exp: "You'll see the packages, impact, patches, workaround, and references for the advisory." },
+  { cat: "Dependabot", q: "Why is a long list of advisories for a dependency actually a good thing?", opts: ["It means the software is broken.", "It means it is being actively maintained and patched.", "It means the project is too popular.", "It indicates malware."], ans: 1, exp: "It means that our dependency is actively being maintained and patches are being pushed." },
+  { cat: "Dependabot", q: "Can you create a pull request directly from an alert?", opts: ["No, you must do it manually.", "Yes, by clicking 'Create Dependabot security update'.", "Only if you are an admin.", "Only for public repos."], ans: 1, exp: "Click the Create Dependabot security update button to create a pull request." },
+  { cat: "Dependabot", q: "How long can creating a pull request for a dependency update take?", opts: ["Up to 2 minutes.", "1 hour.", "10 seconds.", "5 minutes."], ans: 0, exp: "This could take up to 2 minutes." },
+
+  // ── UPDATES (Security & Pull Requests) ────────────────────────────────────────────────
+  { cat: "Updates", q: "What do Dependabot security updates do automatically?", opts: ["Merge every PR.", "Create pull requests to resolve alerts.", "Delete vulnerable dependencies.", "Disable the repo."], ans: 1, exp: "Dependabot security updates detect and fix vulnerable dependencies... by opening pull requests automatically." },
+  { cat: "Updates", q: "How does Dependabot security updates differ from standard alerts?", opts: ["Alerts require manual PR creation.", "Security updates require manual PR creation.", "Security updates only work for public repos.", "There is no difference."], ans: 0, exp: "We manually created a PR... but let's enable Dependabot security updates to automate this process." },
+  { cat: "Updates", q: "Where can you enable Dependabot security updates?", opts: ["Settings > Advanced Security.", "Security Tab.", "Pull requests panel.", "Dependency graph."], ans: 0, exp: "Navigate to the Settings tab and select Advanced Security. Enable Dependabot security updates." },
+  { cat: "Updates", q: "What happens when an axios dependency patch PR is merged?", opts: ["Dependabot might automatically close other relevant PRs.", "The repository deletes all other PRs.", "Nothing happens.", "The code becomes uncompilable."], ans: 0, exp: "The upgrade... triggered changes of other transitive dependencies... Dependabot will automatically review... and close the ones that are no longer relevant." },
+  { cat: "Updates", q: "Why might other PRs disappear from the Pull requests panel?", opts: ["They were manually deleted.", "The upgrade made them irrelevant.", "They weren't important.", "GitHub errors."], ans: 1, exp: "Dependabot will automatically review the existing pull requests and close the ones that are no longer relevant." },
+  { cat: "Updates", q: "What is the recommended approach for merging multiple Dependabot PRs?", opts: ["Merge everything at once.", "Let Dependabot manage them sequentially.", "Delete all PRs.", "Merge only the largest ones."], ans: 1, exp: "So don't merge everything at once, let Dependabot do the job for you!" },
+  { cat: "Updates", q: "After enabling security updates, how long should you wait for the new PRs?", opts: ["1 hour.", "30-60 seconds.", "24 hours.", "1 week."], ans: 1, exp: "You may need to wait 30-60 seconds before you see any new pull requests." },
+  { cat: "Updates", q: "Does Dependabot security updates improve automation?", opts: ["Yes.", "No.", "Only for private repos.", "Only if you pay extra."], ans: 0, exp: "It would be nice to further improve the automation and maintenance of our dependencies! Well, with Dependabot security updates, we can do just that." },
+  { cat: "Updates", q: "Can Dependabot address security vulnerabilities automatically?", opts: ["Yes.", "No.", "Only in code scanning.", "Only in secret scanning."], ans: 0, exp: "The feature detects and fixes vulnerable dependencies for you." },
+  { cat: "Updates", q: "Where do you review Dependabot pull requests?", opts: ["Settings tab.", "Pull requests repository tab.", "Security tab.", "Insights tab."], ans: 1, exp: "Navigate to the Pull requests repository tab to view what Dependabot has found." },
+
+  // ── VERSIONING (Updates & Config) ────────────────────────────────────────────────
+  { cat: "Versioning", q: "What is the purpose of Dependabot version updates?", opts: ["To delete dependencies.", "To automatically keep dependencies up to date with releases.", "To track versioning of the repo owners.", "To change license types."], ans: 1, exp: "You can use it to ensure that your repository automatically keeps up with the latest releases of the packages." },
+  { cat: "Versioning", q: "What is the configuration file for Dependabot updates called?", opts: ["dependabot.json.", "config.yml.", "dependabot.yml.", "versioning.txt."], ans: 2, exp: "The file is called dependabot.yml." },
+  { cat: "Versioning", q: "Where do you configure Dependabot version updates?", opts: ["Settings > Advanced Security.", "Security tab.", "Wiki.", "Actions tab."], ans: 0, exp: "Navigate to the Settings tab and select Advanced Security. Locate Dependabot version updates and click Configure." },
+  { cat: "Versioning", q: "What is a 'package-ecosystem' in the dependabot.yml?", opts: ["A tool to delete files.", "The manager or language the packages use.", "A security advisory list.", "A PR template."], ans: 1, exp: "The file is prepopulated... package-ecosystem: 'github-actions'." },
+  { cat: "Versioning", q: "What is the schedule interval set for GitHub actions in the dependabot.yml file?", opts: ["Weekly.", "Monthly.", "Daily.", "Yearly."], ans: 1, exp: "schedule: interval: 'monthly'." },
+  { cat: "Versioning", q: "What is the schedule interval set for .NET packages in the dependabot.yml file?", opts: ["Weekly.", "Monthly.", "Daily.", "Yearly."], ans: 0, exp: "schedule: interval: 'weekly'." },
+  { cat: "Versioning", q: "When do weekly checks run by default?", opts: ["Sunday.", "Monday.", "Friday.", "Saturday."], ans: 1, exp: "By default, this check runs on a Monday." },
+  { cat: "Versioning", q: "How can you run checks on a day other than Monday?", opts: ["Change the system clock.", "See schedule.day.", "Edit the README.", "Ask the owner."], ans: 1, exp: "To run the check on a different day, see schedule.day." },
+  { cat: "Versioning", q: "Can you configure Dependabot to update packages in subdirectories?", opts: ["No.", "Yes, via the directory key.", "Only in the root.", "Only in .github."], ans: 1, exp: "directory: '/code/'" },
+  { cat: "Versioning", q: "What language packages are handled by the 'nuget' package-ecosystem?", opts: ["Python.", "JavaScript.", ".NET.", "Ruby."], ans: 2, exp: ".NET packages." },
+  { cat: "Versioning", q: "What is the version schema used in dependabot.yml?", opts: ["version: 1.", "version: 2.", "version: 3.", "version: 0."], ans: 1, exp: "version: 2" },
+  { cat: "Versioning", q: "Where can you create/edit the dependabot.yml file in the browser?", opts: ["GitHub editor.", "VS Code via period key.", "Both.", "None."], ans: 2, exp: "While you can edit... on github.com, you can also press the period key to open a lightweight VS Code editor." },
+  { cat: "Versioning", q: "Does Dependabot only provide security updates?", opts: ["Yes.", "No, it also provides version updates.", "Only if enabled.", "Only for private repos."], ans: 1, exp: "In addition to security alerts, Dependabot can also take the effort out of maintaining your dependencies." },
+  { cat: "Versioning", q: "Is configuring Dependabot version updates considered a 'proactive' measure?", opts: ["Yes.", "No.", "Only if merged.", "Only if using security updates."], ans: 0, exp: "The goal is to automate... keep up with latest releases." },
+  { cat: "Versioning", q: "What happens if a dependency alert is resolved by a version update?", opts: ["Nothing.", "Dependabot might close the redundant alert.", "The repo deletes itself.", "The code stops working."], ans: 1, exp: "Yes, Dependabot manages the state of alerts based on dependency changes." }
+];
+
+const catColorMap = { 
+  "Basics": "cat-basics",
+  "Dependabot": "cat-dependabot",
+  "Updates": "cat-updates",
+  "Versioning": "cat-versioning"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

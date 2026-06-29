@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Projects Basics — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-creation { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-settings { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-adding { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-workflows { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-subissues { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 40 Questions</div>
+  <h1>GitHub Projects Basics</h1>
+  <p>Multiple Choice Questions with Answers & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Creation',this)">Creation</button>
+    <button class="filter-btn" onclick="filterCat('Settings',this)">Settings</button>
+    <button class="filter-btn" onclick="filterCat('Adding Items',this)">Adding Items</button>
+    <button class="filter-btn" onclick="filterCat('Workflows',this)">Workflows</button>
+    <button class="filter-btn" onclick="filterCat('Sub-issues',this)">Sub-issues</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS ────────────────────────────────────────────────
+  { cat: "Basics", q: "What is GitHub Projects primarily described as?", opts: ["A version control system", "A powerful planning and tracking tool", "An external integration platform", "A code hosting service"], ans: 1, exp: "GitHub Projects is described as a powerful planning and tracking tool that gives your team flexible views." },
+  { cat: "Basics", q: "Which of the following flexible views does GitHub Projects offer?", opts: ["Tables, boards, and timelines", "Charts, graphs, and maps", "Code, history, and actions", "Issues, branches, and merges"], ans: 0, exp: "It gives your team flexible views—like tables, boards, and timelines—to organize your work." },
+  { cat: "Basics", q: "What is the main benefit of GitHub Projects when managing a team's feature backlog?", opts: ["It automatically writes code for you", "It organizes, prioritizes, and tracks everything in a single view", "It limits access to external collaborators", "It deletes old and unused issues"], ans: 1, exp: "This built-in tool makes it easy to organize, prioritize, and track everything in a single view." },
+
+  // ── CREATION ────────────────────────────────────────────────
+  { cat: "Creation", q: "To create an organization-owned Project, what must you select first from the top right corner of GitHub.com?", opts: ["Your profile photo", "The green 'New' button", "The settings gear", "The search bar"], ans: 0, exp: "In the top right corner of GitHub.com, select your profile photo, then select Your organizations." },
+  { cat: "Creation", q: "Which of these options is included in the Profile Dropdown Menu?", opts: ["Your organizations", "Your invoices", "Your deployments", "Your analytics"], ans: 0, exp: "The Profile Dropdown Menu includes Your profile, Your repositories, Your Codespaces, Your organizations, and Your enterprises." },
+  { cat: "Creation", q: "After selecting your organization, which tab do you navigate to?", opts: ["Overview tab", "Repositories tab", "Projects tab", "Settings tab"], ans: 2, exp: "Navigate from the Overview tab to the Projects tab." },
+  { cat: "Creation", q: "What color is the button labeled 'New Project'?", opts: ["Blue", "Green", "Red", "Gray"], ans: 1, exp: "Select the green button labeled New Project." },
+  { cat: "Creation", q: "When the pop-up prompts you for a new project, what are the two main starting options?", opts: ["Private or Public", "Template or Start from scratch", "List or Grid", "Basic or Advanced"], ans: 1, exp: "A pop-up prompts you to select either a template or start from scratch." },
+  { cat: "Creation", q: "In the provided text, which specific option is chosen when starting from scratch?", opts: ["Board", "Timeline", "Table", "List"], ans: 2, exp: "Let's choose the Start from scratch option and select Table." },
+  { cat: "Creation", q: "How do you navigate to create a personal Project?", opts: ["Profile photo -> Your projects -> New project", "Settings -> Personal -> New project", "Dashboard -> Personal -> Create", "Repositories -> Projects -> New"], ans: 0, exp: "You can also create a personal Project by selecting your profile photo and navigating to Your projects, then clicking New project." },
+  { cat: "Creation", q: "If you create a Project directly from a repository, how does it affect the Project's scope?", opts: ["It restricts the project to only that repository forever", "The Project is still created at the organization level and can be linked to others", "It makes the project invisible to the organization", "It automatically deletes the project if the repo is deleted"], ans: 1, exp: "The Project itself is still created at the organization level and can be linked to other repositories or projects in the future." },
+  { cat: "Creation", q: "What happens when you create a Project directly from a repository?", opts: ["It creates a copy of the repository", "It automatically links the repository to the Project", "It disables issues for that repository", "It requires administrative approval"], ans: 1, exp: "Projects can be created directly from a repository—this links the repository to the Project automatically." },
+
+  // ── SETTINGS ────────────────────────────────────────────────
+  { cat: "Settings", q: "Where do you navigate to edit your Project's name, description, and README?", opts: ["The repository settings", "The three dots at the top right of the project -> Settings", "Your personal profile settings", "The organization overview page"], ans: 1, exp: "At the top right of the page, select the three dots to open the menu and select Settings." },
+  { cat: "Settings", q: "Which field allows you to add a few words summarizing the Project?", opts: ["Project Name", "Short description", "README", "Title"], ans: 1, exp: "Short description allows you to add a few words about the Project." },
+  { cat: "Settings", q: "What is the primary purpose of the Project README?", opts: ["To write code documentation", "To track code commits", "To add info for the team to understand why it was created and its goals", "To assign tasks to users"], ans: 2, exp: "README lets you add information for your team to understand why you created this Project and what you hope to accomplish with it." },
+  { cat: "Settings", q: "After making changes to the name, description, or README, what must you do to keep them?", opts: ["Refresh the page", "Select Save changes", "Exit the menu", "Close the browser"], ans: 1, exp: "Once finished, select Save changes." },
+
+  // ── ADDING ITEMS ────────────────────────────────────────────────
+  { cat: "Adding Items", q: "According to the text, what action makes GitHub Projects so powerful?", opts: ["Writing wikis", "Adding issues and pull requests to your Project", "Deleting old branches", "Configuring CI/CD pipelines"], ans: 1, exp: "Adding issues and pull requests to your Project is what makes the tool so powerful." },
+  { cat: "Adding Items", q: "What is the easiest way to add an existing issue if you already have its URL?", opts: ["Paste the URL in the bottom row next to the +", "Use the search bar at the top of the site", "Go to the issue and click 'Transfer'", "Email the URL to the project bot"], ans: 0, exp: "Place your cursor in the bottom row of the Project next to the + and paste the URL of your issue or pull request." },
+  { cat: "Adding Items", q: "After pasting an issue URL in the bottom row, what key do you press to add it as a task?", opts: ["Shift", "Space", "Enter", "Tab"], ans: 2, exp: "Press Enter and your issue or pull request appears as a task in your Project." },
+  { cat: "Adding Items", q: "What character do you type to start searching for existing repositories when adding a new item?", opts: ["@", "$", "#", "!"], ans: 2, exp: "Enter # to search repositories." },
+  { cat: "Adding Items", q: "After typing `#`, how can you narrow down your repository options?", opts: ["By typing part of the repository name", "By clicking random checkboxes", "By pressing the spacebar repeatedly", "By pasting the repository ID"], ans: 0, exp: "You can type part of the repository name to narrow down your options." },
+  { cat: "Adding Items", q: "Once you select a repository from the `#` search, what do you type next to find the specific item?", opts: ["The exact URL", "The author's username", "The title of the issue or pull request", "The date it was created"], ans: 2, exp: "Start typing the title of the issue or pull request to find the one you want." },
+  { cat: "Adding Items", q: "What feature allows you to start organizing your team faster by adding multiple items at once?", opts: ["Quick add", "Bulk add issues and pull requests", "Mass import tool", "Sync repositories"], ans: 1, exp: "You can bulk add issues and pull requests to an existing repository to save time." },
+  { cat: "Adding Items", q: "To begin a bulk add, what do you click in the bottom row of the Project?", opts: ["The gear icon", "The + symbol", "The # symbol", "The magnifying glass"], ans: 1, exp: "Select + in the bottom row of the Project." },
+  { cat: "Adding Items", q: "In the bulk add menu, which option do you select to find items?", opts: ["Upload CSV", "Add item from repository", "Sync all", "Import from board"], ans: 1, exp: "Select Add item from repository." },
+  { cat: "Adding Items", q: "When bulk adding, are you required to add every single issue from the repository?", opts: ["Yes, it only adds all items", "No, you can either select all or select specific issues", "Yes, but you can delete them later", "No, you can only add a maximum of 5 items"], ans: 1, exp: "You can either select all or select those issues or pull requests you want to include." },
+  { cat: "Adding Items", q: "What is the name of the green button used to finalize a bulk add?", opts: ["Save changes", "Confirm import", "Add selected items", "Submit tasks"], ans: 2, exp: "Select the green button titled Add selected items in the bottom right corner." },
+
+  // ── WORKFLOWS ────────────────────────────────────────────────
+  { cat: "Workflows", q: "What is the purpose of default workflows in GitHub Projects?", opts: ["To automatically write code", "To automatically add items and mark them with an initial status", "To close pull requests automatically", "To delete resolved issues"], ans: 1, exp: "These allow items like issues and pull requests to be automatically added to a Project and marked with an initial status." },
+  { cat: "Workflows", q: "What is an example of an initial status set by a workflow?", opts: ["Finished", "Todo", "Archived", "Rejected"], ans: 1, exp: "Marked with an initial status, like 'Todo'." },
+  { cat: "Workflows", q: "Where do you find the Workflows option inside a Project?", opts: ["In the bottom left corner", "In the main table headers", "In the three-dot menu in the top-right", "On the profile page"], ans: 2, exp: "Select the three-dot menu in the top-right and choose Workflows." },
+  { cat: "Workflows", q: "What is an example of a workflow trigger mentioned in the text?", opts: ["Issue closed", "Item added to project", "Pull request merged", "Comment added"], ans: 1, exp: "Choose a trigger like “Item added to project”." },
+  { cat: "Workflows", q: "What is the final step to activate a configured workflow?", opts: ["Select Save and turn on workflow", "Press Enter", "Refresh the page", "Click Apply changes"], ans: 0, exp: "Select Save and turn on workflow." },
+
+  // ── SUB-ISSUES ────────────────────────────────────────────────
+  { cat: "Sub-issues", q: "As of February 2025, what new capability does GitHub Projects support regarding checklists?", opts: ["Deleting checklists automatically", "Converting checklist items into sub-issues", "Formatting checklists as tables", "Exporting checklists to PDF"], ans: 1, exp: "As of February 2025, GitHub Projects supports converting checklist items into sub-issues." },
+  { cat: "Sub-issues", q: "What is the main benefit of converting a checklist item into a sub-issue?", opts: ["It breaks down tasks into smaller, trackable work items", "It hides the task from the main board", "It automatically completes the parent issue", "It changes the author of the issue"], ans: 0, exp: "This feature makes it easier to break down tasks into smaller, trackable work items—directly from an issue." },
+  { cat: "Sub-issues", q: "To convert a checklist item, what is the first interaction you must perform?", opts: ["Double-click the item", "Hover over the checklist item", "Drag and drop the item", "Press the spacebar"], ans: 1, exp: "Hover over the checklist item." },
+  { cat: "Sub-issues", q: "Which menu must you click next to the checklist item to find the conversion option?", opts: ["The settings gear", "The + symbol", "The ... menu", "The checkbox itself"], ans: 2, exp: "Click the ... menu next to the item." },
+  { cat: "Sub-issues", q: "When a checklist item is converted, what happens to the newly created sub-issue?", opts: ["It disappears from the project entirely", "It appears in the Projects view with its own status, metadata, and tracking", "It is instantly closed", "It becomes an independent repository"], ans: 1, exp: "This creates a linked issue that appears in your Projects view with its own status, metadata, and tracking." },
+  { cat: "Sub-issues", q: "What older feature did the new sub-issues feature replace?", opts: ["Project boards", "Tasklist block feature", "Milestones", "Issue templates"], ans: 1, exp: "Sub-issues... replace the older tasklist block feature." },
+  { cat: "Sub-issues", q: "When was the older tasklist block feature deprecated?", opts: ["January 1, 2025", "February 1, 2025", "April 30, 2025", "December 31, 2025"], ans: 2, exp: "Replaced the older tasklist block feature, which was deprecated on April 30, 2025." },
+  { cat: "Basics", q: "In the example scenario given in the text, what specific type of backlog are you managing?", opts: ["A bug tracker", "A feature backlog", "A marketing pipeline", "An HR hiring board"], ans: 1, exp: "Imagine you want to manage your team’s feature backlog in one place." }
+];
+
+const catColorMap = {
+  "Basics": "cat-basics",
+  "Creation": "cat-creation",
+  "Settings": "cat-settings",
+  "Adding Items": "cat-adding",
+  "Workflows": "cat-workflows",
+  "Sub-issues": "cat-subissues"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

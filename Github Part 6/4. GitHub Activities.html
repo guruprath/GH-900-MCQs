@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Activities Course — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-cross-refs { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-git-blame { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-find-commit { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-pr-context { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-fix-sidebar { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-github-pages { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 60 Questions</div>
+  <h1>GitHub Activities</h1>
+  <p>Commits, SHAs, Duplicates, and GitHub Pages</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Cross-Refs & Duplicates',this)">Cross-Refs</button>
+    <button class="filter-btn" onclick="filterCat('Git Blame & History',this)">Git Blame</button>
+    <button class="filter-btn" onclick="filterCat('Activity: Find Commit',this)">Find Commit</button>
+    <button class="filter-btn" onclick="filterCat('Pull Request Context',this)">PR Context</button>
+    <button class="filter-btn" onclick="filterCat('Activity: Fix Sidebar',this)">Fix Sidebar</button>
+    <button class="filter-btn" onclick="filterCat('GitHub Pages',this)">GitHub Pages</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── CROSS-REFS & DUPLICATES (1–13) ────────────────────────────────────────────────
+  { cat: "Cross-Refs & Duplicates", q: "What happens when you reference another issue or pull request by number?", opts: ["It is automatically deleted", "It generates an error", "That number will be hyperlinked", "It merges the two issues"], ans: 2, exp: "For example, when you reference another issue or pull request by number, that number will be hyperlinked." },
+  { cat: "Cross-Refs & Duplicates", q: "When you reference an issue by number, what is created in the linked issue or pull request?", opts: ["A cross-reference", "A duplicate issue", "A new commit", "A merge conflict"], ans: 0, exp: "At the same time, a cross-reference is created in the linked issue or pull request." },
+  { cat: "Cross-Refs & Duplicates", q: "What is the primary benefit of the two-way reference created by linking issues?", opts: ["It prevents other users from commenting", "It helps people track the relationship of information across GitHub", "It automatically deploys the code", "It increases the repository's storage limit"], ans: 1, exp: "This two-way reference helps people track the relationship of information across GitHub." },
+  { cat: "Cross-Refs & Duplicates", q: "In the text's example, which issue is considered the duplicate?", opts: ["#8249", "#8346", "#5", "#1"], ans: 1, exp: "In the above example, the new issue #8346 is a duplicate of a previous issue #8249." },
+  { cat: "Cross-Refs & Duplicates", q: "In the text's example, which issue was the previous (original) issue?", opts: ["#8249", "#8346", "#5", "#1"], ans: 0, exp: "...the new issue #8346 is a duplicate of a previous issue #8249." },
+  { cat: "Cross-Refs & Duplicates", q: "What happens if you simply type `#5` within a comment?", opts: ["It formats the text as a heading", "It turns into a link to issue or pull request number 5", "It tags a user named '5'", "It closes issue number 5"], ans: 1, exp: "If you were to type #5 within a comment, that would turn into a link to issue or pull request number 5." },
+  { cat: "Cross-Refs & Duplicates", q: "How can you get GitHub to automatically suggest issues or pull requests to link to?", opts: ["By typing an '@' symbol", "Start typing the title directly after you type the # symbol", "By pressing Ctrl+F", "By clicking 'Suggest' in the menu"], ans: 1, exp: "When you want to create a crosslink, start typing the title of an issue or pull request directly after you type the # symbol." },
+  { cat: "Cross-Refs & Duplicates", q: "What is the title of the article mentioned for learning more about creating links?", opts: ["GitHub Issues Guide", "Markdown and Hyperlinks", "Autolinked References and URLs", "Closing Duplicate PRs"], ans: 2, exp: "To learn even more, check out the Autolinked References and URLs article." },
+  { cat: "Cross-Refs & Duplicates", q: "In Activity 1, which issue are you instructed to navigate to?", opts: ["issue #1 (Welcome)", "issue #2", "issue #5", "issue #8346"], ans: 0, exp: "Activity: Navigate to the issue #1 (Welcome)" },
+  { cat: "Cross-Refs & Duplicates", q: "What exact comment do you type to resolve the duplicate in Activity 1?", opts: ["Closed as duplicate", "Duplicate of #2", "Merge with #1", "Fixes #2"], ans: 1, exp: "Type \"Duplicate of #2\" as a comment" },
+  { cat: "Cross-Refs & Duplicates", q: "In Activity 1, what do you do to issue #1 immediately after leaving the comment?", opts: ["Delete it", "Lock the conversation", "Close issue #1", "Assign it to yourself"], ans: 2, exp: "Type \"Duplicate of #2\" as a comment and close issue #1" },
+  { cat: "Cross-Refs & Duplicates", q: "How long are you instructed to wait for GitHub Actions in Activity 1?", opts: ["5 seconds", "10 seconds", "20 seconds", "1 minute"], ans: 2, exp: "Wait about 20 seconds then refresh this page" },
+  { cat: "Cross-Refs & Duplicates", q: "What tool automatically updates to the next step after you refresh the page?", opts: ["GitHub Pages", "GitHub Copilot", "GitHub Actions", "Git Blame"], ans: 2, exp: "GitHub Actions will automatically update to the next step." },
+
+  // ── GIT BLAME & HISTORY (14–22) ────────────────────────────────────────────────
+  { cat: "Git Blame & History", q: "According to the text, what is an important part of version control?", opts: ["Writing comments", "The ability to look into the past", "Deleting old files", "Using an IDE"], ans: 1, exp: "An important part of version control is the ability to look into the past." },
+  { cat: "Git Blame & History", q: "What Git functionality helps you find the story behind a commit?", opts: ["git status", "git log", "git blame", "git pull"], ans: 2, exp: "By using git blame, and finding the story behind a commit..." },
+  { cat: "Git Blame & History", q: "According to the text, git blame is used to do more than just what?", opts: ["Format code", "Merge branches", "Blame people for code", "Delete commits"], ans: 2, exp: "...we're able to do more than blame people for code. We're able to see the story around why a commit was made." },
+  { cat: "Git Blame & History", q: "What specific information does git blame show for a file?", opts: ["The repository size", "What revision and author last modified each line", "The total number of commits", "The number of active branches"], ans: 1, exp: "git blame is a Git functionality that shows what revision and author last modified each line of a file." },
+  { cat: "Git Blame & History", q: "While git blame sounds accusatory, it is actually used to understand what?", opts: ["Who deleted the repository", "The context around decisions", "Which IDE the author used", "How to bypass reviews"], ans: 1, exp: "While git blame sounds rather accusatory, this can be used to understand the context around decisions." },
+  { cat: "Git Blame & History", q: "What does SHA stand for?", opts: ["Secure Hash Algorithm", "Standard History Array", "System Hash Allocation", "Simple Hosting Architecture"], ans: 0, exp: "What's a Secure Hash Algorithm (SHA)?" },
+  { cat: "Git Blame & History", q: "In the context of Git, what does a SHA reference?", opts: ["A specific user", "A specific branch", "A specific object (a commit)", "A specific repository"], ans: 2, exp: "A SHA is a reference to a specific object. In this case, it's a reference to a commit." },
+  { cat: "Git Blame & History", q: "How many characters make up a full SHA string on GitHub?", opts: ["7", "16", "32", "40"], ans: 3, exp: "(the first 7 characters of the 40 character hexadecimal string listed after commit)" },
+  { cat: "Git Blame & History", q: "What type of string is a SHA?", opts: ["Binary", "Decimal", "Hexadecimal", "Base64"], ans: 2, exp: "...the 40 character hexadecimal string listed after commit." },
+
+  // ── ACTIVITY: FIND COMMIT (23–29) ────────────────────────────────────────────────
+  { cat: "Activity: Find Commit", q: "In Activity 2, which tab of your repository are you instructed to navigate to first?", opts: ["Issues tab", "Pull requests tab", "Code tab", "Settings tab"], ans: 2, exp: "Navigate to the Code tab of your repository" },
+  { cat: "Activity: Find Commit", q: "In Activity 2, which directory do you click into?", opts: ["/src", "/docs", "/assets", "/public"], ans: 1, exp: "Click docs to navigate into the /docs directory" },
+  { cat: "Activity: Find Commit", q: "Which specific file are you instructed to view in Activity 2?", opts: ["index.html", "README.md", "_sidebar.md", "doc-references.md"], ans: 2, exp: "Click _sidebar.md to view the file" },
+  { cat: "Activity: Find Commit", q: "Where is the Blame button located when viewing a file on GitHub?", opts: ["At the bottom of the file", "On the top of the file", "In the left sidebar", "Inside the commit message"], ans: 1, exp: "On the top of the file, click Blame to see the details of the most recent revision" },
+  { cat: "Activity: Find Commit", q: "What is the commit message you are instructed to click in Activity 2?", opts: ["update sidebar links", "add sidebar to documentation", "fix sidebar bug", "initial commit"], ans: 1, exp: "Click the commit message, add sidebar to documentation to see the commit details" },
+  { cat: "Activity: Find Commit", q: "How many characters of the SHA are you instructed to copy in Activity 2?", opts: ["All 40", "The last 7", "The first 7", "The first 10"], ans: 2, exp: "Copy the first seven characters of the SHA" },
+  { cat: "Activity: Find Commit", q: "Where do you paste the copied SHA characters in Activity 2?", opts: ["In the PR description", "As a comment on issue #1", "As a comment on issue #2", "In the README file"], ans: 2, exp: "Comment on issue #2 by adding the SHA from step 6 as a comment text" },
+
+  // ── PULL REQUEST CONTEXT (30–35) ────────────────────────────────────────────────
+  { cat: "Pull Request Context", q: "According to the text, conversations in issues and PRs can reference other work, but Git goes further because it is what?", opts: ["A social network", "Version control", "A cloud platform", "A bug tracker"], ans: 1, exp: "Remember, Git is version control!" },
+  { cat: "Pull Request Context", q: "Besides the code changes, what other information is connected to a commit?", opts: ["Who made it, when it was made, and which PR it was a part of", "The user's password", "The computer's IP address", "The billing details of the repository"], ans: 0, exp: "The commit... is connected with much more information such as: Who made the commit, What other changes were included, When the commit was made, Which pull request the commit was a part of." },
+  { cat: "Pull Request Context", q: "Why is the pull request an important piece of context for history?", opts: ["It deletes the old code", "It goes beyond knowing *when* a commit happened to knowing *why* it happened", "It automatically writes documentation", "It prevents anyone else from committing"], ans: 1, exp: "The pull request is important because it goes beyond knowing when a commit happened. You can know why a commit happened." },
+  { cat: "Pull Request Context", q: "Finding history is not about blaming anyone, but about seeing what?", opts: ["Who wrote the most code", "The bigger picture", "How to exploit a bug", "The cheapest hosting option"], ans: 1, exp: "Finding history is not about blaming anyone, but about seeing the bigger picture." },
+  { cat: "Pull Request Context", q: "Which of the following testing details can be found by looking at a PR's history?", opts: ["The developer's typing speed", "Build outputs and test results", "The operating system used to write the code", "The browser history of the author"], ans: 1, exp: "What were the build outputs and test results for each commit?" },
+  { cat: "Pull Request Context", q: "When looking at a commit view on GitHub, what specific link can you find regarding the commit's origin?", opts: ["A link to the author's LinkedIn", "A link to the pull request in which the commit was created", "A link to download the source code as a ZIP", "A link to the repository settings"], ans: 1, exp: "From this view, you can also find a link to the pull request in which the commit was created." },
+
+  // ── ACTIVITY: FIX SIDEBAR (36–50) ────────────────────────────────────────────────
+  { cat: "Activity: Fix Sidebar", q: "In Activity 3, which branch are you in when you initially start editing the file?", opts: ["fix-sidebar", "main", "dev", "patch-1"], ans: 1, exp: "In the main branch Edit the docs/_sidebar.md file." },
+  { cat: "Activity: Fix Sidebar", q: "In Activity 3, what file are you editing to fix the sidebar?", opts: ["index.html", "docs/_sidebar.md", "README.md", "docs/doc-references.md"], ans: 1, exp: "Edit the docs/_sidebar.md file." },
+  { cat: "Activity: Fix Sidebar", q: "On what line number is the spelling error located?", opts: ["line 1", "line 2", "line 4", "line 10"], ans: 2, exp: "Correct the spelling of the reference (doc-references__.md) on line 4" },
+  { cat: "Activity: Fix Sidebar", q: "What is the incorrect spelling of the reference found on line 4?", opts: ["doc-reference.md", "doc-references__.md", "docs-ref.md", "_doc-references.md"], ans: 1, exp: "Correct the spelling of the reference (doc-references__.md)" },
+  { cat: "Activity: Fix Sidebar", q: "What must you change the incorrect spelling to?", opts: ["doc-references.md", "references.md", "doc-refs.md", "document-references.md"], ans: 0, exp: "...by changing it into (doc-references.md)." },
+  { cat: "Activity: Fix Sidebar", q: "What is the name of the new branch you create for this commit?", opts: ["main", "update-sidebar", "fix-sidebar", "sidebar-patch"], ans: 2, exp: "Select or create a new branch fix-sidebar for this commit and start a pull request." },
+  { cat: "Activity: Fix Sidebar", q: "When setting up the pull request, what should the 'base' branch be set to?", opts: ["fix-sidebar", "main", "master", "dev"], ans: 1, exp: "Make sure that main is selected for base:" },
+  { cat: "Activity: Fix Sidebar", q: "When setting up the pull request, what should the 'compare' branch be set to?", opts: ["main", "patch", "fix-sidebar", "update-sidebar"], ans: 2, exp: "...and fix-sidebar for compare:." },
+  { cat: "Activity: Fix Sidebar", q: "Where is the Assignees section located when setting up your pull request?", opts: ["On the left side", "At the bottom", "On the right side", "In the commit message box"], ans: 2, exp: "Using the Assignees section on the right side, assign yourself..." },
+  { cat: "Activity: Fix Sidebar", q: "Who do you assign to the pull request in Activity 3?", opts: ["The repository owner", "Mona", "Yourself", "No one"], ans: 2, exp: "Using the Assignees section... assign yourself to the pull request." },
+  { cat: "Activity: Fix Sidebar", q: "What exact text do you add to the PR comment to autolink and close the issue?", opts: ["Fixes #1", "Closes #2", "Duplicate of #2", "Resolves #8249"], ans: 1, exp: "In the PR comment add 'Closes #2' and autolink issue #2." },
+  { cat: "Activity: Fix Sidebar", q: "After clicking 'Create pull request', how long are you instructed to wait?", opts: ["5 seconds", "10 seconds", "20 seconds", "60 seconds"], ans: 2, exp: "Click Create pull request and wait about 20 seconds." },
+  { cat: "Activity: Fix Sidebar", q: "What do you do immediately after waiting the 20 seconds following PR creation?", opts: ["Delete the repository", "Merge this pull request", "Close the PR without merging", "Refresh the page"], ans: 1, exp: "Merge this pull request." },
+  { cat: "Activity: Fix Sidebar", q: "What should you do with the `fix-sidebar` branch after merging?", opts: ["Rename it", "Leave it open", "Delete the branch", "Set it as the default branch"], ans: 2, exp: "Delete the branch 'fix-sidebar'." },
+  { cat: "Activity: Fix Sidebar", q: "What is the final step in Activity 3 after deleting the branch?", opts: ["Wait 20 seconds then refresh the page", "Log out of GitHub", "Create a new issue", "Run git blame again"], ans: 0, exp: "Wait about 20 seconds then refresh this page... GitHub Actions will automatically update to the next step." },
+
+  // ── GITHUB PAGES (51–60) ────────────────────────────────────────────────
+  { cat: "GitHub Pages", q: "According to the course summary, within a GitHub repository, you can find history about *what* changes were made, and more importantly...", opts: ["*when* the changes will be deleted", "*how much* they cost", "*why* changes were made", "*who* to fire"], ans: 2, exp: "...you can find history about what changes were made, and more importantly, why changes were made." },
+  { cat: "GitHub Pages", q: "What GitHub feature allows you to see your `docs/index.html` file as a live website?", opts: ["GitHub Actions", "GitHub Pages", "GitHub Wikis", "GitHub Projects"], ans: 1, exp: "You can enable GitHub Pages and see docs/index.html as a website!" },
+  { cat: "GitHub Pages", q: "In `docs/index.html`, what two placeholders must you replace?", opts: ["AUTHOR and PROJECT", "USERNAME and REPONAME", "USER_ID and REPO_ID", "NAME and LINK"], ans: 1, exp: "Replace USERNAME with your GitHub username and REPONAME with your GitHub repository name in docs/index.html." },
+  { cat: "GitHub Pages", q: "Where is the Settings button located to enable Pages?", opts: ["Lower left corner", "Upper left corner", "Under your repository name at the upper right", "Inside the Code tab"], ans: 2, exp: "Under your repository name at the upper right, click ⚙️ Settings." },
+  { cat: "GitHub Pages", q: "Once inside Settings, where do you click to access 'Pages'?", opts: ["On the upper right", "On the lower left", "In the center of the screen", "In the top navigation bar"], ans: 1, exp: "Then on the lower left, click Pages." },
+  { cat: "GitHub Pages", q: "In the GitHub Pages section, what branch are you instructed to select from the drop-down?", opts: ["gh-pages", "main", "docs-branch", "fix-sidebar"], ans: 1, exp: "In the GitHub Pages section, select main in the Select branch drop-down menu" },
+  { cat: "GitHub Pages", q: "In the GitHub Pages section, what folder do you select from the drop-down menu?", opts: ["/root", "/assets", "/docs", "/public"], ans: 2, exp: "...and /docs in the Select folder drop-down menu." },
+  { cat: "GitHub Pages", q: "After selecting the branch and folder for GitHub Pages, what button must you click?", opts: ["Publish", "Deploy", "Save", "Create"], ans: 2, exp: "Click the Save button." },
+  { cat: "GitHub Pages", q: "How long are you instructed to wait before refreshing the page to check your published site?", opts: ["10 seconds", "20 seconds", "30 seconds", "5 minutes"], ans: 2, exp: "Wait about 30 seconds then refresh the page." },
+  { cat: "GitHub Pages", q: "What message indicates that your GitHub Pages site is live and ready to view?", opts: ["Deployment successful!", "Your site is published at ...", "Build complete", "Pages enabled"], ans: 1, exp: "When you see \"Your site is published at ...,\" you can click on the link to see your published site." }
+];
+
+const catColorMap = { 
+  "Cross-Refs & Duplicates": "cat-cross-refs",
+  "Git Blame & History": "cat-git-blame",
+  "Activity: Find Commit": "cat-find-commit",
+  "Pull Request Context": "cat-pr-context",
+  "Activity: Fix Sidebar": "cat-fix-sidebar",
+  "GitHub Pages": "cat-github-pages" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-cross-refs';
+  const letters = ['A','B','C','D'];
+
+  const escapeHTML = str => str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${escapeHTML(q.q)}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${escapeHTML(opt)}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${escapeHTML(q.opts[q.ans])}</strong><br>${escapeHTML(q.exp)}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

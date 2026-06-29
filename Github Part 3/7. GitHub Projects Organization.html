@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Projects Organization — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-fields { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-priority { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-iterations { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-views { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-workflows { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 40 Questions</div>
+  <h1>GitHub Projects: Organization</h1>
+  <p>Comprehensive MCQs on Fields, Iterations, Views, and Workflows</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Fields',this)">Fields</button>
+    <button class="filter-btn" onclick="filterCat('Priority',this)">Priority</button>
+    <button class="filter-btn" onclick="filterCat('Iterations',this)">Iterations</button>
+    <button class="filter-btn" onclick="filterCat('Views',this)">Views</button>
+    <button class="filter-btn" onclick="filterCat('Workflows',this)">Workflows</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── FIELDS & GENERAL (1-8) ────────────────────────────────────────────────
+  { cat: "Fields", q: "What is the primary goal discussed in the unit regarding the management of issues and pull requests?", opts: ["Creating automated code reviews", "Organizing to keep track of work", "Deleting stale pull requests", "Approving code branches"], ans: 1, exp: "The text states: '...it's time to organize to keep track of the great work you and your team are doing.'" },
+  { cat: "Fields", q: "Which view is mentioned as the starting point to add a new field?", opts: ["Board view", "Table view", "Timeline view", "Settings menu"], ans: 1, exp: "To add a field, the text instructs: 'In the table view, in the rightmost field header, select +.'" },
+  { cat: "Fields", q: "What symbol do you click in the rightmost field header to begin creating a new field?", opts: ["...", "-", "v", "+"], ans: 3, exp: "In the table view, in the rightmost field header, select +." },
+  { cat: "Fields", q: "After selecting the '+' symbol in the table view header, what is the next option you should choose?", opts: ["Add existing", "New view", "New field", "Edit field"], ans: 2, exp: "Select New field." },
+  { cat: "Fields", q: "What specific name is given to the field in the text's example?", opts: ["Status", "Assignee", "Priority", "Labels"], ans: 2, exp: "Type the name of your field. In this case, it's Priority." },
+  { cat: "Fields", q: "Which drop-down menu do you use to choose the behavior or format of your newly created field?", opts: ["Layout", "Group by", "Field Type", "Workflows"], ans: 2, exp: "Select the Field Type drop-down." },
+  { cat: "Fields", q: "If you want to create your own custom classification (like Urgent, High, Medium), which field type should you select?", opts: ["Text", "Number", "Iteration", "Single select"], ans: 3, exp: "To create your own classification for your new field, select the Single select option." },
+  { cat: "Fields", q: "In the example provided, where do you enter the priority levels (Urgent, High, etc.)?", opts: ["Description box", "Options text box", "Workflow editor", "Filter bar"], ans: 1, exp: "In the Options text box, start to add your different priority levels." },
+
+  // ── PRIORITY & GROUPING (9-16) ─────────────────────────────────────────────────
+  { cat: "Priority", q: "Which of the following is NOT one of the priority levels suggested in the example?", opts: ["Urgent", "High", "Critical", "Low"], ans: 2, exp: "You can label them as Urgent, High, Medium, and Low. 'Critical' was not listed." },
+  { cat: "Priority", q: "What is the final button you must click to create your Single select priority field?", opts: ["Submit", "Save", "Create", "Add"], ans: 1, exp: "Select Save." },
+  { cat: "Priority", q: "Once the Priority field is created, how do you assign a priority to a specific issue in the table?", opts: ["Drag it to a new column", "Select the drop-down field for that issue in the Priority row", "Type a comment in the issue", "Click the 'Group by' button"], ans: 1, exp: "...select the issue or pull request you want to classify in the field row titled Priority. Now, in the drop-down field, select the priority..." },
+  { cat: "Priority", q: "Why does the text recommend grouping your issues and pull requests by priority?", opts: ["To export them to CSV", "To permanently hide Low priority items", "To make it easier to focus on urgent and high priority items", "To automatically assign them to developers"], ans: 2, exp: "...let's group your issues and pull requests by priority to make it easier to focus on urgent and high priority items." },
+  { cat: "Priority", q: "How do you access the 'Group by' feature?", opts: ["Select the + icon on the right", "Select the down arrow next to the name of your currently opened view", "Double-click the view tab", "Open the ⋯ menu in the top-right"], ans: 1, exp: "Select the down arrow next to the name of your currently opened view. Select the Group by option." },
+  { cat: "Priority", q: "After selecting 'Group by', what is the next step to organize items by their urgency?", opts: ["Select Layout", "Select Priority", "Select Board", "Select Ascending"], ans: 1, exp: "Select the Group by option. Select Priority." },
+  { cat: "Priority", q: "What great interactive feature becomes available when items are grouped in the list/table view?", opts: ["You can write code directly in the cell", "You can delete multiple issues at once", "You can drag and drop issues into new priority fields easily", "You can merge pull requests from the header"], ans: 2, exp: "One of the great features of this particular view is you can now drag and drop issues into new priority fields easily." },
+  { cat: "Priority", q: "Where is the button located to save changes made to your list view?", opts: ["Bottom-left", "Top-left", "Bottom-right", "Top-right"], ans: 3, exp: "If you want to save this view, select the Save changes button on the top-right of the list view." },
+
+  // ── ITERATIONS (17-25) ─────────────────────────────────────────────
+  { cat: "Iterations", q: "What primary benefit does adding an iteration field provide to a team?", opts: ["It tracks code commits visually", "It helps visualize the balance of upcoming work to stay on track", "It limits the number of issues a user can create", "It calculates developer performance metrics"], ans: 1, exp: "Adding an iteration field to your Project can help you and your team visualize the balance of upcoming work in order to help everyone stay on track." },
+  { cat: "Iterations", q: "What does an iteration field enable you to set up for your tasks?", opts: ["Automated status closures", "Phases in a tangible timeframe", "Security and compliance rules", "Custom color codes for labels"], ans: 1, exp: "An iteration field enables you to set up phases for your tasks in a tangible timeframe..." },
+  { cat: "Iterations", q: "Which view must you be in to initially add an iteration field?", opts: ["Board view", "Table view", "Roadmap view", "Insights view"], ans: 1, exp: "To add an iteration field, go to your Project's table view." },
+  { cat: "Iterations", q: "What are two example names provided in the text for an iteration field?", opts: ["Milestone or Goal", "Project Phase or Sprint", "Release or Version", "Timeline or Scope"], ans: 1, exp: "Add a Field name, such as Project Phase or Sprint." },
+  { cat: "Iterations", q: "When setting up an iteration field, what option must be selected under 'Field Type'?", opts: ["Date", "Single select", "Iteration", "Number"], ans: 2, exp: "Under Field Type, select Iteration." },
+  { cat: "Iterations", q: "What specific date setting must you choose when configuring a new iteration field?", opts: ["Ends On date", "Starts On date", "Deadline date", "Review date"], ans: 1, exp: "Choose a Starts On date." },
+  { cat: "Iterations", q: "How can you modify the length of each iteration?", opts: ["By dragging a slider", "By typing a new number for Duration", "By selecting a predefined fixed template", "By using a workflow automation"], ans: 1, exp: "Change the Duration of each iteration by typing a new number..." },
+  { cat: "Iterations", q: "What time unit options are available in the drop-down for iteration duration?", opts: ["Hours or days", "Days or weeks", "Weeks or months", "Months or quarters"], ans: 1, exp: "...and select the drop-down for either days or weeks..." },
+  { cat: "Iterations", q: "What is the final button clicked to save an iteration field?", opts: ["Save and create", "Confirm", "Apply field", "Save changes"], ans: 0, exp: "Select Save and create." },
+
+  // ── VIEWS (26-35) ─────────────────────────────────────────
+  { cat: "Views", q: "What is the main advantage of creating a board view for your Project?", opts: ["It exports data faster", "It enables you to view upcoming tasks in a more visual way", "It prevents unauthorized edits", "It calculates iteration velocity"], ans: 1, exp: "A board view of your Project enables you to view upcoming tasks in a more visual way." },
+  { cat: "Views", q: "To change the current view into a board, what do you interact with first?", opts: ["The + button in the column header", "The down arrow on the currently open view", "The ⋯ menu in the top-right", "The settings gear"], ans: 1, exp: "On the currently open view, select the down arrow." },
+  { cat: "Views", q: "Under which menu section do you find the 'Board' option?", opts: ["Group by", "Sort by", "Layout", "Filter"], ans: 2, exp: "Under Layout, select Board." },
+  { cat: "Views", q: "What happens to the UI immediately after you change a view's layout?", opts: ["The page reloads completely", "A pop-up asks for confirmation", "Your Project displays an indicator to show the view was modified", "The view is automatically saved and locked"], ans: 2, exp: "When you change the layout, your Project displays an indicator to show the view was modified." },
+  { cat: "Views", q: "Where is the Save button located when you modify a board view?", opts: ["Top-left of the board", "Top-right of the board", "Bottom-center of the board", "Inside the layout dropdown"], ans: 1, exp: "Select the Save button at the top-right of the board." },
+  { cat: "Views", q: "How can you trigger the renaming of a view?", opts: ["Right-click the view tab", "Double-click the view's tab", "Click the gear icon next to the name", "Select Rename from the ⋯ menu"], ans: 1, exp: "You can rename the view by double-clicking the view's tab..." },
+  { cat: "Views", q: "After typing a new name for a view tab, how do you automatically save it?", opts: ["Press Ctrl+S", "Select out of the tab", "Click the Save changes button", "Refresh the page"], ans: 1, exp: "...and selecting out of the tab to automatically save." },
+  { cat: "Views", q: "What alternative method can be used to create a new board view without altering the existing one?", opts: ["Selecting New View to the right of your existing views", "Cloning the entire project", "Using a GraphQL mutation", "Importing a template from Settings"], ans: 0, exp: "Note these steps can also be accomplished by selecting New View to the right of your existing views." },
+  { cat: "Views", q: "How do you reassign issues to different columns in a board view?", opts: ["By running a command in the terminal", "By editing the source code", "By using drag and drop", "By checking a box in the issue menu"], ans: 2, exp: "Now, you can drag and drop issues and pull requests to the various columns." },
+  { cat: "Views", q: "According to the example screenshot description, which of the following is a typical column label on a board?", opts: ["Testing", "In-progress", "Archived", "Blocked"], ans: 1, exp: "Screenshot example of a Project board with four columns labeled; no status, todo, in-progress, done." },
+
+  // ── WORKFLOWS (36-40) ──────────────────────────────────────────────
+  { cat: "Workflows", q: "What is the primary function of built-in workflows in GitHub Projects?", opts: ["To automatically merge pull requests", "To automate common actions like organizing and updating project items", "To email daily summaries to the team", "To delete unused repositories"], ans: 1, exp: "To automate common actions, GitHub Projects includes built-in workflows that help organize and update project items automatically." },
+  { cat: "Workflows", q: "What automated action is given as an example when a new issue is added to a Project?", opts: ["Setting its status to 'Todo'", "Assigning it to the Project creator", "Closing the issue immediately", "Adding an 'Urgent' priority label"], ans: 0, exp: "For example, when a new issue is added to your Project, a default workflow can set its status to 'Todo'." },
+  { cat: "Workflows", q: "Where do you access the Workflows configuration menu?", opts: ["Under Layout settings", "The ⋯ menu in the top-right", "The down arrow on the current view", "Inside an individual issue's sidebar"], ans: 1, exp: "Select the ⋯ menu in the top-right and choose Workflows." },
+  { cat: "Workflows", q: "What is 'Item added to project' an example of in the workflow settings?", opts: ["A trigger", "A condition", "An action", "A status value"], ans: 0, exp: "Select a trigger (e.g., 'Item added to project')." },
+  { cat: "Workflows", q: "What is the final step to officially enable a workflow?", opts: ["Click Apply settings", "Click Save and turn on workflow", "Click Activate", "Select Save changes"], ans: 1, exp: "Click Save and turn on workflow." }
+];
+
+const catColorMap = {
+  "Fields": "cat-fields",
+  "Priority": "cat-priority",
+  "Iterations": "cat-iterations",
+  "Views": "cat-views",
+  "Workflows": "cat-workflows"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-fields';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

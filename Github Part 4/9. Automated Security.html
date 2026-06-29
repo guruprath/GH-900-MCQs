@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automated Security — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-dependencies { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-dependabot { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-code-scanning { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-secret-scanning { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 40 Questions</div>
+  <h1>Automated Security in GitHub</h1>
+  <p>Dependencies, Dependabot, CodeQL, and Secret Scanning</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Dependencies',this)">Dependencies</button>
+    <button class="filter-btn" onclick="filterCat('Dependabot',this)">Dependabot</button>
+    <button class="filter-btn" onclick="filterCat('Code Scanning',this)">Code Scanning</button>
+    <button class="filter-btn" onclick="filterCat('Secret Scanning',this)">Secret Scanning</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── DEPENDENCIES ────────────────────────────────────────────────
+  { cat: "Dependencies", q: "What is a major risk associated with taking dependencies on external packages?", opts: ["They reduce developer productivity.", "They can introduce other security risks.", "They prevent the use of version control.", "They automatically make the repository public."], ans: 1, exp: "While these components can offer substantial benefits in productivity, they can introduce other security risks." },
+  { cat: "Dependencies", q: "Why can staying on top of package vulnerabilities be particularly time-consuming?", opts: ["Because packages are written in multiple languages.", "Because GitHub limits the number of packages you can use.", "Because each dependency might have its own dependencies that become difficult to track.", "Because package managers do not support versioning."], ans: 2, exp: "Staying on top of these packages... can be time consuming, especially given how each dependency might have its own dependencies that can become difficult to track and maintain." },
+  { cat: "Dependencies", q: "What default feature does every GitHub repository include to help with external packages?", opts: ["Automated refactoring.", "Dependency graphs.", "Free cloud hosting.", "Direct database access."], ans: 1, exp: "One default feature every repository includes is dependency graphs." },
+  { cat: "Dependencies", q: "How does GitHub build a dependency graph for a repository?", opts: ["By running the code in a sandbox.", "By asking the repository administrator.", "By scanning common package manifests.", "By analyzing pull request comments."], ans: 2, exp: "GitHub scans common package manifests... These graphs allow project owners to recursively track all of the dependencies." },
+  { cat: "Dependencies", q: "Which of the following is an example of a common package manifest mentioned in the text?", opts: ["index.html", "package.json", "style.css", "main.py"], ans: 1, exp: "GitHub scans common package manifests, such as package.json, requirements.txt, and others." },
+  { cat: "Dependencies", q: "What is another example of a package manifest explicitly mentioned in the text?", opts: ["requirements.txt", "config.yml", ".gitignore", "docker-compose.yml"], ans: 0, exp: "GitHub scans common package manifests, such as package.json, requirements.txt, and others." },
+  { cat: "Dependencies", q: "What do dependency graphs allow project owners to do with their dependencies?", opts: ["Automatically rewrite them in a secure language.", "Recursively track all of the dependencies their project relies on.", "Hide them from public view permanently.", "Sell them to other developers."], ans: 1, exp: "These graphs allow project owners to recursively track all of the dependencies their project relies on." },
+  { cat: "Dependencies", q: "True or False: Dependency graphs are a premium feature that must be purchased separately.", opts: ["True, they require GitHub Advanced Security.", "False, they are a default feature every repository includes.", "True, they are only available for Enterprise users.", "False, they are only available if you write your own script."], ans: 1, exp: "One default feature every repository includes is dependency graphs." },
+  { cat: "Dependencies", q: "What is the primary benefit of external packages despite their security risks?", opts: ["They offer substantial benefits in productivity.", "They guarantee zero downtime.", "They remove the need for testing.", "They automatically write documentation."], ans: 0, exp: "While these components can offer substantial benefits in productivity, they can introduce other security risks." },
+
+  // ── DEPENDABOT ─────────────────────────────────────────────────
+  { cat: "Dependabot", q: "What tool does GitHub provide to reduce the overhead of watching visual dependency graphs?", opts: ["GitHub Copilot", "Dependabot alerts", "Secret scanning", "CodeQL"], ans: 1, exp: "To reduce this overhead, GitHub provides Dependabot alerts that watch your dependency graphs for you." },
+  { cat: "Dependabot", q: "How does Dependabot identify potential risks in your dependencies?", opts: ["By compiling the code locally.", "By cross-referencing target versions with versions on known vulnerability lists.", "By analyzing user traffic.", "By asking external security consultants."], ans: 1, exp: "It then cross-references target versions with versions on known vulnerability lists." },
+  { cat: "Dependabot", q: "Where does the input for Dependabot's vulnerability analysis come from?", opts: ["Stack Overflow threads", "GitHub Security Advisories", "Twitter security researchers", "The dark web"], ans: 1, exp: "Input for the analysis comes from GitHub Security Advisories." },
+  { cat: "Dependabot", q: "What happens when Dependabot discovers a vulnerability risk in a dependency?", opts: ["The repository is immediately deleted.", "The project is alerted.", "The dependency is permanently blocked.", "GitHub bills the repository owner."], ans: 1, exp: "When a risk is discovered, the project is alerted." },
+  { cat: "Dependabot", q: "When a dependency alert is triggered, what action might a project contributor take?", opts: ["Bump the offending package reference to the recommended version.", "Rewrite the dependency from scratch.", "Ignore the alert permanently.", "Delete the dependency graph."], ans: 0, exp: "A dependency alert can lead to a project contributor bumping the offending package reference to the recommended version..." },
+  { cat: "Dependabot", q: "After bumping a package version, what is typically created for validation?", opts: ["A new repository.", "A pull request.", "A secret token.", "A CodeQL query."], ans: 1, exp: "...bumping the offending package reference to the recommended version and creating a pull request for validation." },
+  { cat: "Dependabot", q: "What feature goes beyond alerts and actively automates the dependency update effort?", opts: ["Code scanning", "Secret scanning", "Automated dependency updates with Dependabot", "GitHub Pages"], ans: 2, exp: "Wouldn't it be great if there was a way to automate this effort? Well, good news! Dependabot does just that." },
+  { cat: "Dependabot", q: "What does Dependabot do to help a contributor validate an automated update?", opts: ["It automatically merges the code to production.", "It creates pull requests.", "It emails the package author.", "It shuts down the repository until fixed."], ans: 1, exp: "It scans for dependency alerts and creates pull requests so that a contributor can validate the update..." },
+  { cat: "Dependabot", q: "Who is responsible for merging the request created by Dependabot?", opts: ["GitHub Support.", "The author of the external package.", "A contributor to the project.", "Dependabot merges it automatically without oversight."], ans: 2, exp: "...creates pull requests so that a contributor can validate the update and merge the request." },
+  { cat: "Dependabot", q: "Dependabot is an example of what kind of security measure?", opts: ["Manual security checking.", "Automated security.", "Physical security.", "Social engineering prevention."], ans: 1, exp: "The section is titled 'Automated security' and Dependabot is highlighted as a feature to 'automate this effort'." },
+  { cat: "Dependabot", q: "What specific entities does Dependabot watch for you?", opts: ["Your commit messages.", "Your dependency graphs.", "Your pull request comments.", "Your server logs."], ans: 1, exp: "GitHub provides Dependabot alerts that watch your dependency graphs for you." },
+
+  // ── CODE SCANNING ────────────────────────────────────────────────
+  { cat: "Code Scanning", q: "What is the purpose of automated code scanning in a GitHub repository?", opts: ["To analyze and find security vulnerabilities and errors in the code.", "To check for grammar errors in the README.", "To scan for stolen credit cards.", "To optimize image sizes in the repository."], ans: 0, exp: "...you can use code scanning to analyze and find security vulnerabilities and errors in the code in a GitHub repository." },
+  { cat: "Code Scanning", q: "Code scanning helps find, triage, and prioritize fixes for what?", opts: ["UI design flaws.", "Existing problems or potential security vulnerabilities.", "Server downtime.", "Broken hyperlinks."], ans: 1, exp: "You can use it to find, triage, and prioritize fixes for existing problems or potential security vulnerabilities." },
+  { cat: "Code Scanning", q: "Besides finding existing problems, what does code scanning help prevent?", opts: ["Developers from working too fast.", "Developers from introducing any new security problems into the code.", "Hackers from viewing the source code.", "Dependabot from creating alerts."], ans: 1, exp: "It's also useful to help prevent developers from introducing any new security problems into the code." },
+  { cat: "Code Scanning", q: "What underlying technology gives GitHub code scanning a significant advantage?", opts: ["Secret scanning", "CodeQL", "Dependency graphs", "Docker"], ans: 1, exp: "Another advantage to code scanning is its ability to use CodeQL." },
+  { cat: "Code Scanning", q: "What does CodeQL allow you to do?", opts: ["Query code as data.", "Encrypt code automatically.", "Translate code to another language.", "Compile code directly in the browser."], ans: 0, exp: "CodeQL lets you query code as data..." },
+  { cat: "Code Scanning", q: "Because CodeQL treats code as data, what can you create?", opts: ["Custom queries.", "New programming languages.", "Graphical user interfaces.", "Automated social media posts."], ans: 0, exp: "...which lets you create custom queries or use queries maintained by the open-source community." },
+  { cat: "Code Scanning", q: "Besides custom queries, what other types of queries can you use with CodeQL?", opts: ["Queries maintained by the open-source community.", "Queries sold by third-party vendors only.", "Queries generated randomly.", "Queries written exclusively by GitHub staff."], ans: 0, exp: "...or use queries maintained by the open-source community." },
+  { cat: "Code Scanning", q: "Code scanning gives repository administrators the freedom to customize and maintain what?", opts: ["The repository's visual theme.", "How the code within their repository is being scanned.", "The billing details of the organization.", "The programming language of the codebase."], ans: 1, exp: "Code scanning gives you the freedom to customize and maintain how the code within your repository is being scanned." },
+  { cat: "Code Scanning", q: "Where in a GitHub repository can you enable code-scanning alerts and workflows?", opts: ["In the Insights tab.", "In the Security tab.", "In the Pull requests tab.", "In the Actions tab."], ans: 1, exp: "You can enable code-scanning alerts and workflows in the security tab of a GitHub repository." },
+  { cat: "Code Scanning", q: "How is code scanning similar to Dependabot?", opts: ["Both primarily check package.json files.", "Both scan the repository for vulnerabilities/alerts.", "Both are written in JavaScript.", "Both only work on public repositories."], ans: 1, exp: "Similar to how Dependabot scans your repository for dependency alerts, you can use code scanning to analyze and find security vulnerabilities..." },
+
+  // ── SECRET SCANNING ───────────────────────────────────────────────
+  { cat: "Secret Scanning", q: "What does secret scanning look for within a repository?", opts: ["Grammatical errors.", "Known secrets or credentials committed within the repository.", "Outdated npm packages.", "Unused code blocks."], ans: 1, exp: "...secret scanning looks for known secrets or credentials committed within the repository." },
+  { cat: "Secret Scanning", q: "Secret scanning is done to prevent the use of what?", opts: ["Fraudulent behavior.", "Open-source software.", "Dependency graphs.", "CodeQL queries."], ans: 0, exp: "This scanning is done to prevent the use of fraudulent behavior..." },
+  { cat: "Secret Scanning", q: "What does secret scanning secure the integrity of?", opts: ["The GitHub server architecture.", "Any sensitive data.", "The repository's README file.", "The dependency manifest."], ans: 1, exp: "...and to secure the integrity of any sensitive data." },
+  { cat: "Secret Scanning", q: "On what type of repositories does secret scanning occur by default?", opts: ["Private repositories.", "Public repositories.", "Internal enterprise repositories.", "Archived repositories."], ans: 1, exp: "By default, secret scanning occurs on public repositories..." },
+  { cat: "Secret Scanning", q: "Who can enable secret scanning on private repositories?", opts: ["Any GitHub user.", "Repository administrators or organization owners.", "Only GitHub support staff.", "Dependabot."], ans: 1, exp: "...you can enable secret scanning on private repositories by repository administrators or organization owners." },
+  { cat: "Secret Scanning", q: "When secret scanning detects a set of credentials, who does GitHub notify first?", opts: ["The repository administrator.", "The developer who committed the secret.", "The service provider who issued the secret.", "The general public."], ans: 2, exp: "When secret scanning detects a set of credentials, GitHub notifies the service provider who issued the secret." },
+  { cat: "Secret Scanning", q: "What does the service provider do after being notified by GitHub about a leaked credential?", opts: ["Deletes the GitHub repository.", "Validates the credential.", "Sues the developer.", "Ignores the notification."], ans: 1, exp: "The service provider validates the credential." },
+  { cat: "Secret Scanning", q: "Which of the following is an action a service provider might take after validating a leaked secret?", opts: ["Revoke the secret.", "Issue a new secret.", "Reach out to you directly.", "All of the above."], ans: 3, exp: "Then, it decides whether they should revoke the secret, issue a new secret, or reach out to you directly." },
+  { cat: "Secret Scanning", q: "What dictates the specific action a service provider takes when a secret is leaked?", opts: ["The size of the repository.", "The associated risks to you or the service provider.", "The time of day the commit was made.", "The programming language used."], ans: 1, exp: "The action depends on the associated risks to you or the service provider." },
+  { cat: "Secret Scanning", q: "What is an example of a 'secret' that this scanning feature aims to detect?", opts: ["A newly proposed feature idea.", "Credentials.", "A hidden easter egg in a video game.", "Undocumented code functions."], ans: 1, exp: "...looks for known secrets or credentials committed within the repository." }
+];
+
+const catColorMap = { 
+  "Dependencies": "cat-dependencies",
+  "Dependabot": "cat-dependabot",
+  "Code Scanning": "cat-code-scanning",
+  "Secret Scanning": "cat-secret-scanning"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-dependencies';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

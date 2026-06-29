@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git Version Control — 75 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-intro { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-setup { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-workflow { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-cli { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-vscode { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-history { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 75 Questions</div>
+  <h1>Git Version Control</h1>
+  <p>Comprehensive Multiple Choice Questions & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">75</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Intro',this)">Intro & Theory</button>
+    <button class="filter-btn" onclick="filterCat('Setup',this)">Setup & Config</button>
+    <button class="filter-btn" onclick="filterCat('Workflow',this)">Git Workflow</button>
+    <button class="filter-btn" onclick="filterCat('CLI',this)">CLI Commands</button>
+    <button class="filter-btn" onclick="filterCat('VSCode',this)">VS Code UI</button>
+    <button class="filter-btn" onclick="filterCat('History',this)">Git History</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- INTRO & THEORY (1-15) ---
+  { cat: "Intro", q: "What problem does Git primarily solve over older methods like file naming conventions?", "opts": ["It automatically writes code for you.", "It makes keeping track of changes and collaborating with others easy.", "It replaces the need for a compiler.", "It hosts websites automatically."], "ans": 1, "exp": "Git makes keeping track of changes and collaborating with others easy, removing the confusion of older methods like file naming conventions." },
+  { cat: "Intro", q: "Which of the following is an issue that Version Control Systems solve?", "opts": ["Hardware failure", "Conflicting changes", "Low internet bandwidth", "Screen resolution incompatibility"], "ans": 1, "exp": "Version control systems solve common problems like Backup and Recovery, Sandboxed Experimentation, Parallel development, Locked files, File duplication, Conflicting changes, and Team collaboration." },
+  { cat: "Intro", q: "What does it mean that Git is a 'distributed' version control system?", "opts": ["It distributes work equally among developers.", "There is only one copy in a shared location.", "Each developer has a complete copy of the project history.", "It distributes code across multiple programming languages."], "ans": 2, "exp": "Git is a distributed version control system, meaning each developer has a complete copy of the project history." },
+  { cat: "Intro", q: "How does a distributed system differ from a centralized version control system?", "opts": ["Centralized systems only support one file format.", "Centralized systems do not keep a history.", "In a centralized system, there is only one copy in a shared location.", "Distributed systems require constant internet connection."], "ans": 2, "exp": "This differs from centralized systems where there is only one copy in a shared location." },
+  { cat: "Intro", q: "Which of the following is an advantage of Git being distributed?", "opts": ["It requires a paid subscription.", "Most operations are processed locally, allowing offline work.", "It prevents developers from using their own tooling.", "It eliminates the need for backups completely."], "ans": 1, "exp": "Advantages include working offline because most operations are processed locally." },
+  { cat: "Intro", q: "Where should you go to find installation guides for Git on your own computer?", "opts": ["GitHub", "The official Git site", "Stack Overflow", "Visual Studio Code documentation"], "ans": 1, "exp": "We recommend the official Git site for installation guides, since there are many computer configurations." },
+  { cat: "Intro", q: "Who built Git?", "opts": ["Microsoft", "Developers, for developers", "Apple", "Only GitHub employees"], "ans": 1, "exp": "Git is an open-source tool built by developers for developers." },
+  { cat: "Intro", q: "What does CLI stand for in the context of Git?", "opts": ["Common Language Infrastructure", "Command Line Interface", "Code Local Integration", "Centralized Logging Interface"], "ans": 1, "exp": "Command Line Interface (CLI) - The original tool and source of all functionality." },
+  { cat: "Intro", q: "Which of the following is considered a 'Centralized Git Host'?", "opts": ["Visual Studio Code", "GitHub", "Terminal", "Sourcetree"], "ans": 1, "exp": "GitHub is listed as an example of Hosting Services - Centralized Git Hosts." },
+  { cat: "Intro", q: "Which of the following is an example of a Code Editor that integrates Git?", "opts": ["GitHub Desktop", "GitKraken", "JetBrains IDEs", "GitLab"], "ans": 2, "exp": "JetBrains IDEs, Visual Studio Code, Xcode, and Emacs/VIM are listed as examples of Code Editors." },
+  { cat: "Intro", q: "Which tool is considered the 'original tool and source of all functionality' for Git?", "opts": ["GitHub Desktop", "Command Line Interface (CLI)", "Azure DevOps", "Sourcetree"], "ans": 1, "exp": "Command Line Interface (CLI) is described as the original tool and source of all functionality." },
+  { cat: "Intro", q: "Which of the following is a Desktop Application for Git?", "opts": ["Gitea", "AWS CodeCommit", "Visual Studio Code", "GitHub Desktop"], "ans": 3, "exp": "GitHub Desktop, Sourcetree, TortoiseGit, GitKraken, and Git Butler are examples of Desktop Applications." },
+  { cat: "Intro", q: "Why do distributed copies in Git increase robustness?", "opts": ["They prevent viruses.", "They act as backups.", "They automatically write documentation.", "They lock files automatically."], "ans": 1, "exp": "Increased robustness - Distributed copies act as backups." },
+  { cat: "Intro", q: "Does Git force all developers on a team to use the exact same Code Editor and CLI tools?", "opts": ["Yes, it requires uniformity.", "No, developers can use their own processes and tooling.", "Yes, everyone must use Visual Studio Code.", "No, but they must all use the same OS."], "ans": 1, "exp": "Flexible workflows - Developer can use their own processes and tooling." },
+  { cat: "Intro", q: "What issue does Git solve regarding file management?", "opts": ["Emailing copies of files to collaborators", "Compressing zip files", "Scanning for malware", "Translating code into machine language"], "ans": 0, "exp": "It removes the confusion of older methods like file naming conventions, share drives, and emailed copies of files." },
+
+  // --- SETUP & CONFIG (16-25) ---
+  { cat: "Setup", q: "What is a GitHub Codespace?", "opts": ["A premium Git command", "A local desktop application", "A pre-configured development environment", "A server for centralized hosting"], "ans": 2, "exp": "To start practicing Git, let's first open a pre-configured development environment... Typically a GitHub Codespace automatically includes the repository code." },
+  { cat: "Setup", q: "How do you verify if Git is installed on your machine using the CLI?", "opts": ["git install", "git check", "git --version", "git status"], "ans": 2, "exp": "Show the currently installed version of Git, to verify it is installed: `git --version`" },
+  { cat: "Setup", q: "Which command shows the Git help documentation?", "opts": ["git guide", "git docs", "git --help", "help git"], "ans": 2, "exp": "Show the Git help documentation: `git --help`" },
+  { cat: "Setup", q: "Why must you provide an identity to Git?", "opts": ["To log into GitHub", "So it can associate you as the author for any changes", "To encrypt your files", "To download updates"], "ans": 1, "exp": "Let's provide Git our identity so it can associate us as the author for any changes." },
+  { cat: "Setup", q: "Where does Git store the author name and email?", "opts": ["In a secure private vault", "In the history, visible to anyone with access to the repository", "Only on the local machine temporarily", "In the working directory"], "ans": 1, "exp": "Git stores the author name and email in the history, which is visible to anyone with access to the repository." },
+  { cat: "Setup", q: "How can you keep your personal email private while making commits on GitHub?", "opts": ["Use a blank email address", "Enable a noreply email address from your account settings", "Use the --hidden flag", "Don't run the git config command"], "ans": 1, "exp": "GitHub provides an optional noreply email address you may enable from your account email settings." },
+  { cat: "Setup", q: "What is the command to set your global display name in Git?", "opts": ["git config --global user.name 'Name'", "git set name 'Name'", "git name 'Name'", "git config user 'Name'"], "ans": 0, "exp": "Set your display name: `git config --global user.name \"First Last\"`" },
+  { cat: "Setup", q: "What is the command to set your global email address in Git?", "opts": ["git set email 'me@example.com'", "git config --global user.email 'me@example.com'", "git mail 'me@example.com'", "git update email 'me@example.com'"], "ans": 1, "exp": "Set your email address: `git config --global user.email \"me@example.com\"`" },
+  { cat: "Setup", q: "How do you confirm your Git configuration changes?", "opts": ["git verify", "git check config", "git config --global --list", "git view settings"], "ans": 2, "exp": "Confirm the changes by viewing the configuration: `git config --global --list`" },
+  { cat: "Setup", q: "If you have multiple accounts and want to change your username for just one project, which flag do you use?", "opts": ["--project", "--local", "--single", "--override"], "ans": 1, "exp": "On an existing project repository, use `--local` instead of `--global`." },
+
+  // --- GIT WORKFLOW (26-38) ---
+  { cat: "Workflow", q: "What are the three main areas of the Git workflow?", "opts": ["Local, Remote, Cloud", "Working Directory, Staging Area, Repository", "CLI, Editor, Host", "Init, Add, Commit"], "ans": 1, "exp": "The Git workflow involves three main areas: Working Directory, Staging Area (Index), Repository." },
+  { cat: "Workflow", q: "What is the 'Working Directory'?", "opts": ["The remote server hosting the code", "The permanent records of your project's development history", "Your project files where you are making changes", "The area for grouping changes before commit"], "ans": 2, "exp": "Working Directory: Your project files where you are making changes." },
+  { cat: "Workflow", q: "What is the 'Staging Area' also known as?", "opts": ["The Index", "The Repository", "The Cloud", "The HEAD"], "ans": 0, "exp": "Staging Area (Index): A preparation area for grouping changes you want to save to history." },
+  { cat: "Workflow", q: "What is the purpose of the Staging Area?", "opts": ["To backup files permanently", "To run code tests automatically", "To group changes you want to save to history", "To delete old versions of files"], "ans": 2, "exp": "A preparation area for grouping changes you want to save to history." },
+  { cat: "Workflow", q: "What is the 'Repository' in the Git workflow?", "opts": ["The place where active edits are made", "The permanent records of your project's development history", "A locked file folder", "The staging index"], "ans": 1, "exp": "Repository: The permanent records of your project's development history." },
+  { cat: "Workflow", q: "What command is used to start a new repository to enable versioning?", "opts": ["git start", "git new", "git init", "git begin"], "ans": 2, "exp": "git init - Start a new repository to enable versioning." },
+  { cat: "Workflow", q: "What does the `git add` command do?", "opts": ["Saves changes to the project's history", "Starts a new repository", "Groups related changes together in the staging area", "Downloads files from the internet"], "ans": 2, "exp": "git add - Group related changes together in the staging area, in preparation to 'commit' them to history." },
+  { cat: "Workflow", q: "Which command saves the changes in the staging area to the project's history?", "opts": ["git save", "git commit", "git push", "git status"], "ans": 1, "exp": "git commit - Save or 'commit' the changes in the staging area to the project's history." },
+  { cat: "Workflow", q: "What is a commit message?", "opts": ["An automated email sent to collaborators", "A long essay explaining the code", "A short description of the changes to help keep the history organized", "A secure password for the commit"], "ans": 2, "exp": "commit message - A short description of the changes to help keep the history organized." },
+  { cat: "Workflow", q: "Which command views the current state of your working directory and staging area?", "opts": ["git view", "git state", "git status", "git checkout"], "ans": 2, "exp": "git status - View the current state of your working directory and staging area." },
+  { cat: "Workflow", q: "What command changes your working directory to a different version from the repository history?", "opts": ["git switch-version", "git revert", "git change", "git checkout"], "ans": 3, "exp": "git checkout - Change your working directory to a different version from the repository history." },
+  { cat: "Workflow", q: "Why is a good commit message important?", "opts": ["It makes the project history easier to understand and helps find future bugs", "It determines if the code will compile", "It is required for GitHub to host the repository", "It automatically tags other developers"], "ans": 0, "exp": "A clear, concise, descriptive, and non-generic message will make your project history much easier to understand (and help find those future bugs)!" },
+  { cat: "Workflow", q: "What does the staging area do to game files when promoted via `git add`?", "opts": ["Deletes them from the working directory", "Creates a locked copy, preparing them for committing", "Executes the code immediately", "Pushes them to the cloud"], "ans": 1, "exp": "Promote the game files to the staging area. This will create a locked copy, preparing them for committing to the repository history." },
+
+  // --- CLI COMMANDS (39-50) ---
+  { cat: "CLI", q: "How do you navigate to the project directory in the terminal?", "opts": ["git cd", "cd /workspaces/stack-overflown", "dir /workspaces/stack-overflown", "open /workspaces"], "ans": 1, "exp": "In the terminal, navigate to the project directory: `cd /workspaces/stack-overflown`" },
+  { cat: "CLI", q: "After running `git init`, what does `git status` typically say initially?", "opts": ["Working tree clean", "No commits yet", "Repository fully synced", "Merge conflict"], "ans": 1, "exp": "Check repository status. Notice it says 'No commits yet' and the tip to use git add." },
+  { cat: "CLI", q: "How do you add specifically the index.html file inside the src folder?", "opts": ["git add src/index.html", "git stage src/index.html", "git add index.html", "git add all"], "ans": 0, "exp": "git add src/index.html" },
+  { cat: "CLI", q: "What command adds all files in the src directory to the staging area at once?", "opts": ["git add src/all", "git add src/*", "git add src", "git add -A src"], "ans": 1, "exp": "Or: `git add src/*`" },
+  { cat: "CLI", q: "After using `git add`, how does `git status` identify the newly staged files?", "opts": ["modified", "untracked", "new file", "committed"], "ans": 2, "exp": "Check the repository status again. Notice that each file is identified as new file." },
+  { cat: "CLI", q: "What is the exact command provided to make the first commit with the message 'Initial commit'?", "opts": ["git commit 'Initial commit'", "git commit -m 'Initial commit'", "git commit -message 'Initial commit'", "git commit --start"], "ans": 1, "exp": "Commit the changes to the repository history... `git commit -m \"Initial commit\"`" },
+  { cat: "CLI", q: "After committing your changes, what phrase does `git status` output to indicate your working directory matches the history?", "opts": ["All files synced", "No changes detected", "Working tree clean", "Commit successful"], "ans": 2, "exp": "Notice the 'working tree clean' which means our current copy perfectly matches the history." },
+  { cat: "CLI", q: "What does 'working tree clean' specifically mean?", "opts": ["All files have been deleted", "The code has no bugs", "Our current copy perfectly matches the history", "The repository is empty"], "ans": 2, "exp": "Notice the 'working tree clean' which means our current copy perfectly matches the history." },
+  { cat: "CLI", q: "Which command shows a detailed history of the project?", "opts": ["git history", "git show", "git log", "git status"], "ans": 2, "exp": "git log - Display a detailed history of the project." },
+  { cat: "CLI", q: "Which command shows the history with one commit per line with less detail?", "opts": ["git log --short", "git log --oneline", "git log --simple", "git history --line"], "ans": 1, "exp": "git log --oneline - Show one commit per line, but with less detail." },
+  { cat: "CLI", q: "Which log option shows a visual diagram useful for diverging paths?", "opts": ["--visual", "--diagram", "--graph", "--tree"], "ans": 2, "exp": "git log --graph - Show a visual diagram, useful for diverging paths." },
+  { cat: "CLI", q: "How do you combine options to see a visual graph of the full commit history on single lines?", "opts": ["git log --graph --oneline", "git log -g -o", "git show graph", "git tree"], "ans": 0, "exp": "Show a visual graph of the full commit history: `git log --graph --oneline`" },
+
+  // --- VS CODE UI (51-60) ---
+  { cat: "VSCode", q: "How can you toggle the integrated terminal in Visual Studio Code?", "opts": ["Ctrl+T", "Ctrl+Shift+P then search 'View: Toggle Terminal'", "F12", "Alt+Shift+T"], "ans": 1, "exp": "If the integrated terminal is not already available, open it using Ctrl+Shift+P then searching for and selecting View: Toggle Terminal" },
+  { cat: "VSCode", q: "To see the sample game in action inside VS Code, what do you right-click on?", "opts": ["index.js", "style.css", "src/index.html", "README.md"], "ans": 2, "exp": "Right-click on src/index.html and select Show Preview to see our sample game in action." },
+  { cat: "VSCode", q: "Where do you click to start a new file in the VS Code file explorer?", "opts": ["File -> New", "The New File... icon", "Right click -> Create Document", "The Plus button on the bottom left"], "ans": 1, "exp": "In the file explorer, click the New File... icon to start a README file." },
+  { cat: "VSCode", q: "Which tab in the VS Code left navigation shows Git changes?", "opts": ["Extensions tab", "Explorer tab", "Source Control tab", "Run and Debug tab"], "ans": 2, "exp": "In the left navigation, select the Source Control tab. Notice the README.md file is listed under the Changes area." },
+  { cat: "VSCode", q: "Under what area is a newly modified file listed in the Source Control tab before staging?", "opts": ["Staged Changes", "Commits", "Changes", "Untracked"], "ans": 2, "exp": "Notice the README.md file is listed under the Changes area." },
+  { cat: "VSCode", q: "How do you promote a file to the staging area using the VS Code Source Control UI?", "opts": ["Right-click and select 'Stage'", "Drag and drop the file", "Hover over the file and select the plus sign (+) button", "Double-click the file"], "ans": 2, "exp": "Promote the file to the staging staging area by hovering over file and selecting the plus sign + button." },
+  { cat: "VSCode", q: "Where do you enter the commit message in the VS Code Source Control tab?", "opts": ["In a popup window", "In the text box provided above the Commit button", "In the integrated terminal only", "In the README.md file"], "ans": 1, "exp": "Enter a commit message and press the Commit button." },
+  { cat: "VSCode", q: "What does the `index.js` file represent in the sample project?", "opts": ["The game container", "The error patterns", "The game formatting", "The primary game logic"], "ans": 3, "exp": "`index.js` - the primary game logic" },
+  { cat: "VSCode", q: "What does the `patterns.js` file represent in the sample project?", "opts": ["The primary game logic", "The error patterns to match during gameplay", "The styling", "The database"], "ans": 1, "exp": "`patterns.js` - the error patterns to match during gameplay" },
+  { cat: "VSCode", q: "What is the purpose of the `style.css` file in the sample project?", "opts": ["Game logic", "Container for playing", "Game formatting and styling", "Saving high scores"], "ans": 2, "exp": "`style.css` - the game formatting and styling" },
+
+  // --- GIT HISTORY (61-75) ---
+  { cat: "History", q: "Through what mechanism does Git maintain a complete history of your project?", "opts": ["Logs", "Commits", "Branches", "Tags"], "ans": 1, "exp": "Git maintains a complete history of your project through commits." },
+  { cat: "History", q: "What is the purpose of the Unique hash ID in a commit?", "opts": ["To encrypt the data", "A unique identifier to easily reference it in the history", "To store the password", "To compress the file size"], "ans": 1, "exp": "Unique hash ID: A unique identifier to easily reference it in the history." },
+  { cat: "History", q: "What creates a chain in the Git commit history?", "opts": ["The HEAD pointer", "The author information", "The parent commit reference", "The file names"], "ans": 2, "exp": "Parent commit: Reference to the previous commit, creating a chain." },
+  { cat: "History", q: "Which piece of information indicates WHO made the changes in a commit?", "opts": ["Timestamp", "Author information", "Hash ID", "Parent commit"], "ans": 1, "exp": "Author information: Who made the changes." },
+  { cat: "History", q: "Which piece of information indicates WHEN the changes were applied in a commit?", "opts": ["Timestamp", "Commit message", "Hash ID", "HEAD"], "ans": 0, "exp": "Timestamp: When the changes were applied." },
+  { cat: "History", q: "What is the special label that indicates your current position in the project history?", "opts": ["The ROOT pointer", "The INDEX", "The HEAD pointer", "The MAIN label"], "ans": 2, "exp": "Additionally, the HEAD pointer is a special label that indicates your current position in the project history." },
+  { cat: "History", q: "If you want to move to a different point in the history (modifying files in your working directory), which command do you use?", "opts": ["git move", "git checkout", "git log", "git back"], "ans": 1, "exp": "git checkout - Move to a different point in the history (modifies files in your working directory)." },
+  { cat: "History", q: "When copying a Commit ID to use with `git checkout`, which form should you use?", "opts": ["Only the long form", "Only the short form", "Both the long and short form will work", "Neither, you must use the commit message"], "ans": 2, "exp": "Copy the Commit ID of the Initial commit entry. Both the long and short form will work." },
+  { cat: "History", q: "In the activity, what happened when you checked out the 'Initial commit'?", "opts": ["The game crashed", "The README.md file was removed", "A new branch was created", "The index.html file was deleted"], "ans": 1, "exp": "Notice the README.md file was removed. (Because it was added in a later commit)." },
+  { cat: "History", q: "How do you return to the latest commit on the main branch after exploring old history?", "opts": ["git return", "git checkout latest", "git checkout main", "git head"], "ans": 2, "exp": "Return to the latest commit on main... `git checkout main`" },
+  { cat: "History", q: "In VS Code, how do you view the timeline graph of recent commits?", "opts": ["Click 'View Graph' in the menu", "Right-click on the Changes header and enable the Graph option", "Open the terminal and type 'graph'", "Install a 3rd party graph extension"], "ans": 1, "exp": "In the left navigation, open the Source Control tab. Right-click on the Changes header and enable the Graph option." },
+  { cat: "History", q: "What happens when you click a commit name in the VS Code Graph panel?", "opts": ["It deletes the commit", "It checks out the commit immediately", "It expands a list of the files modified by that commit", "It rewrites the commit message"], "ans": 2, "exp": "Click the commit names to expand a list of the files modified by that commit." },
+  { cat: "History", q: "Does checking out an old commit modify the files currently in your working directory?", "opts": ["Yes", "No, it only views them in memory", "Yes, but it deletes all new files permanently", "No, it opens them in a separate window"], "ans": 0, "exp": "git checkout - Move to a different point in the history (modifies files in your working directory)." },
+  { cat: "History", q: "What is the purpose of the commit message included in every commit?", "opts": ["To run automated build scripts", "Description of the changes included in that commit", "To list the files deleted", "To specify the author's email"], "ans": 1, "exp": "Commit message: Description of the changes included in that commit." },
+  { cat: "History", q: "After checking out `main` from a past commit, what happened to the README.md file?", "opts": ["It stayed deleted", "It had a merge conflict", "It was duplicated", "It returned"], "ans": 3, "exp": "Return to the latest commit on main. Notice the README.md file has returned." }
+];
+
+const catColorMap = { 
+  "Intro": "cat-intro",
+  "Setup": "cat-setup",
+  "Workflow": "cat-workflow",
+  "CLI": "cat-cli",
+  "VSCode": "cat-vscode",
+  "History": "cat-history"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-intro';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

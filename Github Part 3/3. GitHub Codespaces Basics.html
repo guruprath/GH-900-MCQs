@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Codespaces Basics — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-running { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-customizing { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-devcontainer { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-lifecycle { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 60 Questions</div>
+  <h1>GitHub Codespaces</h1>
+  <p>Multiple Choice Questions with Answers</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Running Code',this)">Running Code</button>
+    <button class="filter-btn" onclick="filterCat('Customizing',this)">Customizing</button>
+    <button class="filter-btn" onclick="filterCat('Dev Container',this)">Dev Container</button>
+    <button class="filter-btn" onclick="filterCat('Lifecycle',this)">Lifecycle</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- BASICS ---
+  { cat: "Basics", q: "What is a codespace?", opts: ["A cloud-hosted website builder", "A development environment hosted in the cloud, defined by configuration files", "A GitHub repository for code snippets", "A local Docker container instance"], ans: 1, exp: "A codespace is a development environment hosted in the cloud, defined by configuration files in your repository." },
+  { cat: "Basics", q: "What defines the environment within a GitHub Codespace?", opts: ["Your local machine's OS", "Configuration files in your repository", "The browser you use to access it", "The GitHub Actions runner file"], ans: 1, exp: "A codespace is defined by configuration files in your repository, making it a repeatable development environment." },
+  { cat: "Basics", q: "What famous developer phrase does using Codespaces help avoid?", opts: ["\"It works on my machine!\"", "\"I forgot to commit!\"", "\"The server is down!\"", "\"Merge conflict detected!\""], ans: 0, exp: "Codespaces create a repeatable environment that avoids the famous phrase 'It works on my machine!'." },
+  { cat: "Basics", q: "Which specific specification does each codespace follow?", opts: ["Kubernetes Pods", "Cloud Native Buildpacks", "Dev Container specification", "GitHub Actions workflow"], ans: 2, exp: "Each codespace follows the Dev Container specification." },
+  { cat: "Basics", q: "How is a codespace hosted by GitHub under the hood?", opts: ["As a bare-metal server", "As an AWS Lambda function", "As a static webpage", "As a Docker container"], ans: 3, exp: "A codespace is hosted by GitHub as a Docker container." },
+  { cat: "Basics", q: "Do you need Docker installed on your local machine to use GitHub Codespaces?", opts: ["No", "Yes", "Only on Windows", "Only to build the image initially"], ans: 0, exp: "You don't need to know Docker or even have it installed on your machine." },
+  { cat: "Basics", q: "Can you use a Dev Container configuration locally if you choose to?", opts: ["No, it only works on GitHub.com", "Yes, with your own Docker host", "Only with an Enterprise account", "Only on Linux machines"], ans: 1, exp: "Since the Dev Container configuration is part of the repository, you can also use it locally with your own Docker host." },
+  { cat: "Basics", q: "What is one major advantage of Codespaces regarding IDEs?", opts: ["It automatically writes code for you", "No IDE installation is required to develop in the browser", "It runs fully offline", "It provides unlimited storage"], ans: 1, exp: "You can develop in the browser. No IDE installation is required." },
+  { cat: "Basics", q: "If you prefer not to use the browser, what local IDE can link to the remote Codespace?", opts: ["Android Studio", "Eclipse", "A local install of VS Code", "NetBeans"], ans: 2, exp: "You have the option to use a local install of VS Code to link to the remote Codespace." },
+  { cat: "Basics", q: "Why do Codespaces have fast internet access?", opts: ["They bypass your local ISP limits", "Because the container is in the datacenter", "Because they compress all data", "They use a specialized browser plugin"], ans: 1, exp: "Fast internet access is available since the container is located in the datacenter." },
+  { cat: "Basics", q: "In what short-lived situation is a Codespace particularly useful?", opts: ["Hosting a production site", "Reviewing a pull request", "Storing large video files", "Creating a permanent database backup"], ans: 1, exp: "Codespaces are useful in short-lived situations like reviewing a pull request without needing the right setup locally." },
+  { cat: "Basics", q: "Where do you click first to start a codespace on a repository page?", opts: ["The Pull Requests tab", "The green <> Code button", "The Settings gear", "The Fork button"], ans: 1, exp: "Above the files list on the right, click the green <> Code button." },
+  { cat: "Basics", q: "Which tab must you select inside the dropdown to create a codespace?", opts: ["Codespaces tab", "Local tab", "Actions tab", "Deployments tab"], ans: 0, exp: "Select the Codespaces tab and click the Create codespace on main button." },
+  { cat: "Basics", q: "Where in the VS Code window can you see the remote connection status?", opts: ["Top right", "Bottom left", "Center of the screen", "Top left menu bar"], ans: 1, exp: "Look in the bottom left of the VS Code window to see the remote connection." },
+  { cat: "Basics", q: "What does GitHub use if the repository lacks a Dev Container configuration?", opts: ["A blank Alpine Linux container", "The universal Codespace image", "It fails to start", "A local Docker prompt"], ans: 1, exp: "GitHub uses the universal Codespace image if the repository doesn't include a configuration." },
+
+  // --- RUNNING CODE ---
+  { cat: "Running Code", q: "Where is the Explorer tab located in VS Code?", opts: ["In the lower panel", "In the top menu", "In the left sidebar", "On the right sidebar"], ans: 2, exp: "In the left sidebar, select the file Explorer tab." },
+  { cat: "Running Code", q: "Where is the TERMINAL tab located in VS Code?", opts: ["In the lower panel", "In the left sidebar", "In the Command Palette", "In the top right corner"], ans: 0, exp: "In the lower panel, select the TERMINAL tab." },
+  { cat: "Running Code", q: "What command is used to show the installed version of Python in the terminal?", opts: ["python -v", "check python", "version python", "python --version"], ans: 0, exp: "Paste the command `python --version` in the Codespace's remote terminal to show the installed version." },
+  { cat: "Running Code", q: "What command was run to execute the Python program in the activity?", opts: ["execute hello.py", "run src/hello.py", "python src/hello.py", "py run hello"], ans: 2, exp: "Paste the following command to run the Python program: `python src/hello.py`" },
+  { cat: "Running Code", q: "What git command stages the modified `src/hello.py` file?", opts: ["git stage 'src/hello.py'", "git add 'src/hello.py'", "git push 'src/hello.py'", "git save 'src/hello.py'"], ans: 1, exp: "The command `git add 'src/hello.py'` is used to stage the file." },
+  { cat: "Running Code", q: "What git command commits the file with a specific message?", opts: ["git commit -m '...'", "git save -m '...'", "git push -m '...'", "git store -m '...'"], ans: 0, exp: "The command `git commit -m 'fix: incomplete hello message'` commits the change." },
+  { cat: "Running Code", q: "What git command sends your committed changes to GitHub?", opts: ["git upload", "git sync", "git publish", "git push"], ans: 3, exp: "The command `git push` sends the commit to the remote repository on GitHub." },
+  { cat: "Running Code", q: "According to the text, who begins checking your work after the change is pushed?", opts: ["GitHub Copilot", "Mona", "The repository admin", "A GitHub Action"], ans: 1, exp: "With the change pushed to GitHub, Mona will begin checking your work." },
+
+  // --- CUSTOMIZING ---
+  { cat: "Customizing", q: "What keyboard shortcut opens the VS Code Command Palette?", opts: ["CTRL+C", "CTRL+SHIFT+P", "ALT+F4", "CTRL+P"], ans: 1, exp: "In VS Code, open the Command Palette (CTRL+SHIFT+P)." },
+  { cat: "Customization", q: "Which command adds Dev Container Configuration Files?", opts: ["Codespaces: Add Dev Container Configuration Files...", "Codespaces: Create New Container...", "Docker: Build Image...", "Git: Initialize Repository..."], ans: 0, exp: "Search for and select the command: `Codespaces: Add Dev Container Configuration Files...`" },
+  { cat: "Customizing", q: "Which option is selected to update current configuration settings rather than creating new ones?", opts: ["Create a new configuration...", "Modify your active configuration...", "Delete current configuration...", "Export active configuration..."], ans: 1, exp: "Select the option `Modify your active configuration...`." },
+  { cat: "Customizing", q: "Which language feature is searched for and selected from devcontainers in the activity?", opts: ["Node.js", "Java", "Python", "Ruby"], ans: 2, exp: "In the list of features, search for and select Python from devcontainers." },
+  { cat: "Customizing", q: "What option is picked instead of defaults when configuring the Python feature?", opts: ["Advanced Install", "Configure Options", "Skip Options", "Manual Edit"], ans: 1, exp: "Instead of the defaults, pick Configure Options." },
+  { cat: "Customizing", q: "What is the 'Install Tools' setting set to for the Python configuration?", opts: ["false", "optional", "true", "default"], ans: 2, exp: "Leave Install Tools set to true." },
+  { cat: "Customizing", q: "Which Python version is selected in the configuration activity?", opts: ["2.7", "3.8", "Latest", "3.10"], ans: 3, exp: "Select Python version: 3.10" },
+
+  // --- DEV CONTAINER ---
+  { cat: "Dev Container", q: "What is the standard path to the dev container JSON file?", opts: ["src/devcontainer.json", "config/codespace.json", ".devcontainer/devcontainer.json", ".github/devcontainer.json"], ans: 2, exp: "Navigate to and open the `.devcontainer/devcontainer.json` file." },
+  { cat: "Dev Container", q: "Under which main JSON key does the Python feature entry appear?", opts: ["\"extensions\"", "\"features\"", "\"scripts\"", "\"plugins\""], ans: 1, exp: "The new entry is added under the `\"features\"` block." },
+  { cat: "Dev Container", q: "What is the exact feature identifier for Python shown in the JSON example?", opts: ["ghcr.io/devcontainers/features/python:1", "python:3.10", "ms-python.python", "github.com/features/python"], ans: 0, exp: "The feature key is `\"ghcr.io/devcontainers/features/python:1\"`." },
+  { cat: "Dev Container", q: "Where is the Extensions tab located in VS Code?", opts: ["In the top menu bar", "In the lower terminal panel", "In the left navigation", "In the Command Palette"], ans: 2, exp: "In the left navigation, select the Extension tab." },
+  { cat: "Dev Container", q: "Which two extensions are added in the activity?", opts: ["Pylint and Black Formatter", "Node.js and Dotnet", "Python and Python Debugger", "GitLens and Prettier"], ans: 2, exp: "Search for python and find entries for Python and Python Debugger." },
+  { cat: "Dev Container", q: "How do you add an extension to `devcontainer.json` directly from the VS Code UI?", opts: ["Drag and drop the extension into the JSON file", "Right click on the entry and select 'Add to devcontainer.json'", "Type the extension name in the terminal", "Click the 'Install Locally' button"], ans: 1, exp: "Right click on each entry and select the Add to devcontainer.json option." },
+  { cat: "Dev Container", q: "Under what top-level JSON key do extensions appear in `devcontainer.json`?", opts: ["\"features\"", "\"settings\"", "\"customizations\"", "\"installations\""], ans: 2, exp: "Extensions are added under the `\"customizations\"` JSON block." },
+  { cat: "Dev Container", q: "Under what sub-key of \"customizations\" do extensions go?", opts: ["\"github\"", "\"vscode\"", "\"editor\"", "\"workspace\""], ans: 1, exp: "They are placed under `\"customizations\" : { \"vscode\": { \"extensions\": [...] } }`." },
+  { cat: "Dev Container", q: "What is the extension ID for the Python extension?", opts: ["python.official", "ms-python.python", "vscode.python", "python.debugpy"], ans: 1, exp: "The extension ID added is `\"ms-python.python\"`." },
+  { cat: "Dev Container", q: "What is the extension ID for the Python Debugger?", opts: ["ms-python.python", "vscode.debugger", "ms-python.debugpy", "python.debug"], ans: 2, exp: "The extension ID added is `\"ms-python.debugpy\"`." },
+  { cat: "Dev Container", q: "What lifecycle script is used to run a command one time after the initial build (or rebuild)?", opts: ["postStartCommand", "preBuildCommand", "postCreateCommand", "updateContentCommand"], ans: 2, exp: "Let's add the `postCreateCommand` which runs one time after initial build (or rebuild)." },
+  { cat: "Dev Container", q: "What is the name of the custom script file created in the activity?", opts: ["scripts/setup.sh", ".devcontainer/setup.bat", "postCreate.txt", ".devcontainer/postCreate.sh"], ans: 3, exp: "Use the VS Code file explorer to create a script file with the below name: `.devcontainer/postCreate.sh`" },
+  { cat: "Dev Container", q: "What terminal command creates an empty script file?", opts: ["mkdir", "echo", "touch", "nano"], ans: 2, exp: "Alternately, run the below terminal command to create it: `touch .devcontainer/postCreate.sh`" },
+  { cat: "Dev Container", q: "What terminal command makes the script executable?", opts: ["chown admin", "chmod +x", "sudo exec", "make run"], ans: 1, exp: "Make the script executable by running the terminal command: `chmod +x .devcontainer/postCreate.sh`" },
+  { cat: "Dev Container", q: "What is the first line (shebang) of the bash script?", opts: ["#!/bin/python", "#!/bin/sh", "#!/usr/bin/env node", "#!/bin/bash"], ans: 3, exp: "The script starts with `#!/bin/bash`." },
+  { cat: "Dev Container", q: "What command updates the package list in the script?", opts: ["npm install", "pip install", "sudo apt-get update", "brew update"], ans: 2, exp: "The script runs `sudo apt-get update`." },
+  { cat: "Dev Container", q: "What package is installed using `apt-get install` in the script?", opts: ["cowsay", "sl", "fortune", "matrix"], ans: 1, exp: "The script runs `sudo apt-get install sl`." },
+  { cat: "Dev Container", q: "What does the `sl` package do?", opts: ["It is an animation of a steam locomotive", "It lints python code", "It searches local files", "It speeds up container boot time"], ans: 0, exp: "...which will install an animation of a steam locomotive." },
+  { cat: "Dev Container", q: "What is appended to `.bashrc` and `.zshrc` in the script?", opts: ["export PATH=$PATH:/usr/local/bin", "export PATH=$PATH:/usr/games", "alias sl=ls", "export DISPLAY=:0"], ans: 1, exp: "The script echoes `export PATH=\\$PATH:/usr/games` to both files." },
+  { cat: "Dev Container", q: "Where is the `postCreateCommand` entry placed in the JSON file?", opts: ["Inside customizations", "Inside features", "At the top level (same as features and customizations)", "Inside vscode settings"], ans: 2, exp: "Create the postCreateCommand entry at the same level (top level) as features, and customizations." },
+
+  // --- LIFECYCLE ---
+  { cat: "Lifecycle", q: "What git command stages the entire `.devcontainer` folder contents as shown in the activity?", opts: ["git add '.devcontainer/*'", "git add '.devcontainer/devcontainer.json' and git add '.devcontainer/postCreate.sh'", "git stage all", "git commit -a"], ans: 1, exp: "The commands run were `git add '.devcontainer/devcontainer.json'` and `git add '.devcontainer/postCreate.sh'`." },
+  { cat: "Lifecycle", q: "What command is run from the Command Palette to apply dev container changes?", opts: ["Codespaces: Restart Environment", "Docker: Build Image", "VS Code: Reload Window", "Codespaces: Rebuild Container"], ans: 3, exp: "Run the `Codespaces: Rebuild Container` command." },
+  { cat: "Lifecycle", q: "What option is chosen after selecting `Rebuild Container` because a full build is not necessary?", opts: ["Full Rebuild", "Fast Restart", "Safe Mode", "Rebuild"], ans: 3, exp: "Select the `Rebuild` option. A full build is not necessary." },
+  { cat: "Lifecycle", q: "What account-level configuration can be combined with project config to personalize the space?", opts: ["Dockerfiles", "Settings Sync", "GitHub Actions", "dotfiles"], ans: 0, exp: "You can also configure your account to install dotfiles, allowing you to combine personal configurations with the project's configuration." },
+  { cat: "Lifecycle", q: "How do you verify the extensions installed correctly after a rebuild?", opts: ["Check the extensions tab in the left sidebar", "Run a python script", "Open the Command Palette", "Check the GitHub repository"], ans: 0, exp: "In the left sidebar, click the extensions tab and verify that the Python extensions are installed and enabled." },
+  { cat: "Lifecycle", q: "Which tab contains the Start Debugging icon?", opts: ["The Explorer tab", "The Run and Debug tab", "The Extensions tab", "The Terminal"], ans: 1, exp: "In the left sidebar, select Run and Debug tab and then press the Start Debugging icon." },
+  { cat: "Lifecycle", q: "Where do the run logs appear when debugging starts?", opts: ["In a popup window", "In the left sidebar", "In a new browser tab", "In the lower panel"], ans: 3, exp: "VS Code will open the lower panel and show the run logs." },
+  { cat: "Lifecycle", q: "What is the final test of the Codespace in the tutorial?", opts: ["Put yourself in the position of an onboarding developer by starting a new Codespace from nothing", "Delete the repository", "Merge a pull request", "Deploy to production"], ans: 0, exp: "The final test of our Codespace is to put ourselves in the position of an onboarding developer. Let's close everything and start up a new Codespace from nothing." },
+  { cat: "Lifecycle", q: "How do you delete an existing Codespace from the repository page?", opts: ["Right click the codespace name", "Swipe left on the entry", "Click the red trash can icon", "Select the three dot menu '...' and select the Delete command"], ans: 3, exp: "Find the active entry, select the three dot menu ..., and select the Delete command." },
+  { cat: "Lifecycle", q: "What is the URL to manage all of your Codespaces across all projects?", opts: ["https://github.com/settings/codespaces", "https://codespaces.github.com", "https://github.com/dashboard", "https://github.com/codespaces"], ans: 3, exp: "You can manage all of your Codespaces across all projects at https://github.com/codespaces." }
+];
+
+const catColorMap = { 
+  "Basics": "cat-basics",
+  "Running Code": "cat-running",
+  "Customizing": "cat-customizing",
+  "Dev Container": "cat-devcontainer",
+  "Lifecycle": "cat-lifecycle"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

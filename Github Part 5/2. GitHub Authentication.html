@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Authentication Quiz — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basic { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-tokens { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-deploy { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-2fa { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-saml { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Administration Quiz · 40 Questions</div>
+  <h1>GitHub<br>Authentication</h1>
+  <p>Multiple Choice Questions on Passwords, Tokens, SSH, 2FA, and SSO</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basic Auth',this)">Basic Auth</button>
+    <button class="filter-btn" onclick="filterCat('Tokens & SSH',this)">Tokens & SSH</button>
+    <button class="filter-btn" onclick="filterCat('Deploy Keys',this)">Deploy Keys</button>
+    <button class="filter-btn" onclick="filterCat('2FA',this)">2FA</button>
+    <button class="filter-btn" onclick="filterCat('SAML & LDAP',this)">SAML & LDAP</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASIC AUTH (1–5) ──────────────────────────────────────────────
+  { cat: "Basic Auth", q: "What is one of the most common administrative tasks performed by organization owners regarding user access?", opts: ["Writing source code", "Setting up and controlling users' authentication to GitHub", "Deleting deprecated repositories", "Configuring CI/CD pipelines"], ans: 1, exp: "Setting up and controlling users' authentication to GitHub is one of the most common administrative tasks performed by organization owners." },
+  { cat: "Basic Auth", q: "What is the username and password authentication method sometimes known as?", opts: ["The 'advanced' HTTP authentication scheme", "The 'basic' HTTP authentication scheme", "The OAuth 2.0 scheme", "The SAML protocol"], ans: 1, exp: "The default username and password authentication method is sometimes known as the 'basic' HTTP authentication scheme." },
+  { cat: "Basic Auth", q: "For which operations does GitHub no longer support password authentication?", opts: ["Creating issues in the browser", "Git operations or API usage", "Creating a new organization", "Logging into the GitHub website"], ans: 1, exp: "GitHub no longer supports password authentication for Git operations or API usage." },
+  { cat: "Basic Auth", q: "Since password authentication is deprecated for Git operations, what does GitHub strongly recommend using?", opts: ["Shared team accounts", "Unauthenticated public access", "One (or several) of the other options like PATs or SSH keys", "Only SAML SSO"], ans: 2, exp: "GitHub strongly recommends using one (or several) of the other options listed in the unit (such as PATs or SSH keys)." },
+  { cat: "Basic Auth", q: "Who can allow users to continue using the default username and password authentication method (where still applicable)?", opts: ["Administrators", "Outside collaborators", "Any repository contributor", "Billing managers"], ans: 0, exp: "Administrators can allow users to continue using the default username and password authentication method." },
+
+  // ── TOKENS & SSH (6–15) ──────────────────────────────────────────
+  { cat: "Tokens & SSH", q: "What are personal access tokens (PATs) used as an alternative to?", opts: ["Using passwords for authentication to GitHub when using the GitHub API or the command line", "Using SSH keys", "Using Two-Factor Authentication", "Using Deploy keys"], ans: 0, exp: "Personal access tokens (PATs) are an alternative to using passwords for authentication to GitHub when using the GitHub API or the command line." },
+  { cat: "Tokens & SSH", q: "How do users generate a Personal Access Token (PAT)?", opts: ["Via an email request to GitHub Support", "Via the GitHub's settings option", "Through a third-party application", "Using a command-line script only"], ans: 1, exp: "Users generate a token via the GitHub's settings option." },
+  { cat: "Tokens & SSH", q: "What can the permissions of a Personal Access Token (PAT) be tied to?", opts: ["Only an individual repository", "A repository or organization", "The entire GitHub Enterprise", "Only public repositories"], ans: 1, exp: "Users tie the token permissions to a repository or organization." },
+  { cat: "Tokens & SSH", q: "When users interact with GitHub by using the git command-line tool, where do they enter the PAT?", opts: ["In the git configuration file", "When they're asked for their username and password", "In a separate authentication window", "As a command-line flag during the push command"], ans: 1, exp: "They can enter the token information when they're asked for their username and password." },
+  { cat: "Tokens & SSH", q: "What is a primary benefit of using SSH keys over Personal Access Tokens (PATs)?", opts: ["They eliminate the need for users to supply their username and personal access token for every interaction", "They don't require any setup", "They allow you to bypass organization security rules", "They are strictly for Windows users"], ans: 0, exp: "SSH keys eliminate the need for users to supply their username and personal access token for every interaction." },
+  { cat: "Tokens & SSH", q: "When setting up SSH, where should users add the generated SSH key to ensure it has a passphrase as an extra layer of security?", opts: ["The repository settings page", "The ssh-agent", "The git config file", "The GitHub mobile app"], ans: 1, exp: "Adding the SSH key to the ssh-agent ensures that the SSH key has a passphrase as an extra layer of security." },
+  { cat: "Tokens & SSH", q: "How can users handle the SSH passphrase when using the git command-line tool?", opts: ["They must type it every single time, without exception", "They can configure their local copy of git to automatically supply the passphrase, or supply it manually", "They can email the passphrase to GitHub", "The passphrase is hardcoded into the OS"], ans: 1, exp: "Users can configure their local copy of git to automatically supply the passphrase, or they can supply it manually each time." },
+  { cat: "Tokens & SSH", q: "Can SSH keys be used with a repository owned by an organization that uses SAML single sign-on (SSO)?", opts: ["No, SSH is incompatible with SAML", "Yes, you can even use SSH keys with an organization that uses SAML SSO", "Only if the repository is completely public", "Yes, but it requires paying a fee"], ans: 1, exp: "You can even use SSH keys with a repository owned by an organization that uses SAML single sign-on (SSO)." },
+  { cat: "Tokens & SSH", q: "If an organization provides SSH certificates, what is the advantage for the user?", opts: ["They do not need an internet connection", "They can use it to access the organization's repositories without adding the certificate to their GitHub account", "It automatically grants them organization owner rights", "It disables two-factor authentication requirements"], ans: 1, exp: "If the organization provides SSH certificates, users can also use it to access the organization's repositories without adding the certificate to their GitHub account." },
+  { cat: "Tokens & SSH", q: "SSH keys allow users to connect and authenticate to what?", opts: ["Only their local localhost server", "Remote servers and services", "Only other users' local machines", "GitHub's billing portal"], ans: 1, exp: "Users can connect and authenticate to remote servers and services via SSH with the help of SSH keys." },
+
+  // ── DEPLOY KEYS (16–21) ──────────────────────────────────────────
+  { cat: "Deploy Keys", q: "What is a Deploy key in GitHub?", opts: ["A token used for billing", "Another type of SSH key that grants a user access to a single repository", "An API key for GitHub Actions", "A master password for the organization"], ans: 1, exp: "Deploy keys are another type of SSH key in GitHub that grants a user access to a single repository." },
+  { cat: "Deploy Keys", q: "Where does GitHub attach the public part of a Deploy key?", opts: ["To the personal user account", "Directly to the repository", "To the organization profile", "To the local ssh-agent"], ans: 1, exp: "GitHub attaches the public part of the key directly to the repository instead of a personal user account." },
+  { cat: "Deploy Keys", q: "Where does the private part of a Deploy key remain?", opts: ["On the user's server", "In the GitHub database", "On the repository's wiki page", "In the user's GitHub settings"], ans: 0, exp: "The private part of the key remains on the user's server." },
+  { cat: "Deploy Keys", q: "What is the default permission level for a Deploy key?", opts: ["Write access", "Admin access", "Read-only", "No access"], ans: 2, exp: "Deploy keys are read-only by default." },
+  { cat: "Deploy Keys", q: "Can a Deploy key be granted write access?", opts: ["No, they are strictly read-only", "Yes, you can give them write access when adding them to a repository", "Yes, but only by contacting GitHub Support", "Yes, but only for public repositories"], ans: 1, exp: "You can give them write access when adding them to a repository." },
+  { cat: "Deploy Keys", q: "Where in the repository settings do you configure a Deploy key?", opts: ["Settings > Security > Deploy keys", "Settings > Branches > Deploy keys", "Settings > Webhooks", "Settings > Actions > Keys"], ans: 0, exp: "Go to the repository’s Settings. In the left sidebar, under Security, click Deploy keys." },
+
+  // ── 2FA & SECURITY (22–31) ───────────────────────────────────────
+  { cat: "2FA", q: "What is Two-factor authentication (2FA) sometimes known as?", opts: ["Double sign-on (DSO)", "Multifactor authentication (MFA)", "Dual security verification (DSV)", "Biometric authentication"], ans: 1, exp: "Two-factor authentication (2FA), sometimes known as multifactor authentication (MFA), adds an extra layer of protection." },
+  { cat: "2FA", q: "How does 2FA function when a user signs into GitHub?", opts: ["They only need a fingerprint", "They sign in with their username and password, and then provide a second form of authentication", "They provide two different passwords simultaneously", "They provide a hardware key instead of a password"], ans: 1, exp: "With 2FA, users sign in with their username and password, and then provide a second form of authentication." },
+  { cat: "2FA", q: "Which of the following is an example of an authenticator app supported by GitHub?", opts: ["Microsoft Authenticator, Google Authenticator, or Authy", "WhatsApp or Telegram", "Only the official GitHub Mobile app", "Apple Pay"], ans: 0, exp: "Authenticator apps (like Microsoft Authenticator, Google Authenticator, or Authy) that generate time-based one-time codes." },
+  { cat: "2FA", q: "What type of codes do supported authenticator apps generate?", opts: ["Static permanent codes", "Time-based one-time codes", "SMS codes", "Cryptographic hash keys"], ans: 1, exp: "Authenticator apps generate time-based one-time codes." },
+  { cat: "2FA", q: "Hardware security keys supported by GitHub (such as YubiKey) must support which standard?", opts: ["SAML 2.0", "OAuth 2.0", "FIDO2/WebAuthn", "LDAP"], ans: 2, exp: "Hardware security keys (such as YubiKey or Titan Security Key) that support FIDO2/WebAuthn." },
+  { cat: "2FA", q: "What is a primary benefit of using Passkeys for GitHub authentication?", opts: ["They are identical to passwords", "Passwordless, phishing-resistant authentication", "They bypass organization security policies", "They allow unlimited API requests"], ans: 1, exp: "Passkeys for passwordless, phishing-resistant authentication." },
+  { cat: "2FA", q: "Which 2FA method is supported by GitHub but considered less secure and NOT recommended as a primary method?", opts: ["Hardware security keys", "Passkeys", "SMS-based codes", "Authenticator apps"], ans: 2, exp: "SMS-based codes, which are supported but considered less secure than other options and are not recommended as a primary method." },
+  { cat: "2FA", q: "For organizations on GitHub Team and GitHub Enterprise Cloud, who can require users to enable 2FA?", opts: ["Organization owners", "Any organization member", "GitHub Support only", "Billing managers only"], ans: 0, exp: "For organizations on GitHub Team and GitHub Enterprise Cloud, organization owners can require members to enable 2FA." },
+  { cat: "2FA", q: "Which groups can organization owners enforce 2FA on?", opts: ["Only full members", "Members, outside collaborators, and billing managers", "Only billing managers", "Only outside collaborators"], ans: 1, exp: "Organization owners can require members, outside collaborators, and billing managers to enable 2FA for their personal accounts." },
+  { cat: "2FA", q: "For Enterprise Managed Users (EMUs), can admins enforce 2FA on users' personal GitHub.com accounts?", opts: ["Yes, for all linked personal accounts", "No, they can require 2FA for enterprise-managed accounts only, but cannot enforce it on personal accounts", "Yes, but only via an SMS code", "No, 2FA is not supported for EMUs"], ans: 1, exp: "Admins can require 2FA for enterprise-managed accounts only, but cannot enforce 2FA on users’ personal GitHub.com accounts." },
+
+  // ── SAML & LDAP (32–40) ──────────────────────────────────────────
+  { cat: "SAML & LDAP", q: "What does IdP stand for in the context of GitHub authentication?", opts: ["Internet Data Protocol", "Identity Provider", "Internal Directory Platform", "Integrated Developer Profile"], ans: 1, exp: "If you centrally manage your users' identities with an identity provider (IdP)..." },
+  { cat: "SAML & LDAP", q: "What is the main purpose of configuring SAML single sign-on (SSO)?", opts: ["To write code faster", "To protect your organization’s resources on GitHub and centrally manage identities", "To bypass two-factor authentication", "To allow anonymous read access to repositories"], ans: 1, exp: "You can configure SAML single sign-on (SSO) to protect your organization’s resources on GitHub." },
+  { cat: "SAML & LDAP", q: "When a user accesses resources protected by SAML SSO, what does GitHub do?", opts: ["Prompts them for an SSH key", "Redirects users to authenticate with the organization’s IdP", "Creates a temporary PAT", "Emails them a one-time password"], ans: 1, exp: "When accessing resources, GitHub redirects users to authenticate with the organization’s IdP." },
+  { cat: "SAML & LDAP", q: "Which version of the SAML standard does GitHub support?", opts: ["SAML 1.0", "SAML 1.1", "SAML 2.0", "SAML 3.0"], ans: 2, exp: "GitHub supports all identity providers that implement the SAML 2.0 standard." },
+  { cat: "SAML & LDAP", q: "Which of the following is an officially supported SAML identity provider listed by GitHub?", opts: ["Facebook Connect", "Microsoft Entra ID", "Amazon Cognito", "Firebase Auth"], ans: 1, exp: "Official support for several popular providers, including: Active Directory Federation Services, Microsoft Entra ID, Okta, OneLogin, PingOne." },
+  { cat: "SAML & LDAP", q: "What does LDAP stand for?", opts: ["Lightweight Directory Access Protocol", "Local Directory Authentication Platform", "Linked Data Authorization Protocol", "Logical Domain Access Provider"], ans: 0, exp: "LDAP (Lightweight Directory Access Protocol) is a widely used protocol for accessing and managing user directory information." },
+  { cat: "SAML & LDAP", q: "On which GitHub platform is LDAP integration available?", opts: ["GitHub Free", "GitHub Team", "GitHub Enterprise Server", "GitHub Enterprise Cloud"], ans: 2, exp: "On GitHub Enterprise Server, LDAP integration allows you to authenticate users against your existing company directory." },
+  { cat: "SAML & LDAP", q: "What does LDAP integration allow administrators to do on GitHub Enterprise Server?", opts: ["Host public websites directly from a repository", "Authenticate users against an existing company directory and manage repository access centrally", "Create infinite personal access tokens automatically", "Automatically merge pull requests"], ans: 1, exp: "LDAP integration allows you to authenticate users against your existing company directory and manage repository access centrally." },
+  { cat: "SAML & LDAP", q: "Which of the following is a major LDAP service supported by GitHub Enterprise Server?", opts: ["Active Directory", "Okta", "PingOne", "Microsoft Authenticator"], ans: 0, exp: "GitHub Enterprise Server integrates with major LDAP services such as: Active Directory, Oracle Directory Server Enterprise Edition, OpenLDAP, Open Directory." }
+];
+
+const catColorMap = { 
+  "Basic Auth":"cat-basic",
+  "Tokens & SSH":"cat-tokens",
+  "Deploy Keys":"cat-deploy",
+  "2FA":"cat-2fa",
+  "SAML & LDAP":"cat-saml"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basic';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

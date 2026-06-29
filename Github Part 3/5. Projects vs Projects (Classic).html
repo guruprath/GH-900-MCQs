@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projects vs Projects (Classic) — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-layouts { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-data { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-insights { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-automation { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-general { color: #f78166; border-color: rgba(247,129,102,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Prep · 40 Questions</div>
+  <h1>Projects vs Projects (Classic)</h1>
+  <p>Multiple Choice Questions with Answers & Explanations</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Layouts',this)">Layouts</button>
+    <button class="filter-btn" onclick="filterCat('Data',this)">Data</button>
+    <button class="filter-btn" onclick="filterCat('Insights',this)">Insights</button>
+    <button class="filter-btn" onclick="filterCat('Automation',this)">Automation</button>
+    <button class="filter-btn" onclick="filterCat('General',this)">General</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  { cat: "Layouts", q: "What layout options are available in the new GitHub Projects?", opts: ["Only Boards", "Boards, Lists, and Timeline Layout", "Columns and Cards", "Tables and Charts"], ans: 1, exp: "The text explicitly lists Boards, Lists, and Timeline Layout as the layouts available for the new Projects." },
+  { cat: "Layouts", q: "Which layout option was primarily available in Projects (Classic)?", opts: ["Timeline Layout", "Lists", "Boards", "Tables"], ans: 2, exp: "The text states that Projects (Classic) primarily used Boards." },
+  { cat: "Data", q: "How was data organized in Projects (Classic)?", opts: ["By custom fields such as text and number", "Columns and Cards", "By iteration and single select", "Saved views"], ans: 1, exp: "The text explicitly lists Columns and Cards as the data organization method for Projects (Classic)." },
+  { cat: "Data", q: "What data feature allows you to organize items in the new GitHub Projects?", opts: ["Columns and Cards", "Progress bars", "Sort, rank, and group items by custom fields", "Webhooks events"], ans: 2, exp: "The new Projects allows sorting, ranking, and grouping by custom fields like text, number, date, etc." },
+  { cat: "Data", q: "Which of the following is NOT a custom field type mentioned for the new Projects?", opts: ["Number", "Iteration", "Single select", "Boolean (True/False)"], ans: 3, exp: "Boolean is not mentioned in the text as a custom field type for the new Projects." },
+  { cat: "Insights", q: "What feature did Projects (Classic) use to provide Insights?", opts: ["Custom charts", "Progress bar", "Stacked area charts", "GraphQL API"], ans: 1, exp: "The text states that Projects (Classic) used a Progress bar for Insights." },
+  { cat: "Insights", q: "Which type of chart is NOT explicitly mentioned as being configurable in the new Projects Insights?", opts: ["Bar chart", "Pie chart", "Line chart", "Stacked area chart"], ans: 1, exp: "Pie charts are not listed among the custom charts for the new Projects." },
+  { cat: "Insights", q: "What kind of visual chart helps understand historical and current data in the new Projects Insights?", opts: ["Pie charts", "Column charts", "Scatter plots", "Heatmaps"], ans: 1, exp: "Column charts are explicitly listed as one of the visual tools available." },
+  { cat: "Insights", q: "Which aggregation function is available in the new Projects Insights?", opts: ["Median", "Mode", "Average", "Standard Deviation"], ans: 2, exp: "Average is explicitly listed alongside sum, count, min, and max." },
+  { cat: "Insights", q: "How can you share charts created in the new Projects with others?", opts: ["By exporting them as PDF files", "By embedding them in an email", "By persisting charts and sharing them with a URL", "By taking a screenshot and uploading it"], ans: 2, exp: "The text states you can persist charts and share them with a URL to keep everyone in the know." },
+  { cat: "Automation", q: "What API is used for Automation in the new GitHub Projects?", opts: ["REST API v3", "GraphQL ProjectsV2 API", "SOAP API", "Webhook API v1"], ans: 1, exp: "The GraphQL ProjectsV2 API is explicitly listed under Automation for the new Projects." },
+  { cat: "Automation", q: "In Projects (Classic), how was Automation primarily handled?", opts: ["Through GitHub Actions", "By configuring Column presets for when issues and pull requests are added, edited, or closed", "Using Webhooks events", "Using the GraphQL API"], ans: 1, exp: "The text explicitly describes configuring Column presets for automation in Classic." },
+  { cat: "Automation", q: "What tool is specifically mentioned for automating the addition of issues to the new Projects?", opts: ["GitHub Action", "Progress bar", "Column presets", "User presence indicators"], ans: 0, exp: "The text states you can use GitHub Action to automate adding issues to Projects." },
+  { cat: "Data", q: "What type of filtering allows you to materialize any perspective in the new Projects?", opts: ["Regex filtering", "Boolean filtering", "Tokenized filtering", "Dropdown filtering"], ans: 2, exp: "The text explicitly mentions tokenized filtering to materialize perspectives." },
+  { cat: "Data", q: "What type of issues can be created with detailed descriptions and metadata in the new Projects?", opts: ["Closed issues", "Draft issues", "Archived issues", "Ghost issues"], ans: 1, exp: "The text mentions creating draft issues with detailed descriptions and metadata." },
+  { cat: "Layouts", q: "How are updates reflected in the new GitHub Projects?", opts: ["Upon manual page refresh", "Daily in a summary email", "In real-time", "Every hour"], ans: 2, exp: "The text mentions real-time Project updates." },
+  { cat: "Layouts", q: "What feature allows you to see who else is currently viewing or working in the Project?", opts: ["User presence indicators", "Progress bars", "Reviewer links", "Tokenized filters"], ans: 0, exp: "The text lists real-time Project updates and user presence indicators." },
+  { cat: "Layouts", q: "What can be customized in Project boards besides the group-by feature?", opts: ["The entire UI theme", "Cards", "The GraphQL limits", "Progress bars"], ans: 1, exp: "The text mentions the ability to customize cards and group-by in Project boards." },
+  { cat: "Data", q: "What can be configured with flexible date ranges and breaks in the new Projects?", opts: ["Draft issues", "Tokenized filters", "Iterations", "GraphQL queries"], ans: 2, exp: "The text says you can configure iterations with flexible date ranges and breaks." },
+  { cat: "Data", q: "What do flexible iterations represent in the context of the new Projects?", opts: ["Sprints, cycles, or quarterly roadmaps", "Daily commits and pushes", "Billing cycles", "User access logs"], ans: 0, exp: "The text explicitly mentions iterations can represent sprints, cycles, or a quarterly roadmap." },
+  { cat: "Layouts", q: "In which views can you see linked pull requests and reviewers?", opts: ["Only in the table view", "Only in the board view", "In both table and board views", "Only in the insights view"], ans: 2, exp: "The text states you can view linked pull requests and reviewers in both table and board views." },
+  { cat: "Data", q: "Which of the following is a custom field type you can define in the new Projects?", opts: ["Date", "Video", "Audio", "Binary"], ans: 0, exp: "Date is explicitly listed as a custom field type." },
+  { cat: "Data", q: "Which of the following is a custom field type you can define in the new Projects?", opts: ["Rich text formatting", "Single select", "Multi-select checkboxes", "Location/GPS"], ans: 1, exp: "Single select is explicitly listed as a custom field type." },
+  { cat: "Automation", q: "What generates events for Project item metadata updates in the new Projects?", opts: ["Webhooks", "Progress bars", "Saved views", "Line charts"], ans: 0, exp: "The text lists 'Webhooks events for Project item metadata updates' under Automation." },
+  { cat: "Automation", q: "What kind of scopes are mentioned under Automation for the new Projects?", opts: ["Repository scopes", "GitHub app Project scopes", "User read scopes", "Billing scopes"], ans: 1, exp: "The text explicitly mentions GitHub app Project scopes under Automation." },
+  { cat: "Insights", q: "Which aggregation function would you use in Insights to find the total sum of a specific numeric field?", opts: ["count", "sum", "max", "average"], ans: 1, exp: "Sum is an aggregation function listed that calculates the total." },
+  { cat: "Insights", q: "Which aggregation function would you use to count the number of issues in a view?", opts: ["sum", "min", "count", "average"], ans: 2, exp: "Count is explicitly listed to tally the number of items." },
+  { cat: "Data", q: "Under which category does 'Sort, rank, and group items' fall in the side-by-side comparison?", opts: ["Tables and Boards", "Data", "Insights", "Automation"], ans: 1, exp: "The comparison table lists 'Sort, rank, and group items by custom fields...' under the Data row for Projects." },
+  { cat: "Automation", q: "Under which category does the 'GraphQL ProjectsV2 API' fall?", opts: ["Automation", "Insights", "Data", "Tables and boards"], ans: 0, exp: "The text lists the GraphQL API under the Automation section." },
+  { cat: "Insights", q: "Under which category does 'Create visuals to help understand your work' fall?", opts: ["Automation", "Insights", "Data", "Tables and Boards"], ans: 1, exp: "The comparison table lists creating visuals under the Insights row." },
+  { cat: "General", q: "What is the primary goal of the new GitHub Projects as stated in the text?", opts: ["To replace Git entirely", "To keep track of your work, where you work", "To force all users into a timeline layout", "To eliminate the need for pull requests"], ans: 1, exp: "The text explicitly states it provides a richer experience that enables you to keep track of your work, where you work." },
+  { cat: "Data", q: "Which of the following is true regarding 'saved views' in the new Projects?", opts: ["They were heavily used in Projects (Classic).", "They allow you to materialize any perspective.", "They can only be viewed by administrators.", "They are limited to pie charts."], ans: 1, exp: "The text notes you can materialize any perspective with tokenized filtering and saved views." },
+  { cat: "Data", q: "What happens when you create a draft issue in the new Projects?", opts: ["It automatically opens a pull request.", "It requires an immediate assignee.", "It can include detailed descriptions and metadata.", "It is instantly visible to the public."], ans: 2, exp: "The text explicitly states you can create draft issues with detailed descriptions and metadata." },
+  { cat: "Insights", q: "Which chart type emphasizes the composition of a whole over time and is available in Insights?", opts: ["Stacked area charts", "Doughnut charts", "Radar charts", "Bubble charts"], ans: 0, exp: "Stacked area charts are explicitly listed as an insight visual." },
+  { cat: "Automation", q: "What specific action can be taken with columns in Projects (Classic) regarding automation?", opts: ["Execute arbitrary shell scripts", "Configure presets for when issues and PRs are added, edited, or closed", "Send SMS alerts", "Generate billing reports"], ans: 1, exp: "The text notes configuring Column presets for these specific actions in Classic." },
+  { cat: "Insights", q: "Which aggregation function finds the highest value in a dataset?", opts: ["average", "sum", "max", "count"], ans: 2, exp: "Max is listed as an aggregation function to find the highest value." },
+  { cat: "Insights", q: "Which aggregation function finds the lowest value in a dataset?", opts: ["min", "average", "count", "sum"], ans: 0, exp: "Min is listed as an aggregation function to find the lowest value." },
+  { cat: "Automation", q: "True or False: GitHub Actions can be used to automate adding issues to the new Projects.", opts: ["True", "False"], ans: 0, exp: "The text explicitly states 'GitHub Action to automate adding issues to Projects'." },
+  { cat: "Layouts", q: "True or False: The text indicates that Projects (Classic) natively supported Timeline Layouts.", opts: ["True", "False"], ans: 1, exp: "The side-by-side comparison shows only Boards for Projects (Classic), while the new Projects supports Boards, Lists, and Timeline Layout." },
+  { cat: "Layouts", q: "Which feature ensures your team is looking at the most current data without needing to manually reload the page?", opts: ["GraphQL API", "Real-time Project updates", "Iteration breaks", "Column presets"], ans: 1, exp: "The text mentions real-time Project updates, meaning data refreshes instantly." }
+];
+
+const catColorMap = {
+  "Layouts": "cat-layouts",
+  "Data": "cat-data",
+  "Insights": "cat-insights",
+  "Automation": "cat-automation",
+  "General": "cat-general"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-layouts';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

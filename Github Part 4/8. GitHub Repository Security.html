@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Repository Security — 50 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-strategy { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-devops { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-features { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-advisories { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-gitignore { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-protection { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 50 Questions</div>
+  <h1>GitHub Repository Security</h1>
+  <p>Protecting Code, DevOps Integration & Policies</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">50</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Strategy',this)">Strategy</button>
+    <button class="filter-btn" onclick="filterCat('DevOps',this)">DevOps & Shift Left</button>
+    <button class="filter-btn" onclick="filterCat('Features',this)">Security Features</button>
+    <button class="filter-btn" onclick="filterCat('Advisories',this)">Advisories</button>
+    <button class="filter-btn" onclick="filterCat('GitIgnore',this)">GitIgnore</button>
+    <button class="filter-btn" onclick="filterCat('Protection',this)">Protection</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── STRATEGY ────────────────────────────────────────────────
+  { cat: "Strategy", q: "Why is application security highlighted as important in the introduction?", opts: ["It speeds up the compiler.", "News services frequently carry stories about breaches and stolen private data.", "It reduces the size of the repository.", "It allows open-source sharing."], ans: 1, exp: "Application security is important because news services frequently carry stories about some breach of a company's systems and private company and customer data that was stolen." },
+  { cat: "Strategy", q: "Beyond protecting information from being disclosed, what is identified as even more important?", opts: ["Ensuring code is deployed quickly.", "Ensuring information is only altered or destroyed when appropriate.", "Writing code in multiple languages.", "Making sure everyone has admin access."], ans: 1, exp: "More importantly, we need to ensure that information is only altered or destroyed when it's appropriate." },
+  { cat: "Strategy", q: "To trace when something goes wrong, what is needed?", opts: ["Historical or archival data or logs.", "More developers on the team.", "A larger server.", "A public repository."], ans: 0, exp: "Through historical or archival data or logs, we need to be able to find evidence when something is wrong." },
+  { cat: "Strategy", q: "What is described as the 'general knowledge problem' in security?", opts: ["There are no books on cybersecurity.", "Developers lack access to the internet.", "Many developers assume they understand security, but they don't.", "Source code is too difficult to read."], ans: 2, exp: "Many developers and other staff members assume they understand security, but they don't." },
+  { cat: "Strategy", q: "Because cybersecurity is a constantly evolving discipline, what is considered essential?", opts: ["A program of ongoing education and training.", "Writing code only in C++.", "Hiring only senior developers.", "Removing the security tab."], ans: 0, exp: "Cybersecurity is a constantly evolving discipline. A program of ongoing education and training is essential." },
+  { cat: "Strategy", q: "Code must be created correctly to ensure it securely implements what?", opts: ["The required features.", "The visual UI.", "The deployment timeline.", "The company's marketing strategy."], ans: 0, exp: "We need to be sure that the code is created correctly and securely implements the required features." },
+  { cat: "Strategy", q: "Applications must be tested to ensure they comply with what?", opts: ["Open-source licenses only.", "Required rules and regulations.", "Only local state laws.", "Marketing deadlines."], ans: 1, exp: "We need to make sure that the code complies with required rules and regulations." },
+  { cat: "Strategy", q: "When should testing for compliance occur?", opts: ["Only at the end of the project.", "Only during the design phase.", "While building the code and retested periodically after deployment.", "Once every five years."], ans: 2, exp: "We have to test for compliance while building the code and then retest periodically, even after deployment." },
+  { cat: "Strategy", q: "What is the primary goal of authenticating data access?", opts: ["To track working hours.", "To properly verify who is accessing the data and their permissions.", "To limit the number of users to 10.", "To speed up network requests."], ans: 1, exp: "We need to make sure we properly authenticate who's accessing the data and that they have the correct permissions to do so." },
+  { cat: "Strategy", q: "Which of the following is NOT listed as one of the three main things to consider when building secure applications?", opts: ["The general knowledge problem.", "Code must be created correctly and securely.", "Applications must comply with rules and regulations.", "Applications must be written in a functional programming language."], ans: 3, exp: "The three aspects listed are the knowledge problem, secure code creation, and compliance. Programming paradigm is not one of them." },
+
+  // ── DEVOPS & SHIFT LEFT ─────────────────────────────────────────────────
+  { cat: "DevOps", q: "When is the correct time to add security to an application or system?", opts: ["Just before deployment.", "It must be part of every stage of the software-development life cycle.", "After the application has been hacked.", "During the beta testing phase."], ans: 1, exp: "Security isn't something you can just add later... Secure development must be part of every stage of the software-development life cycle." },
+  { cat: "DevOps", q: "What does the term 'shift left' mean in the context of software development?", opts: ["Moving servers to a different time zone.", "Completing processes earlier in the development lifecycle.", "Changing the UI layout.", "Writing code from right to left."], ans: 1, exp: "Processes need to shift left, or be completed earlier in the development lifecycle." },
+  { cat: "DevOps", q: "What is a major benefit of shifting steps from a final gate to an earlier step?", opts: ["Fewer mistakes are made, and developers can move more quickly.", "It requires fewer developers.", "It completely eliminates the need for testing.", "It allows management to skip compliance."], ans: 0, exp: "By moving steps from a final gate at deployment time to an earlier step, fewer mistakes are made, and developers can move more quickly." },
+  { cat: "DevOps", q: "Why were application-security concepts NOT a focus for developers in the past?", opts: ["Security was considered illegal.", "Their organizations emphasized fast development of features.", "Computers were not powerful enough.", "There were no hackers in the past."], ans: 1, exp: "Apart from education issues, it's because their organizations emphasized fast development of features." },
+  { cat: "DevOps", q: "What modern practice makes security testing easier to integrate into the pipeline?", opts: ["Waterfall methodology.", "DevOps practices.", "Manual code reviews.", "Agile standups."], ans: 1, exp: "With the introduction of DevOps practices, security testing is easier to integrate into the pipeline." },
+  { cat: "DevOps", q: "Who should ideally perform security testing in a DevOps environment?", opts: ["Only external auditors.", "Only security specialists.", "It should be part of the day-to-day delivery processes.", "Only the project manager."], ans: 2, exp: "Rather than being a task performed by security specialists, security testing should just be part of the day-to-day delivery processes." },
+  { cat: "DevOps", q: "When the time for rework is taken into account, what is the effect of catching issues earlier?", opts: ["It increases the overall time to develop software.", "It reduces the overall time it takes to develop quality software.", "It doubles the budget required.", "It has no effect on time."], ans: 1, exp: "Catching issues earlier can actually reduce the overall time it takes to develop quality software." },
+  { cat: "DevOps", q: "Shifting left is described as a process change, but what is it NOT?", opts: ["A collaborative effort.", "A developer-centric approach.", "A single control or specific tool.", "An integration practice."], ans: 2, exp: "Shifting left is a process change, but it isn’t a single control or specific tool." },
+  { cat: "DevOps", q: "Shifting left is fundamentally about making security more what?", opts: ["Complex.", "Developer-centric.", "Expensive.", "Time-consuming."], ans: 1, exp: "It’s about making all of your security more developer-centric and giving developers security feedback where they are." },
+  { cat: "DevOps", q: "For which type of applications is secure development at every stage especially important?", opts: ["Internal prototype apps.", "Critical applications processing sensitive or highly confidential information.", "Open-source games.", "Deprecated applications."], ans: 1, exp: "This concept is even more important for critical applications and those applications that process sensitive or highly confidential information." },
+
+  // ── SECURITY FEATURES ────────────────────────────────────────────────
+  { cat: "Features", q: "Where can you locate the Security tab on a GitHub repository?", opts: ["In the user profile settings.", "Under the repository name on the main page.", "Inside the .gitignore file.", "In the GitHub marketplace."], ans: 1, exp: "On GitHub.com, go to the repository's main page. Under the repository name, select Security." },
+  { cat: "Features", q: "What is the purpose of Dependabot alerts?", opts: ["To auto-format your code.", "To notify you when your repository is using a vulnerable dependency or malware.", "To check for spelling errors in your README.", "To monitor server uptime."], ans: 1, exp: "Dependabot alerts that notify you when GitHub detects that your repository is using a vulnerable dependency or malware." },
+  { cat: "Features", q: "Which GitHub feature helps you find, triage, and fix vulnerabilities and errors in your code?", opts: ["Dependabot", "Code scanning", "Secret scanning", "SECURITY.md"], ans: 1, exp: "Code scanning that helps you find, triage, and fix vulnerabilities and errors in your code." },
+  { cat: "Features", q: "What does secret scanning detect in your repository?", opts: ["Syntax errors.", "Tokens, credentials, and secrets committed to your repo.", "Outdated libraries.", "Unused variables."], ans: 1, exp: "Secret scanning that detects tokens, credentials, and secrets committed to your repo..." },
+  { cat: "Features", q: "What can secret scanning do before a push occurs?", opts: ["Automatically delete the repository.", "Block the push if secrets are detected.", "Email the entire organization.", "Encrypt the tokens."], ans: 1, exp: "...and can block them before the push." },
+  { cat: "Features", q: "On what type of repositories is push protection enabled by default?", opts: ["Private repositories.", "Internal repositories.", "Public repositories.", "Archived repositories."], ans: 2, exp: "Push protection is enabled by default on public repositories." },
+  { cat: "Features", q: "Which file allows you to specify how to report a security vulnerability in your project?", opts: ["README.md", "CODEOWNERS", "SECURITY.md", ".gitignore"], ans: 2, exp: "Security policies that allow you to specify how to report a security vulnerability in your project by adding a SECURITY.md file." },
+  { cat: "Features", q: "What feature is used to privately discuss, fix, and publish information about vulnerabilities?", opts: ["GitHub Discussions", "Security advisories", "GitHub Actions", "Pull Requests"], ans: 1, exp: "Security advisories that you can use to privately discuss, fix, and publish information about security vulnerabilities in your repository." },
+  { cat: "Features", q: "Using these security features helps avoid what in your repository and codebase?", opts: ["Vulnerabilities", "Merge conflicts", "Large file sizes", "Commit history loss"], ans: 0, exp: "From the Security tab, you can add features... to help avoid vulnerabilities in your repository and codebase." },
+  { cat: "Features", q: "What is the primary benefit of distributing security responsibilities across all phases of the software-development lifecycle?", opts: ["It saves money on server costs.", "It holds teams accountable and catches issues earlier.", "It removes the need for developers.", "It automatically writes code."], ans: 1, exp: "Distribute security and operational responsibilities across all phases... to hold teams accountable... Catching issues earlier can actually reduce the overall time." },
+
+  // ── ADVISORIES & POLICIES ───────────────────────────────────────────────
+  { cat: "Advisories", q: "The fact that anyone can publicly propose bug fixes on GitHub comes with what?", opts: ["Certain responsibilities.", "A monetary reward.", "Admin access.", "Automatic encryption."], ans: 0, exp: "The fact that anyone can propose bug fixes publicly comes with certain responsibilities." },
+  { cat: "Advisories", q: "What is the most important responsibility when dealing with security vulnerabilities?", opts: ["Fixing the bug silently.", "The responsible disclosure of information before underlying bugs can be fixed.", "Posting the exploit on social media.", "Ignoring the issue."], ans: 1, exp: "The most important is the responsible disclosure of information that could lead to security exploits before their underlying bugs can be fixed." },
+  { cat: "Advisories", q: "Where do developers look for guidance on how to responsibly disclose their concerns?", opts: ["A SECURITY.md file in the root of the repository.", "The main README file.", "The GitHub terms of service.", "A public discussion board."], ans: 0, exp: "Developers... look for a SECURITY.md file in the root of a repository in order to responsibly disclose their concerns." },
+  { cat: "Advisories", q: "What is the ultimate benefit of providing guidance in the SECURITY.md file?", opts: ["It generates revenue.", "It speeds up the resolution of critical issues.", "It reduces the codebase size.", "It automatically patches the server."], ans: 1, exp: "Providing guidance in this file ultimately speeds up the resolution of these critical issues." },
+  { cat: "Advisories", q: "GitHub Security Advisories allow repository maintainers to do what initially?", opts: ["Privately discuss and fix a security vulnerability.", "Publicly broadcast a hack.", "Ban users from the repository.", "Delete the repository immediately."], ans: 0, exp: "GitHub Security Advisories allow repository maintainers to privately discuss and fix a security vulnerability in a project." },
+  { cat: "Advisories", q: "After collaborating on a fix, what can maintainers do with the security advisory?", opts: ["Delete it.", "Publish it to publicly disclose the security vulnerability.", "Keep it permanently hidden.", "Sell the information."], ans: 1, exp: "After repository maintainers collaborate on a fix, they can publish the security advisory to publicly disclose the security vulnerability." },
+  { cat: "Advisories", q: "Publishing security advisories makes it easier for the community to do what?", opts: ["Update package dependencies and research consequences.", "Write new features.", "Avoid using GitHub.", "Contact the developers directly."], ans: 0, exp: "By publishing security advisories, repository maintainers make it easier for their community to update package dependencies and research the consequences." },
+  { cat: "Advisories", q: "Where does GitHub store published security advisories?", opts: ["The Common Vulnerabilities and Exposures (CVE) list.", "The repository's Wiki.", "A hidden .txt file.", "The Dependabot log."], ans: 0, exp: "GitHub stores the published advisories in the Common Vulnerabilities and Exposures (CVE) list." },
+  { cat: "Advisories", q: "What is the CVE list used for on GitHub?", opts: ["Generating marketing emails.", "Automatically notifying affected repositories that use software with a listed vulnerability.", "Tracking developer hours.", "Formatting source code."], ans: 1, exp: "This list is used for automatically notifying affected repositories that use software that has a listed vulnerability." },
+
+  // ── GITIGNORE & DATA ─────────────────────────────────────────────
+  { cat: "GitIgnore", q: "What is an example of a benign file that is easily overlooked and committed by developers?", opts: ["Passwords", "API keys", "Intermediate build files", "Credit card numbers"], ans: 2, exp: "Sometimes these overlooked files are benign, such as intermediate build files." },
+  { cat: "GitIgnore", q: "What sensitive data might someone inadvertently commit?", opts: ["A public README file", "An API key or private configuration data", "An open-source library", "A license file"], ans: 1, exp: "For example, someone could commit an API key or private configuration data that a malicious actor could use." },
+  { cat: "GitIgnore", q: "What is the primary purpose of a .gitignore file?", opts: ["To encrypt sensitive data.", "To instruct client tools to ignore paths and patterns when aggregating files for a commit.", "To delete files from the local hard drive.", "To ignore pull requests from certain users."], ans: 1, exp: "These files instruct client tools, such as the git command line utility, to ignore paths and patterns when aggregating files for a commit." },
+  { cat: "GitIgnore", q: "In a .gitignore file, what does the pattern `*.suo` do?", opts: ["Ignores all directories named suo.", "Ignores all files ending in '.suo'.", "Includes all files ending in '.suo'.", "Executes files ending in '.suo'."], ans: 1, exp: "# User-specific files - Ignore all files ending in '.suo'" },
+  { cat: "GitIgnore", q: "In a .gitignore file, why does `/config` only ignore the config directory at the root?", opts: ["Because it has a leading slash.", "Because config is a reserved word.", "Because it lacks a file extension.", "Because it is uppercase."], ans: 0, exp: "Ignore this directory at the root due to leading slash. Removing the slash would ignore 'config' directories at all depths." },
+  { cat: "GitIgnore", q: "How do settings from multiple .gitignore files apply across folders?", opts: ["Only the root file is read.", "They conflict and cause an error.", "Settings are inherited from parent directories, with overriding fields in new files taking precedence.", "The newest file overwrites all others globally."], ans: 2, exp: "Settings are inherited from parent directories, with overriding fields in new .gitignore files taking precedence over parent settings." },
+  { cat: "GitIgnore", q: "Is a .gitignore file an absolute guarantee that sensitive data won't be committed?", opts: ["Yes, Git strictly prevents it.", "No, they are just a strong suggestion and developers can still work around them.", "Yes, unless the user has admin rights.", "No, but it automatically deletes the data if pushed."], ans: 1, exp: "While .gitignore files can be useful... they're just a strong suggestion. Developers can still work around a .gitignore file to add files if they're motivated enough." },
+  { cat: "GitIgnore", q: "What should you assume if sensitive data is committed to GitHub at any point?", opts: ["It is safe if you delete it within 5 minutes.", "It has been compromised.", "Only admins can see it.", "It is automatically encrypted."], ans: 1, exp: "You should assume that any data committed to GitHub at any point has been compromised." },
+  { cat: "GitIgnore", q: "If sensitive data is committed, is simply overwriting the commit enough to secure it?", opts: ["Yes, git overwrites history completely.", "No, simply overwriting a commit isn't enough to ensure the data won't be accessible in the future.", "Yes, as long as you force push.", "No, you must delete the entire repository."], ans: 1, exp: "Simply overwriting a commit isn't enough to ensure the data won't be accessible in the future." },
+
+  // ── BRANCH PROTECTION & OWNERS ─────────────────────────────────────────────
+  { cat: "Protection", q: "What is the purpose of a branch protection rule?", opts: ["To prevent any commits to the repository.", "To enforce certain workflows for one or more branches.", "To automatically backup the repository.", "To change the repository visibility."], ans: 1, exp: "You can create a branch protection rule to enforce certain workflows for one or more branches." },
+  { cat: "Protection", q: "Which of the following is a common use case for a workflow protecting a branch?", opts: ["Running a linter to check for typos and internal coding conventions.", "Automatically responding to emails.", "Deleting unused branches.", "Encrypting the database."], ans: 0, exp: "Run a linter to check for typos and conformation to the internal coding conventions." },
+  { cat: "Protection", q: "What do required reviewers help enforce in a repository?", opts: ["Faster merge times.", "Quality, security, and accountability.", "Automatic bug fixing.", "Unlimited access for all users."], ans: 1, exp: "Required reviewers help enforce quality, security, and accountability." },
+  { cat: "Protection", q: "Can required reviews be bypassed?", opts: ["Yes, by any contributor.", "No, they can’t be bypassed without admin permissions.", "Yes, if the pull request is small enough.", "No, they can never be bypassed under any circumstances."], ans: 1, exp: "Required reviews can’t be bypassed without admin permissions." },
+  { cat: "Protection", q: "What is the purpose of a CODEOWNERS file?", opts: ["To list the legal owners of the company.", "To assign individual team members or teams as code owners to paths in your repository.", "To store passwords.", "To automatically merge all pull requests."], ans: 1, exp: "By adding a CODEOWNERS file to your repository, you can assign individual team members or entire teams as code owners to paths in your repository." },
+  { cat: "Protection", q: "If a CODEOWNERS file requires review for `*.js`, who must review changes to JavaScript files?", opts: ["Any repository member.", "The configured user/group assigned to `*.js`.", "The repository admin only.", "An automated bot."], ans: 1, exp: "These code owners are then required for pull-request reviews on any changes to files in a path for which they're configured." },
+  { cat: "Protection", q: "Where can you create the CODEOWNERS file?", opts: ["Only in the root directory.", "Only in the `.github` folder.", "In the root, `docs/`, or `.github/` folder.", "In the `/src` folder only."], ans: 2, exp: "You can create the CODEOWNERS file in either the root of the repository or in the docs or .github folder." }
+];
+
+const catColorMap = { 
+  "Strategy": "cat-strategy",
+  "DevOps": "cat-devops",
+  "Features": "cat-features",
+  "Advisories": "cat-advisories",
+  "GitIgnore": "cat-gitignore",
+  "Protection": "cat-protection"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-strategy';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Codespaces Customization & vs GitHub.dev — 60 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-custom { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-editors { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-extensions { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-vs-dev { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-compute { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-workflow { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Exam Ready · 60 Questions</div>
+  <h1>GitHub Codespaces vs GitHub.dev</h1>
+  <p>Comprehensive Multiple Choice Questions</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">60</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Customization',this)">Customization</button>
+    <button class="filter-btn" onclick="filterCat('Editors & Settings',this)">Editors & Settings</button>
+    <button class="filter-btn" onclick="filterCat('Extensions',this)">Extensions</button>
+    <button class="filter-btn" onclick="filterCat('Codespaces vs Dev',this)">Codespaces vs Dev</button>
+    <button class="filter-btn" onclick="filterCat('Compute & Terminals',this)">Compute & Terminals</button>
+    <button class="filter-btn" onclick="filterCat('Workflow',this)">Workflow Transition</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // --- CUSTOMIZATION (1-15) ---
+  { cat: "Customization", q: "What is the purpose of configuring a dev container in your repository?", opts: ["To restrict access to the repository", "To define the default GitHub Codespaces environment", "To automatically deploy code to production", "To bill external users"], ans: 1, exp: "You can configure your repositories with a dev container to define their default GitHub Codespaces environment." },
+  { cat: "Customization", q: "Which feature allows you to personalize your development experience across ALL of your Codespaces?", opts: ["GitHub Actions", "Docker Compose", "Dotfiles and Settings Sync", "Issue Templates"], ans: 2, exp: "...personalize your development experience across all of your Codespaces with dotfiles and Settings Sync." },
+  { cat: "Customization", q: "What does 'Settings Sync' do in the context of GitHub Codespaces?", opts: ["It synchronizes your VS Code settings between the desktop application and the VS Code web client", "It syncs your code with a remote database", "It matches your PC time with the cloud server", "It syncs your repositories across different GitHub accounts"], ans: 0, exp: "Settings Sync: You can synchronize your Visual Studio Code (VS Code) settings between the desktop application and the VS Code web client." },
+  { cat: "Customization", q: "What is the primary use of a dotfiles repository in Codespaces?", opts: ["To store large media assets", "To specify scripts, shell preferences, and other configurations", "To host a static website", "To create new branches automatically"], ans: 1, exp: "Dotfiles: You can use a dotfiles repository to specify scripts, shell preferences, and other configurations." },
+  { cat: "Customization", q: "What happens when you create a new Codespace regarding its name?", opts: ["You must manually type a unique name before creation", "An autogenerated display name is assigned to it", "It is simply named 'Codespace 1'", "It adopts the name of the repository exactly"], ans: 1, exp: "Rename a Codespace: When you create a Codespace, an autogenerated display name is assigned to it." },
+  { cat: "Customization", q: "Can you change the autogenerated display name of a Codespace?", opts: ["No, it is permanent", "Only if you pay for Enterprise", "Yes, you can change the display name for your Codespace", "Only repository administrators can change it"], ans: 2, exp: "You can change the display name for your Codespace." },
+  { cat: "Customization", q: "Why might you want to rename a Codespace?", opts: ["Because the default name is always offensive", "If you have multiple Codespaces, it helps you differentiate between them", "To hide it from the repository owner", "To change the underlying operating system"], ans: 1, exp: "If you have multiple Codespaces, the display name helps you to differentiate between Codespaces." },
+  { cat: "Customization", q: "Which of the following is true about changing your shell in a Codespace?", opts: ["You are locked into using bash", "You can open a new terminal window with a shell of your choice or change your default shell", "You can only use the shell if you connect via SSH", "You must write a custom Action to change the shell"], ans: 1, exp: "You can open a new terminal window with a shell of your choice, change your default shell for new terminal windows, or install a new shell." },
+  { cat: "Customization", q: "Can you use dotfiles to configure your shell?", opts: ["Yes", "No", "Only for zsh", "Only on local machines"], ans: 0, exp: "You can also use dotfiles to configure your shell." },
+  { cat: "Customization", q: "Why might you change the machine type running your Codespace?", opts: ["To change your username", "To use resources appropriate for the work you're doing", "To bypass regional IP blocks", "To force a cache clear"], ans: 1, exp: "Change the machine type: You can change the type of machine that's running your Codespace, so that you're using resources appropriate for the work you're doing." },
+
+  // --- EDITORS & SETTINGS (16-30) ---
+  { cat: "Editors & Settings", q: "Where do you set your default editor for Codespaces?", opts: ["In the devcontainer.json file", "In your personal settings page", "In the repository's main page", "In your dotfiles"], ans: 1, exp: "Set the default editor: You can set your default editor for Codespaces in your personal settings page." },
+  { cat: "Editors & Settings", q: "Which of the following is NOT an option for a default editor mentioned in the text?", opts: ["Visual Studio Code (web client)", "JupyterLab", "JetBrains Gateway", "Eclipse IDE"], ans: 3, exp: "The options listed are: VS Code (desktop), VS Code (web), JetBrains Gateway, and JupyterLab." },
+  { cat: "Editors & Settings", q: "What does JupyterLab serve as an interface for in Codespaces?", opts: ["Java compilation", "Project Jupyter", "JetBrains IDEs", "Visual Studio Code"], ans: 1, exp: "JupyterLab - the web interface for Project Jupyter" },
+  { cat: "Editors & Settings", q: "Why would you set a default region in your GitHub Codespaces profile settings?", opts: ["To change the language of the IDE", "To personalize where your data is held", "To change your time zone automatically", "To bypass regional billing restrictions"], ans: 1, exp: "Set the default region: You can set your default region in the GitHub Codespaces profile settings page to personalize where your data is held." },
+  { cat: "Editors & Settings", q: "What happens to a Codespace after a period of inactivity?", opts: ["It is deleted immediately", "It will stop running", "It commits all changes and pushes them", "It emails the repository owner"], ans: 1, exp: "Set the timeout: A Codespace will stop running after a period of inactivity." },
+  { cat: "Editors & Settings", q: "What is the default timeout period for a Codespace?", opts: ["15 minutes", "30 minutes", "1 hour", "24 hours"], ans: 1, exp: "By default this period is 30 minutes..." },
+  { cat: "Editors & Settings", q: "Can you change the default timeout period?", opts: ["No", "Yes, in your personal settings on GitHub", "Only to make it shorter, not longer", "Only repository admins can change it"], ans: 1, exp: "...but you can specify a longer or shorter default timeout period in your personal settings on GitHub." },
+  { cat: "Editors & Settings", q: "If you update your timeout setting, which Codespaces does it apply to?", opts: ["Only new Codespaces you create", "Only existing Codespaces that are currently running", "Any new Codespaces, or existing Codespaces the next time you start them", "All Codespaces globally in your organization"], ans: 2, exp: "The updated setting applies to any new Codespaces you create, or to existing Codespaces the next time you start them." },
+  { cat: "Editors & Settings", q: "What happens to inactive Codespaces eventually?", opts: ["They are automatically deleted", "They run forever but incur no costs", "They are archived as zip files", "They are converted to gists"], ans: 0, exp: "Configure automatic deletion: Inactive Codespaces are automatically deleted." },
+  { cat: "Editors & Settings", q: "What is the maximum amount of time you can choose to retain a stopped Codespace?", opts: ["7 days", "14 days", "30 days", "90 days"], ans: 2, exp: "You can choose how long your stopped Codespaces are retained, up to a maximum of 30 days." },
+
+  // --- EXTENSIONS (31-40) ---
+  { cat: "Extensions", q: "How can you add extensions if you work on Codespaces in the VS Code desktop application or web client?", opts: ["You must write them yourself", "From the Visual Studio Code Marketplace", "From the JetBrains Marketplace", "You cannot add extensions to Codespaces"], ans: 1, exp: "If you work on your Codespaces in the VS Code desktop application or the web client, you can add any extensions you need from the Visual Studio Code Marketplace." },
+  { cat: "Extensions", q: "If you already use VS Code locally, how can you easily get your extensions, themes, and shortcuts into a Codespace?", opts: ["By manually reinstalling them one by one", "By using Settings Sync to automatically sync them", "By copying your local hard drive", "By uploading a zip file"], ans: 1, exp: "If you already use VS Code, you can use Settings Sync to automatically sync extensions, settings, themes, and keyboard shortcuts between your local instance and any Codespaces you create." },
+  { cat: "Extensions", q: "Where do you get plugins if you work on your Codespaces in a JetBrains IDE?", opts: ["VS Code Marketplace", "GitHub Actions", "JetBrains Marketplace", "JupyterLab"], ans: 2, exp: "If you work on your Codespaces in a JetBrains IDE, you can add plugins from the JetBrains Marketplace." },
+  { cat: "Extensions", q: "What allows you to use most extensions from the VS Code Marketplace?", opts: ["GitHub.dev", "GitHub Codespaces", "Both allow all extensions equally", "Neither allow extensions"], ans: 1, exp: "(From table) With GitHub Codespaces, you can use most extensions from the Visual Studio Code Marketplace." },
+  { cat: "Extensions", q: "What is the limitation regarding extensions in GitHub.dev?", opts: ["You can't use any extensions", "Only a subset of extensions that can run on the web appear and can be installed", "They cost extra money to install", "You must install them via the terminal"], ans: 1, exp: "(From table) Only a subset of extensions that can run on the web appear in the extensions view and can be installed in GitHub.dev." },
+
+  // --- CODESPACES VS DEV (41-50) ---
+  { cat: "Codespaces vs Dev", q: "What is a primary use case for GitHub.dev?", opts: ["Running heavy machine learning models", "Navigating files and source code repositories, and making/committing code changes", "Compiling Java applications", "Accessing a Linux terminal"], ans: 1, exp: "You can use GitHub.dev to navigate files and sources code repositories from GitHub, and make and commit code changes." },
+  { cat: "Codespaces vs Dev", q: "Which editor should you use if you want to do 'heavy lifting' like testing or building your code?", opts: ["GitHub.dev", "GitHub Codespaces", "GitHub Issues", "GitHub Pages"], ans: 1, exp: "If you want to do more heavy lifting like testing your code, use GitHub Codespaces." },
+  { cat: "Codespaces vs Dev", q: "Why can you build and run code in GitHub Codespaces but not in GitHub.dev?", opts: ["Because Codespaces has compute associated with it (a Virtual Machine)", "Because GitHub.dev is only for mobile phones", "Because GitHub.dev is a paid service", "Because Codespaces runs on your local GPU"], ans: 0, exp: "It has compute associated with it so you can build your code, run your code, and have terminal access. GitHub.dev doesn't have compute in it." },
+  { cat: "Codespaces vs Dev", q: "Which service gives you the power of a personal Virtual Machine (VM) in the cloud?", opts: ["GitHub.dev", "GitHub Codespaces", "GitHub Actions", "GitHub Repositories"], ans: 1, exp: "With GitHub Codespaces, you get the power of a personal Virtual Machine (VM)..." },
+  { cat: "Codespaces vs Dev", q: "What is the cost associated with GitHub.dev?", opts: ["Paid by the hour", "Free", "Requires an Enterprise license", "Requires a monthly subscription"], ans: 1, exp: "(From table) Cost for GitHub.dev: Free." },
+  { cat: "Codespaces vs Dev", q: "What is the cost structure for GitHub Codespaces for personal accounts?", opts: ["Completely free and unlimited", "Free monthly quota of usage", "Pay strictly per minute", "$10 flat monthly fee"], ans: 1, exp: "(From table) Cost for Codespaces: Free monthly quota of usage for personal accounts." },
+  { cat: "Codespaces vs Dev", q: "Which tool opens instantly with a key-press without having to wait for configuration or installation?", opts: ["GitHub Codespaces", "GitHub.dev", "Both open instantly", "Neither open instantly"], ans: 1, exp: "(From table) GitHub.dev opens instantly with a key-press and you can start using it right away..." },
+  { cat: "Codespaces vs Dev", q: "Why does GitHub Codespaces take a few minutes to start up initially?", opts: ["It has to download the entire internet", "It is assigned a VM and configured based on a devcontainer.json file", "It requires manual admin approval", "It runs an antivirus scan on every file"], ans: 1, exp: "When you create or resume a Codespace, the Codespace is assigned a VM. The container is then configured based on the contents of a devcontainer.json file. This setup takes a few minutes..." },
+  { cat: "Codespaces vs Dev", q: "Are both GitHub.dev and GitHub Codespaces available to everyone on GitHub.com?", opts: ["Yes", "No, Codespaces is only for organizations", "No, GitHub.dev is only for Enterprise users", "Only to users in specific regions"], ans: 0, exp: "(From table) Availability: Available to everyone on GitHub.com (for both)." },
+
+  // --- COMPUTE & TERMINALS (51-55) ---
+  { cat: "Compute & Terminals", q: "Does GitHub.dev have integrated terminal access?", opts: ["Yes", "No", "Only for read-only commands", "Only if you install a plugin"], ans: 1, exp: "(From table) Terminal access for GitHub.dev: None." },
+  { cat: "Compute & Terminals", q: "How is the terminal experience described in GitHub Codespaces?", opts: ["It is highly restricted and read-only", "You can use the Terminal exactly as you would in your local environment", "It only supports Windows CMD", "It requires a separate application to open"], ans: 1, exp: "(From table) GitHub Codespaces provides a common set of tools by default, meaning that you can use the Terminal exactly as you would in your local environment." },
+  { cat: "Compute & Terminals", q: "Which environment lacks associated compute resources entirely?", opts: ["GitHub Codespaces", "GitHub.dev", "Both have compute", "Neither have compute"], ans: 1, exp: "(From table) Compute for GitHub.dev: There are no associated compute resources, so you can't build and run your code..." },
+
+  // --- WORKFLOW TRANSITION (56-60) ---
+  { cat: "Workflow", q: "Can you start your workflow in GitHub.dev and later move it to a Codespace?", opts: ["No, they are completely isolated", "Yes, you can continue working on a Codespace", "Only if you download the files first", "Only by paying a transfer fee"], ans: 1, exp: "You can start your workflow in GitHub.dev and continue working on a Codespace." },
+  { cat: "Workflow", q: "What happens in GitHub.dev if you try to access the Run and Debug View or the Terminal?", opts: ["They open normally", "The browser crashes", "You see a notification that they're not available in GitHub.dev", "You are automatically charged money"], ans: 2, exp: "If you try to access the Run and Debug View or the Terminal, you see a notification that they're not available in GitHub.dev." },
+  { cat: "Workflow", q: "What option do you select in GitHub.dev to transition your work to a Codespace?", opts: ["Open in Terminal", "Continue Working on…", "Upgrade to Pro", "Clone locally"], ans: 1, exp: "To continue your work in a Codespace, select Continue Working on…." },
+  { cat: "Workflow", q: "When you select 'Create New Codespace' from GitHub.dev, where does it create the Codespace?", opts: ["On the default branch (main) always", "On your current branch", "In a new repository", "In a gist"], ans: 1, exp: "Select Create New Codespace to create a Codespace on your current branch." },
+  { cat: "Workflow", q: "What MUST you do in GitHub.dev before choosing the option to continue working in a new Codespace?", opts: ["Delete all local files", "Commit any changes", "Write a README file", "Install a terminal emulator extension"], ans: 1, exp: "Before you choose this option, you must commit any changes." }
+];
+
+const catColorMap = {
+  "Customization": "cat-custom",
+  "Editors & Settings": "cat-editors",
+  "Extensions": "cat-extensions",
+  "Codespaces vs Dev": "cat-vs-dev",
+  "Compute & Terminals": "cat-compute",
+  "Workflow": "cat-workflow"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.02}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-custom';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; 
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

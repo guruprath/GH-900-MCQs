@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open-Source Contributions — 50 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-finding { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-files { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-comms { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-tasks { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-sponsoring { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 50 Questions</div>
+  <h1>Open-Source Contributions</h1>
+  <p>Identify where you can help on GitHub</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">50</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('Finding Projects',this)">Finding Projects</button>
+    <button class="filter-btn" onclick="filterCat('Project Files',this)">Project Files</button>
+    <button class="filter-btn" onclick="filterCat('Communication',this)">Communication</button>
+    <button class="filter-btn" onclick="filterCat('Tasks & Labels',this)">Tasks & Labels</button>
+    <button class="filter-btn" onclick="filterCat('Sponsoring & Recap',this)">Sponsoring & Recap</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS ────────────────────────────────────────────────
+  { cat: "Basics", q: "What defines open-source software according to the text?", opts: ["It requires a paid license for commercial use", "It can be freely used, modified, and shared by anyone", "It can only be used by experienced developers", "It is software that cannot be distributed"], ans: 1, exp: "Open-source software can be freely used, modified, and shared by anyone." },
+  { cat: "Basics", q: "What is the core idea behind open-source software?", opts: ["Protecting intellectual property rights", "Restricting code access to improve security", "Sharing code leads to better, more reliable software", "Monetizing small code modules"], ans: 2, exp: "The idea behind open-source software is that sharing code leads to better, more reliable software." },
+  { cat: "Basics", q: "Who is allowed to view, modify, and distribute an open-source project?", opts: ["Only the project creator", "Only verified GitHub sponsors", "Anyone", "Only users with professional licenses"], ans: 2, exp: "Using open-source software, anyone can view, modify, and distribute a project for any purpose." },
+  { cat: "Basics", q: "How is making a first contribution to open source often described?", opts: ["A very expensive process", "A scary experience, but it shouldn't be", "A legally binding contract", "An exclusive, invite-only event"], ans: 1, exp: "Making your first contribution can often be a scary experience, but it shouldn't be." },
+  { cat: "Basics", q: "Who is open source for?", opts: ["Only expert programmers", "Only enterprise organizations", "Everyone, and contributions happen at all levels", "Only maintainers"], ans: 2, exp: "Open source is a place for everyone, and contributions happen at all levels." },
+  { cat: "Basics", q: "Does your level of experience or knowledge matter when making a contribution?", opts: ["Yes, beginners are rarely accepted", "No, your level of experience or knowledge doesn't matter", "Only if you are contributing code", "Yes, you need a minimum of 2 years experience"], ans: 1, exp: "Your level of experience or knowledge of the project doesn't matter here. We all have something we can contribute." },
+  { cat: "Basics", q: "What is deemed 'the most important thing' when deciding to contribute?", opts: ["A degree in computer science", "Writing flawless code", "The will to help", "Knowing the project maintainer personally"], ans: 2, exp: "The most important thing here is the will to help." },
+
+  // ── FINDING PROJECTS ─────────────────────────────────────────────────
+  { cat: "Finding Projects", q: "What is a highly recommended way to start looking for an open-source project?", opts: ["Search for random repositories", "Think about projects you already use, or want to use", "Only look for projects with over 10,000 stars", "Pick the most complex project available"], ans: 1, exp: "You can get started by thinking about the projects you already use, or want to use." },
+  { cat: "Finding Projects", q: "Why is it easier to contribute to a project you already use?", opts: ["You don't need permission to contribute to them", "You are familiar with the project and its community", "They are usually smaller projects", "They have fewer bugs"], ans: 1, exp: "Contributing is easier when you're familiar with the project and its community." },
+  { cat: "Finding Projects", q: "Which of the following is mentioned as a great contribution opportunity while reading a README file?", opts: ["Finding a broken link or some typos", "Rewriting the entire software architecture", "Deleting outdated files directly", "Asking for a free t-shirt"], ans: 0, exp: "Perhaps while reading a project's README file, you find a broken link or some typos... These are all great opportunities to help." },
+  { cat: "Finding Projects", q: "If you notice documentation is out of date, what should you do?", opts: ["Ignore it", "Report the repository to GitHub", "See it as a great opportunity to contribute", "Create your own competing project"], ans: 2, exp: "Maybe you noticed something isn't working as expected, or the documentation is out of date. These are all great opportunities to help." },
+  { cat: "Finding Projects", q: "What feature can you use to explore topics and related projects on the platform?", opts: ["GitHub search", "GitHub Actions", "GitHub Issues", "GitHub Pages"], ans: 0, exp: "You can also use GitHub search to explore topics and related projects." },
+  { cat: "Finding Projects", q: "Where can you narrow your GitHub search by selecting 'Topics'?", opts: ["In the top navigation bar", "In the right sidebar", "In the left sidebar", "In the repository settings"], ans: 2, exp: "You can then narrow your search by selecting Topics in the left sidebar." },
+  { cat: "Finding Projects", q: "When searching by topic, what types of repositories will you find?", opts: ["Only your own private repositories", "Repositories relevant to your search keyword and curated by community members", "Only repositories created in the last 24 hours", "Only archived repositories"], ans: 1, exp: "From there, you can find repositories relevant to your search keyword and repositories curated by community members." },
+  { cat: "Finding Projects", q: "True or False: Every open-source community operates exactly the same way.", opts: ["True", "False", "Only true for machine learning projects", "Only true for projects without a code of conduct"], ans: 1, exp: "Something worth mentioning here is that every open-source community is different." },
+
+  // ── PROJECT FILES ────────────────────────────────────────────────
+  { cat: "Project Files", q: "After finding a project, what is the next step you should take?", opts: ["Immediately submit a pull request", "Familiarize yourself with the project and its participation guidelines", "Request admin access", "Delete the README file"], ans: 1, exp: "After you've found a project, you'll need to familiarize yourself with the project and its participation guidelines." },
+  { cat: "Project Files", q: "Where are documents like LICENSE and README typically located in a repository?", opts: ["Hidden in a .git folder", "At the top level of the repository", "Inside the /src directory", "On an external website only"], ans: 1, exp: "Most projects will have these documents at the top level of the repository." },
+  { cat: "Project Files", q: "What happens if a project does NOT have a license?", opts: ["It is still open source, just unprotected", "It is automatically GPL licensed", "It is not open source", "It belongs to the public domain"], ans: 2, exp: "If the project doesn't have a license, it's not open source." },
+  { cat: "Project Files", q: "Which file usually serves as the welcome page for a project?", opts: ["CONTRIBUTING", "LICENSE", "README", "CODE_OF_CONDUCT"], ans: 2, exp: "The README file usually serves as the welcome page for the project." },
+  { cat: "Project Files", q: "What information does the README file generally provide?", opts: ["The complete source code history", "Information on how to get started using the project", "Passwords and API keys", "Financial reports"], ans: 1, exp: "It generally provides information on how to get started using the project." },
+  { cat: "Project Files", q: "Which document provides guidance on how the contribution process works?", opts: ["CODE_OF_CONDUCT", "LICENSE", "CONTRIBUTING", "README"], ans: 2, exp: "CONTRIBUTING: As its name suggests, this document provides guidance on how to contribute to the project." },
+  { cat: "Project Files", q: "Where would you typically look to find details on how to set up your development environment?", opts: ["LICENSE", "CONTRIBUTING", "CODE_OF_CONDUCT", "Issue Tracker"], ans: 1, exp: "[CONTRIBUTING] usually describes how the contribution process works, and includes details on how to set up your development environment." },
+  { cat: "Project Files", q: "What is the purpose of the CODE_OF_CONDUCT file?", opts: ["To list coding syntax standards", "To set ground rules for community members", "To compile the project code", "To outline the project roadmap"], ans: 1, exp: "The code of conduct sets ground rules for community members." },
+  { cat: "Project Files", q: "How does the CODE_OF_CONDUCT benefit the community?", opts: ["It guarantees financial funding", "It makes the software run faster", "It helps make the community a safe and welcoming environment for all", "It prevents all software bugs"], ans: 2, exp: "By doing so, it helps make the community a safe and welcoming environment for all." },
+  { cat: "Project Files", q: "If a project has CONTRIBUTING and CODE_OF_CONDUCT documents, what does this indicate?", opts: ["The project is abandoned", "The project is overly strict", "It is a good indication of how friendly and welcoming a project is", "The project is closed source"], ans: 2, exp: "Although not all projects have CONTRIBUTING or CODE_OF_CONDUCT documents, having these documents is a good indication of how friendly and welcoming a project is." },
+  { cat: "Project Files", q: "Do all open-source projects have a CONTRIBUTING or CODE_OF_CONDUCT document?", opts: ["Yes, it is strictly required by GitHub", "No, not all projects have them", "Yes, but only for enterprise projects", "Only if the project has over 1,000 users"], ans: 1, exp: "Although not all projects have CONTRIBUTING or CODE_OF_CONDUCT documents..." },
+
+  // ── COMMUNICATION ───────────────────────────────────────────────
+  { cat: "Communication", q: "Where do open-source contributors and maintainers come from?", opts: ["Only the United States", "Only from tech companies", "All over the world", "Only from universities"], ans: 2, exp: "Open-source contributors and maintainers come from all over the world." },
+  { cat: "Communication", q: "Why do projects usually have multiple communication channels?", opts: ["To confuse new users", "To organize discussions and ask for help", "To hide private conversations", "To slow down development"], ans: 1, exp: "Projects usually have multiple communication channels to organize discussions and ask for help." },
+  { cat: "Communication", q: "What is the 'Issue tracker' used for?", opts: ["To chat casually with developers", "To compile code locally", "Where folks discuss issues and tasks related to the project", "To track user location data"], ans: 2, exp: "Issue tracker: Where folks discuss issues and tasks related to the project." },
+  { cat: "Communication", q: "How can you easily navigate to a repository's issues page via the URL?", opts: ["Add /chat to the end of the URL", "Add /issues to the end of the URL", "Add /help to the end of the URL", "Add /bugs to the end of the URL"], ans: 1, exp: "To find the issues in GitHub, you can go to the main page of the repository on GitHub and add /issues to the end of the URL." },
+  { cat: "Communication", q: "Where do folks discuss and review changes to the project's code?", opts: ["Pull request", "LICENSE file", "README file", "Slack only"], ans: 0, exp: "Pull request: Where folks discuss and review changes to the project." },
+  { cat: "Communication", q: "How can you find the pull requests page via the project's URL?", opts: ["Add /changes", "Add /commits", "Add /pulls", "Add /merge"], ans: 2, exp: "You can find it in GitHub by adding pulls to the project's URL." },
+  { cat: "Communication", q: "Which of the following is an example of a chat channel mentioned in the text?", opts: ["Slack, Gitter, and IRC", "WhatsApp and SMS", "Facebook Messenger", "Zoom and Teams"], ans: 0, exp: "Some projects use chat channels, such as Slack, Gitter, and IRC..." },
+  { cat: "Communication", q: "Which forum platform is explicitly mentioned as being used by some projects?", opts: ["Reddit", "StackOverflow", "Discourse", "Quora"], ans: 2, exp: "...or forums like Discourse for conversations and discussions." },
+  
+  // ── TASKS & LABELS ─────────────────────────────────────────────────
+  { cat: "Tasks & Labels", q: "What is an excellent URL path to visit to find beginner-friendly issues on a project?", opts: ["/easy-tasks", "/contribute", "/beginners", "/start"], ans: 1, exp: "A good way to find beginner-friendly issues to help with is by visiting the project's /contribute URL." },
+  { cat: "Tasks & Labels", q: "What do labels on GitHub issues provide?", opts: ["Top-level information of the issue and the type of help needed", "The exact lines of code to fix", "The financial reward for fixing the issue", "The name of the user who caused the bug"], ans: 0, exp: "Labels are often used to provide top-level information of the issue and the type of help needed." },
+  { cat: "Tasks & Labels", q: "Which of these is a common label used for newcomers?", opts: ["do-not-touch", "good-first-issue", "expert-only", "wontfix"], ans: 1, exp: "You'll notice that most of the issues displayed in the contribute URL will have labels such as good-first-issue..." },
+  { cat: "Tasks & Labels", q: "Which label suggests that maintainers are actively seeking assistance?", opts: ["duplicate", "help wanted", "invalid", "on-hold"], ans: 1, exp: "...labels such as good-first-issue, help wanted, beginner-friendly, and so on." },
+  { cat: "Tasks & Labels", q: "How can you view all the labels used in a repository?", opts: ["By emailing the maintainer", "By heading to the /labels page", "By looking in the README file", "By using the /tags command"], ans: 1, exp: "You can head to the labels page, for example: https://github.com/jupyter/notebook/labels." },
+  { cat: "Tasks & Labels", q: "If you want to provide input rather than code, which label might you look for?", opts: ["syntax-error", "help wanted", "discussion", "documentation"], ans: 2, exp: "Then, select issues that have labels like help wanted, discussion, or other labels relevant to the type of contribution in which you're interested." },
+  { cat: "Tasks & Labels", q: "As you explore issues, what might you notice linked to them?", opts: ["Malware downloads", "Other issues or pull requests linked", "Paid advertisements", "Employee social security numbers"], ans: 1, exp: "As you explore issues, you might also notice that some have other issues or pull requests linked." },
+  
+  // ── SPONSORING & RECAP ─────────────────────────────────────────────
+  { cat: "Sponsoring & Recap", q: "In addition to code, how else can you contribute to the open-source ecosystem?", opts: ["By keeping secrets", "Through leadership, mentorship, design, and financial support", "By ignoring documentation", "By deleting repositories"], ans: 1, exp: "You can financially support the folks who build and maintain the open-source ecosystem through code, leadership, mentorship, design, and beyond." },
+  { cat: "Sponsoring & Recap", q: "What kind of work does open source heavily rely upon?", opts: ["Mandatory corporate labor", "Volunteer work", "Government contracts", "Subscription fees"], ans: 1, exp: "Open source heavily relies on volunteer work." },
+  { cat: "Sponsoring & Recap", q: "What tool allows you to fund projects and individuals for their open-source work?", opts: ["GitHub Pages", "GitHub Search", "GitHub Sponsors", "GitHub Actions"], ans: 2, exp: "GitHub Sponsors allow you to fund projects and individuals to help them keep doing their open-source work..." },
+  { cat: "Sponsoring & Recap", q: "If a project is eligible for sponsorship, where is the Sponsor button typically found?", opts: ["Hidden in the settings", "On the project's main page", "Only inside the README file", "In the commit history"], ans: 1, exp: "If a project is eligible for sponsorship through GitHub Sponsors, you'll find a Sponsor button on the project's main page." },
+  { cat: "Sponsoring & Recap", q: "When sponsoring a project, what option do you have regarding the visibility of your contribution?", opts: ["It must be anonymous", "It must be public", "You can choose if you want your contribution to be public", "Only the amount is public, not your name"], ans: 2, exp: "You can select the sponsorship tier and if you want your contribution to be public." },
+  { cat: "Sponsoring & Recap", q: "According to the unit recap checklist, what is the first thing you should check when interacting with a new project?", opts: ["Does it have over 1,000 stars?", "Does it have a license?", "Is it written in Python?", "Who is the CEO?"], ans: 1, exp: "Here's a handy checklist to use... Does it have a license?" },
+  { cat: "Sponsoring & Recap", q: "According to the checklist, what should you look for regarding issues and pull requests?", opts: ["Are they closed immediately?", "Are they used actively by maintainers and contributors?", "Are there zero open issues?", "Do they require a fee to open?"], ans: 1, exp: "Are issues and pull request discussions used actively by maintainers and contributors?" },
+  { cat: "Sponsoring & Recap", q: "Which two labels are specifically mentioned in the recap checklist as good for newcomers?", opts: ["bug and enhancement", "help wanted or good first issue", "wontfix and duplicate", "critical and urgent"], ans: 1, exp: "Does the project use labels like help wanted or good first issue for newcomers?" },
+  { cat: "Sponsoring & Recap", q: "What environmental and safety document is included in the interaction checklist?", opts: ["Code of conduct", "Privacy policy", "Terms of service", "Non-disclosure agreement"], ans: 0, exp: "Does the project have a code of conduct?" },
+  { cat: "Sponsoring & Recap", q: "What does the open-source ecosystem greatly benefit from, according to the final recap?", opts: ["Your financial debt", "Your ideas and participation", "Your personal data", "Strict gatekeeping"], ans: 1, exp: "...the open-source ecosystem greatly benefits from your ideas and participation." }
+];
+
+const catColorMap = { 
+  "Basics": "cat-basics",
+  "Finding Projects": "cat-finding",
+  "Project Files": "cat-files",
+  "Communication": "cat-comms",
+  "Tasks & Labels": "cat-tasks",
+  "Sponsoring & Recap": "cat-sponsoring" 
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

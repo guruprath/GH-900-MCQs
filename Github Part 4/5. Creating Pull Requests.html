@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creating Pull Requests — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-commit { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-pr-body { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-sidebar { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-notifications { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-accessibility { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-general { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Quiz · 40 Questions</div>
+  <h1>Creating Pull Requests</h1>
+  <p>Commit Messages, Accessibility & Workflows</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Commit Messages',this)">Commit Messages</button>
+    <button class="filter-btn" onclick="filterCat('PR Body',this)">PR Body</button>
+    <button class="filter-btn" onclick="filterCat('Sidebar & Labels',this)">Sidebar & Labels</button>
+    <button class="filter-btn" onclick="filterCat('Notifications',this)">Notifications</button>
+    <button class="filter-btn" onclick="filterCat('Accessibility',this)">Accessibility</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── COMMIT MESSAGES (Subject Line) ────────────────────────────────────────────────
+  { cat: "Commit Messages", q: "What sentence should your Git commit message subject line logically complete?", opts: ["If applied, this commit will...", "In this commit, I have...", "This update is meant to...", "Once merged, the codebase has..."], ans: 0, exp: "Your Git commit message subject line should complete the sentence: 'If applied, this commit will <your subject line here>'." },
+  { cat: "Commit Messages", q: "Which verb tense and mood is recommended for a succinct description in a commit message?", opts: ["Past tense", "Future continuous", "Imperative, present tense", "Passive voice"], ans: 2, exp: "Include a succinct description of the change by using the imperative, present tense." },
+  { cat: "Commit Messages", q: "Based on the guidelines, which of the following is the best word to start a commit subject line?", opts: ["Added", "Adds", "Add", "Adding"], ans: 2, exp: "The text provides the example: 'use add not added or adds'." },
+  { cat: "Commit Messages", q: "What is the recommended maximum character limit for your commit message subject line?", opts: ["30 characters", "50 characters", "72 characters", "100 characters"], ans: 1, exp: "Limit your subject line to 50 characters." },
+  { cat: "Commit Messages", q: "How should you format the first letter of your commit message subject line?", opts: ["It should be lowercase", "It should be an emoji", "It should start with a capital letter", "It must be surrounded by brackets"], ans: 2, exp: "Start with a capital letter." },
+  { cat: "Commit Messages", q: "How should you format the ending of your commit message subject line?", opts: ["End with a period (.)", "End with an exclamation mark (!)", "Don't end with a period (.)", "End with a semicolon (;)"], ans: 2, exp: "The guidelines state: 'don't end with a period (.)'." },
+  { cat: "Commit Messages", q: "Are emojis or @mentions universally encouraged in all project commit messages?", opts: ["Yes, they are a standard GitHub feature", "No, be mindful that not all projects allow or encourage this", "Only @mentions are allowed, never emojis", "Only emojis are allowed, never @mentions"], ans: 1, exp: "You can use emojis or @mention other GitHub users... but be mindful that not all projects allow or encourage this." },
+  { cat: "Commit Messages", q: "Which of the following represents an ideal commit subject line based on the text?", opts: ["fixed the navigation bug.", "Fix navigation bug on mobile layout", "Fixes the navigation bug on mobile layout", "fixed the navigation bug so it works now"], ans: 1, exp: "It uses imperative present tense ('Fix'), starts with a capital letter, does not end in a period, and fits the 'If applied, this commit will...' format." },
+
+  // ── PR BODY & MOTIVATION ─────────────────────────────────────────────────
+  { cat: "PR Body", q: "What tense should you continue to use for the body of your message and pull request?", opts: ["Past tense", "Present tense", "Future tense", "Perfect tense"], ans: 1, exp: "For the body of your message and pull request, continue to use present tense." },
+  { cat: "PR Body", q: "What crucial element should be included in the body of your message to explain the change?", opts: ["A line-by-line code review", "The motivation for the change", "Your personal biography", "The exact commands you typed in the terminal"], ans: 1, exp: "Make sure to include the motivation for the change." },
+  { cat: "PR Body", q: "When writing the body of your pull request, you should contrast your change with:", opts: ["Other contributors' code", "The previous behavior", "Future planned features", "Competitors' software"], ans: 1, exp: "Contrast your change with the previous behavior." },
+  { cat: "PR Body", q: "In the space at your disposal in the body, you should prioritize explaining:", opts: ["The 'how' and 'when'", "The 'what' and 'why' versus the 'how'", "The 'who' and 'where'", "Only the 'how'"], ans: 1, exp: "Use the space at your disposal to explain the what and why versus the how." },
+  { cat: "PR Body", q: "Regarding the size of your changes, the text recommends that you commit or submit:", opts: ["Large, comprehensive updates", "Small, isolated sets of changes", "Changes only when the entire project is complete", "Changes that touch every file in the repository"], ans: 1, exp: "Commit or submit for review small, isolated sets of changes." },
+  { cat: "PR Body", q: "What is the primary benefit of submitting small, isolated sets of changes?", opts: ["It saves disk space on the server", "It increases the likelihood of your changes getting merged", "It allows you to skip writing a commit message", "It prevents others from commenting on your code"], ans: 1, exp: "This practice increases the likelihood of your changes getting merged into the project." },
+  { cat: "PR Body", q: "How much time does the text suggest you should put into writing your PR?", opts: ["A few seconds", "Roughly as much time as you did in making the change", "Exactly 50 minutes", "None, if the code is self-explanatory"], ans: 1, exp: "Put roughly as much time into writing your PR as you did in making the change to the project." },
+  
+  // ── SIDEBAR & LABELS ────────────────────────────────────────────────
+  { cat: "Sidebar & Labels", q: "Where should you look before submitting your pull request to find ways to 'complete' your PR?", opts: ["The repository settings", "The sidebar", "The main branch code", "Your local terminal"], ans: 1, exp: "Before you submit your pull request, check the sidebar for ways to complete your PR." },
+  { cat: "Sidebar & Labels", q: "When should you manually select Reviewers or Assignees in the sidebar?", opts: ["Always, for every pull request", "Never, it is automated", "If you're familiar with the project's team structure", "Only if you are the project owner"], ans: 2, exp: "Select Reviewers or Assignees if you're familiar with the project's team structure." },
+  { cat: "Sidebar & Labels", q: "What function do labels serve when added to an issue or PR?", opts: ["They automatically fix bugs", "They serve as a visual clue for what you're trying to accomplish", "They hide the PR from non-admins", "They lock the thread from comments"], ans: 1, exp: "You can use labels as a visual clue for what you're trying to accomplish." },
+  { cat: "Sidebar & Labels", q: "Who besides you might add a label or multiple labels to your pull request?", opts: ["Only an automated bot", "A maintainer", "Any random GitHub user", "No one else is allowed"], ans: 1, exp: "A maintainer might also add a label or multiple labels." },
+  { cat: "Sidebar & Labels", q: "Which file often contains guidance on using labels for a specific repository?", opts: ["README.md", "LICENSE.txt", "CONTRIBUTING.md", "package.json"], ans: 2, exp: "Add labels when there's guidance on using labels in, for instance, the CONTRIBUTING.md file." },
+  { cat: "Sidebar & Labels", q: "According to the Learn module's specific labels, what does a red 'Bug' label mean?", opts: ["New feature or request", "Something isn't working", "This issue already exists", "Improvements to documentation"], ans: 1, exp: "Bug (red): Something isn't working." },
+  { cat: "Sidebar & Labels", q: "What does the blue 'Documentation' label indicate?", opts: ["A broken link", "A duplicate issue", "Improvements or additions to documentation", "A brand new codebase"], ans: 2, exp: "Documentation (blue): Improvements or additions to documentation." },
+  { cat: "Sidebar & Labels", q: "What does the gray 'Duplicate' label signify?", opts: ["The code was copied from another source", "This issue or pull request already exists", "The pull request needs to be run twice", "It is a backup branch"], ans: 1, exp: "Duplicate (gray): This issue or pull request already exists." },
+  { cat: "Sidebar & Labels", q: "What does the teal 'Enhancement' label represent?", opts: ["A minor typo fix", "A visual bug", "New feature or request", "A closed issue"], ans: 2, exp: "Enhancement (teal): New feature or request." },
+  { cat: "Sidebar & Labels", q: "What is a potential benefit of successfully linking an issue in the sidebar of your pull request?", opts: ["It automatically creates a new repository", "Merging the pull request might close the corresponding issue", "It deletes the linked issue", "It emails every user in the repository"], ans: 1, exp: "Optionally, you can link issues in the sidebar, where successfully merging a pull request might close the corresponding issue." },
+
+  // ── NOTIFICATIONS & FIRST CONTRIBUTIONS ───────────────────────────────────────────────
+  { cat: "Notifications", q: "What does the 'Not subscribed' notification setting mean?", opts: ["You receive zero emails ever", "You only receive notifications when you participated or were @mentioned", "Your account is deactivated", "You receive a daily digest only"], ans: 1, exp: "Not subscribed: Only receive notifications when you participated or were @mentioned." },
+  { cat: "Notifications", q: "If you want to receive ALL notifications for a specific pull request thread, which option should you choose?", opts: ["Not subscribed", "Custom", "Subscribed", "Global"], ans: 2, exp: "Subscribed: Receive all notifications for this pull request." },
+  { cat: "Notifications", q: "What does the 'Custom' notification setting allow you to do?", opts: ["Write your own notification emails", "Only be notified for the events you select", "Change the color of the notifications", "Forward notifications to a webhook"], ans: 1, exp: "Custom: Only be notified for the events you select." },
+  { cat: "General", q: "What is the stated aim of the 'First Contributions' project mentioned in the text?", opts: ["To write the Linux kernel", "To guide the way beginners make their first contribution", "To host all open-source repositories", "To teach advanced Git rebase tactics"], ans: 1, exp: "The First Contributions project aims to 'guide the way beginners make their first contribution.'" },
+  { cat: "General", q: "The First Contributions project offers guides for the command line as well as what else?", opts: ["Only mobile apps", "Several graphical user interfaces (GUIs)", "Virtual Reality environments", "Hardware programming"], ans: 1, exp: "It has guides for both using the command line and several graphical user interfaces (GUIs)." },
+  { cat: "General", q: "Where should you look in the First Contributions project to find support for several languages?", opts: ["The Locales folder", "The Languages folder", "The Translations folder", "The I18n directory"], ans: 2, exp: "Make sure to check the Translations folder." },
+  { cat: "General", q: "Why is a good subject line and well-written PR important for the maintainers of a project?", opts: ["It helps them categorize and prioritize (triage) community contributions", "It allows them to auto-merge without reading", "It generates automatic funding for the project", "It bypasses all CI/CD pipelines"], ans: 0, exp: "Your efforts will help the maintainers categorize and prioritize (triage) community contributions." },
+
+  // ── ACCESSIBILITY & WORKFLOW ─────────────────────────────────────────────
+  { cat: "Accessibility", q: "Which company's Accessibility Guidelines and Requirements are referenced in the bonus section?", opts: ["Google's", "Apple's", "Microsoft's", "Linux Foundation's"], ans: 2, exp: "Bonus: Check Microsoft's Accessibility Guidelines and Requirements." },
+  { cat: "Accessibility", q: "What specific type of language do the accessibility guidelines advise avoiding when describing interactions with UI?", opts: ["Technical jargon", "Ableist language", "Foreign languages", "Passive voice"], ans: 1, exp: "In particular, see the information about describing interactions with UI to avoid ableist language in your contributions." },
+  { cat: "Accessibility", q: "Why is it important to use generic verbs for UI interactions?", opts: ["Because customers interact with products using different input methods (keyboard, mouse, voice, etc.)", "Because it saves characters in the commit message", "Because generic verbs are easier to translate into code", "Because it is required by international law"], ans: 0, exp: "Customers interact with products by using different input methods. For example, they can use the keyboard, a mouse, touch, voice, and more." },
+  { cat: "Accessibility", q: "According to the accessibility guidelines, which word should you use instead of 'click' or 'swipe'?", opts: ["Press", "Hit", "Select", "Touch"], ans: 2, exp: "For instance, use select instead of the input-specific click or swipe." },
+  { cat: "Accessibility", q: "Why are words like 'click' or 'swipe' considered input-specific?", opts: ["They imply the user must have a touchscreen or a mouse", "They are only used in older operating systems", "They are trademarked terms", "They don't translate well to other spoken languages"], ans: 0, exp: "They are input-specific (e.g., mouse for click, touch for swipe), whereas users might use voice or keyboard. Generic verbs work with any input method." },
+  { cat: "General", q: "What should you do if the repository has a PR template but no formal contributing guide?", opts: ["Delete the template and write your own", "Follow the template's guidance when filling in your pull request", "Submit a blank PR", "Email the maintainer for instructions"], ans: 1, exp: "If the repository has a CONTRIBUTING.md file or a PR template, follow its guidance when filling in your pull request." },
+  { cat: "Commit Messages", q: "If you want to describe a change that removes a file, what is the best subject line starting word based on the text's logic?", opts: ["Removed", "Removes", "Removing", "Remove"], ans: 3, exp: "Following the 'imperative, present tense' rule (like 'add'), the correct form is 'remove'." },
+  { cat: "Accessibility", q: "Using generic verbs like 'select' ensures that the documentation is inclusive of users who might be using what alternative input method?", opts: ["Voice", "Keyboard", "Touch", "All of the above"], ans: 3, exp: "Customers interact with products by using different input methods. For example, they can use the keyboard, a mouse, touch, voice, and more." }
+];
+
+const catColorMap = { 
+  "Commit Messages": "cat-commit",
+  "PR Body": "cat-pr-body",
+  "Sidebar & Labels": "cat-sidebar",
+  "Notifications": "cat-notifications",
+  "Accessibility": "cat-accessibility",
+  "General": "cat-general"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter || (currentFilter === 'General' && q.cat === 'General'));
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-general';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return;
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>

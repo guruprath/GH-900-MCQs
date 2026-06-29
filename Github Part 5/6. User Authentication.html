@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>User Authentication Quiz — 40 MCQs</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161b27;
+    --card: #1c2333;
+    --border: #2a3347;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --correct: #1a3a2a;
+    --correct-border: #3fb950;
+    --wrong: #3a1a1a;
+    --wrong-border: #f78166;
+    --highlight: rgba(88,166,255,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d0f14 0%, #161b27 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(88,166,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(88,166,255,0.1);
+    border: 1px solid rgba(88,166,255,0.3);
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #e6edf3 0%, #58a6ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 15px;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 20px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--accent);
+    font-family: 'Space Mono', monospace;
+    display: block;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* CONTROLS */
+  .controls {
+    max-width: 900px;
+    margin: 28px auto 0;
+    padding: 0 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0f14;
+  }
+  .btn-primary:hover { background: #79b8ff; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger {
+    background: transparent;
+    color: var(--accent3);
+    border: 1px solid var(--accent3);
+  }
+  .btn-danger:hover { background: var(--accent3); color: #fff; }
+
+  .filter-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(88,166,255,0.08);
+  }
+
+  /* MAIN */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease both;
+  }
+  .q-card:hover { border-color: #2d3f5a; box-shadow: 0 4px 24px rgba(0,0,0,0.3); }
+  @keyframes fadeIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform: none; } }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px 16px;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.25);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-top: 2px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--text);
+    flex: 1;
+  }
+  .q-category {
+    flex-shrink: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .options {
+    padding: 0 22px 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.18s;
+    background: var(--surface);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    text-align: left;
+    width: 100%;
+    font-family: 'Syne', sans-serif;
+  }
+  .option:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--highlight);
+  }
+  .option-letter {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: rgba(139,148,158,0.12);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    margin-top: 1px;
+    transition: all 0.18s;
+  }
+  .option.correct {
+    background: var(--correct);
+    border-color: var(--correct-border);
+  }
+  .option.correct .option-letter {
+    background: var(--correct-border);
+    color: #fff;
+    border-color: var(--correct-border);
+  }
+  .option.wrong {
+    background: var(--wrong);
+    border-color: var(--wrong-border);
+  }
+  .option.wrong .option-letter {
+    background: var(--wrong-border);
+    color: #fff;
+    border-color: var(--wrong-border);
+  }
+  .option:disabled { cursor: default; }
+
+  .answer-reveal {
+    margin: 0 22px 18px;
+    padding: 12px 16px;
+    background: rgba(63,185,80,0.08);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+    display: none;
+    line-height: 1.6;
+  }
+  .answer-reveal.show { display: block; }
+  .answer-reveal strong { color: #3fb950; }
+
+  /* SCORE PANEL */
+  #score-panel {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 999;
+    min-width: 140px;
+  }
+  #score-panel .sp-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  #score-panel .sp-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+
+  /* CATEGORY COLORS */
+  .cat-basics { color: #58a6ff; border-color: rgba(88,166,255,0.3); }
+  .cat-saml-org { color: #d2a8ff; border-color: rgba(210,168,255,0.3); }
+  .cat-saml-ent { color: #3fb950; border-color: rgba(63,185,80,0.3); }
+  .cat-sso-comp { color: #ffa657; border-color: rgba(255,166,87,0.3); }
+  .cat-2fa-rules { color: #f78166; border-color: rgba(247,129,102,0.3); }
+  .cat-2fa-types { color: #79c0ff; border-color: rgba(121,192,255,0.3); }
+
+  .progress-bar {
+    height: 3px;
+    background: var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width 0.4s ease;
+  }
+
+  @media(max-width:600px) {
+    .stats-bar { gap: 20px; }
+    .hero { padding: 36px 16px 28px; }
+    #score-panel { bottom: 12px; right: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Administration Quiz · 40 Questions</div>
+  <h1>User Authentication</h1>
+  <p>Test your knowledge on SAML SSO and 2FA configuration in GitHub.</p>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num" id="total-count">40</span><span class="stat-label">Questions</span></div>
+  <div class="stat"><span class="stat-num" id="answered-count">0</span><span class="stat-label">Answered</span></div>
+  <div class="stat"><span class="stat-num" id="correct-count" style="color:var(--accent2)">0</span><span class="stat-label">Correct</span></div>
+  <div class="stat"><span class="stat-num" id="score-pct" style="color:var(--accent)">0%</span><span class="stat-label">Score</span></div>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+
+<div class="controls">
+  <div class="filter-group">
+    <button class="filter-btn active" onclick="filterCat('all',this)">All</button>
+    <button class="filter-btn" onclick="filterCat('Basics',this)">Basics</button>
+    <button class="filter-btn" onclick="filterCat('SAML Org',this)">SAML Org Level</button>
+    <button class="filter-btn" onclick="filterCat('SAML Ent',this)">SAML Enterprise</button>
+    <button class="filter-btn" onclick="filterCat('SSO Comp',this)">SSO Comparisons</button>
+    <button class="filter-btn" onclick="filterCat('2FA Rules',this)">2FA Rules</button>
+    <button class="filter-btn" onclick="filterCat('2FA Types',this)">2FA Types & Audit</button>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn btn-secondary" onclick="revealAll()">Show All Answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<main id="quiz-container"></main>
+
+<div id="score-panel">
+  <span class="sp-label">Live Score</span>
+  <span class="sp-val" id="score-live">0 / 0</span>
+</div>
+
+<script>
+const questions = [
+  // ── BASICS (1–5) ──────────────────────────────────────────────
+  { cat: "Basics", q: "When considering user authentication, what should be the number one consideration?", opts: ["Speed of login", "Security", "Cost of identity providers", "User interface design"], ans: 1, exp: "When it comes to user authentication, security should be the number one consideration that comes to mind." },
+  { cat: "Basics", q: "According to the text, what is a common reason credentials are stolen?", opts: ["Overly complex passwords", "Hardware failures", "Inefficient security processes or lack of up-to-date security features", "Too many users logging in at once"], ans: 2, exp: "Credentials are stolen because of inefficient security processes, or simply because of a lack of up-to-date security features within the company." },
+  { cat: "Basics", q: "What factor can make establishing secure user authentication a difficult task regarding user adoption?", opts: ["If users have to memorize passwords", "If user adoption requires long and frustrating steps to authenticate", "If the enterprise uses single sign-on", "If the company enforces 2FA"], ans: 1, exp: "Establishing secure user authentication can be a difficult task if user adoption requires long and frustrating steps to authenticate." },
+  { cat: "Basics", q: "What are the two recommended methods for secure user authentication supported by GitHub Enterprise?", opts: ["Biometrics and Passkeys", "SAML SSO and 2FA", "LDAP and Basic Auth", "OAuth and SSH Keys"], ans: 1, exp: "GitHub Enterprise supports two recommended methods for secure user authentication: SAML Single Sign-On(SSO) and Two-Factor Authentication(2FA)." },
+  { cat: "Basics", q: "What does SAML stand for?", opts: ["System Access Management Layer", "Secure Authentication and Monitoring Log", "Security Assertion Markup Language", "Standard Authorization Modeling Language"], ans: 2, exp: "SAML(Security Assertion Markup Language) SSO integrates GitHub with your organization’s identity provider..." },
+
+  // ── SAML ORG LEVEL (6–12) ──────────────────────────────────────────
+  { cat: "SAML Org", q: "What does integrating GitHub with your organization's identity provider (IdP) via SAML SSO allow?", opts: ["Bypassing all passwords", "Centralized access control and improved compliance", "Unlimited repository storage", "Anonymous commits"], ans: 1, exp: "SAML SSO integrates GitHub with your organization’s identity provider (IdP), allowing centralized access control, and improved compliance." },
+  { cat: "SAML Org", q: "When SAML SSO is enabled, what happens when users try to access organization resources?", opts: ["They are granted immediate access", "GitHub redirects them to the IdP for authentication", "They are prompted for an SSH key", "They must use a security token"], ans: 1, exp: "When enabled, GitHub redirects users to the IdP for authentication before granting access to organization resources." },
+  { cat: "SAML Org", q: "Where do you navigate to configure SAML SSO at the organization level?", opts: ["Your profile -> Developer settings", "Your organizations -> Settings -> Security", "Your organizations -> People", "Enterprise settings -> Billing"], ans: 1, exp: "Organization-Level Setup: In your org settings under Security... Step 1: Navigate to Your organizations -> Settings -> Security." },
+  { cat: "SAML Org", q: "What two pieces of information are required from your IdP to configure Org-Level SAML SSO?", opts: ["API Key and Secret", "SAML SSO URL and public certificate", "Client ID and Redirect URI", "Admin username and password"], ans: 1, exp: "In your org settings under Security, input your IdP’s SAML SSO URL and public certificate." },
+  { cat: "SAML Org", q: "At the organization level, what happens when you select 'Require SAML SSO authentication'?", opts: ["It sends a warning email to all users", "It removes noncompliant members automatically", "It prevents new members from joining", "It deletes repositories owned by noncompliant members"], ans: 1, exp: "Enforcement: Select Require SAML SSO authentication to remove noncompliant members automatically." },
+  { cat: "SAML Org", q: "For which use case is configuring SAML SSO at the Organization level ideal?", opts: ["Broad compliance across the enterprise", "Removing enterprise admins", "Phased rollouts or testing with limited impact", "Managing billing accounts"], ans: 2, exp: "Use Case: Ideal for phased rollouts or testing with limited impact." },
+  { cat: "SAML Org", q: "When Org-Level SAML SSO is enforced, what happens to enterprise members who fail to authenticate?", opts: ["They are removed immediately", "They remain until they next access the resource", "Their accounts are deleted", "They are downgraded to outside collaborators"], ans: 1, exp: "GitHub removes only organization members who fail to authenticate. Enterprise members remain until they next access the resource." },
+
+  // ── SAML ENTERPRISE LEVEL (13–18) ───────────────────────────────────
+  { cat: "SAML Ent", q: "Where is SAML SSO enabled for the entire enterprise?", opts: ["In the global GitHub admin console", "In your enterprise account settings", "In the primary organization's settings", "Through a GitHub support ticket"], ans: 1, exp: "Setup: In your enterprise account settings, enable SAML SSO similarly to org-level." },
+  { cat: "SAML Ent", q: "When you enforce Enterprise-Level SAML SSO, where is the policy applied?", opts: ["Only to the root organization", "Across all organizations in your enterprise", "Only to newly created organizations", "Only to public repositories"], ans: 1, exp: "Enforcement: Apply SSO across all organizations in your enterprise." },
+  { cat: "SAML Ent", q: "What is a major benefit of enforcing SAML SSO at the Enterprise level?", opts: ["It requires less setup time", "It eliminates the need for 2FA", "Ensures unified policies and reduces risk from fragmented configurations", "It provides free licensing"], ans: 2, exp: "Benefits: Ensures unified policies and reduces risk from fragmented configurations." },
+  { cat: "SAML Ent", q: "How does Enterprise-Level SSO handle the removal of noncompliant enterprise members compared to Org-Level?", opts: ["It removes them instantly across all orgs", "GitHub does not immediately remove them; they are prompted upon access", "It never removes them", "It converts their accounts to bot accounts"], ans: 1, exp: "Note: GitHub does not immediately remove noncompliant enterprise members. They are prompted to authenticate upon access." },
+  { cat: "SAML Ent", q: "In the Enterprise-Level SAML SSO step-by-step guide, what follows navigating to 'Your enterprises -> Settings -> Security'?", opts: ["Enforce SSO immediately", "Test configuration and save", "Enable SAML with your IdP’s details", "Review noncompliant users"], ans: 2, exp: "Step 2: Enable SAML with your IdP’s details." },
+  { cat: "SAML Ent", q: "What is the final step in the Enterprise-Level SSO enforcement process?", opts: ["Test configuration and save", "Enforce SSO across all orgs and review noncompliant users", "Delete all outside collaborators", "Set up a backup IdP"], ans: 1, exp: "Step 4. Enforce SSO across all orgs and review noncompliant users." },
+
+  // ── SSO COMPARISONS (19–24) ──────────────────────────────────────────
+  { cat: "SSO Comp", q: "According to the comparison criteria, which SSO scope results in 'Immediate upon enforcement' user removal?", opts: ["Enterprise-Level", "Org-Level", "Both", "Neither"], ans: 1, exp: "Org-Level - User Removal: Immediate upon enforcement." },
+  { cat: "SSO Comp", q: "Which SSO scope results in user removal being 'Deferred until next access'?", opts: ["Org-Level", "Enterprise-Level", "Both", "Neither"], ans: 1, exp: "Enterprise-Level - User Removal: Deferred until next access." },
+  { cat: "SSO Comp", q: "Regarding policy consistency, how is Org-Level SSO described?", opts: ["Unified across enterprise", "Strictly enforced", "Varies by org", "Voluntary"], ans: 2, exp: "Org-Level - Policy Consistency: Varies by org." },
+  { cat: "SSO Comp", q: "Which SSO scope provides a 'Unified across enterprise' policy consistency?", opts: ["Org-Level", "Enterprise-Level", "Both", "Neither"], ans: 1, exp: "Enterprise-Level - Policy Consistency: Unified across enterprise." },
+  { cat: "SSO Comp", q: "How is the setup complexity of Enterprise-Level SAML SSO rated compared to Org-Level?", opts: ["Lower", "Equal", "Higher", "Not applicable"], ans: 2, exp: "Enterprise-Level - Setup Complexity: Higher." },
+  { cat: "SSO Comp", q: "Which SSO scope is recommended for 'Broad compliance' as its primary use case?", opts: ["Org-Level", "Enterprise-Level", "Both", "Neither"], ans: 1, exp: "Enterprise-Level - Use Case: Broad compliance." },
+
+  // ── 2FA RULES (25–31) ────────────────────────────────────────────────
+  { cat: "2FA Rules", q: "What does 2FA stand for?", opts: ["Two-Factor Authorization", "Two-File Authentication", "Two-Factor Authentication", "Twin-Factor Access"], ans: 2, exp: "Two-Factor Authentication (2FA)" },
+  { cat: "2FA Rules", q: "What does 2FA add to the login process?", opts: ["A mandatory hardware token check", "A second verification step beyond username and password", "A captcha verification", "An SSH key prompt"], ans: 1, exp: "2FA adds a second verification step beyond username and password." },
+  { cat: "2FA Rules", q: "Which of the following groups can you require 2FA for within an organization?", opts: ["Organization members, outside collaborators, and billing managers", "Only organization owners", "Only outside collaborators", "Only bot accounts"], ans: 0, exp: "You can require 2FA for organization members, outside collaborators, and billing managers." },
+  { cat: "2FA Rules", q: "What happens to accounts that do not use 2FA when an organization enforces the 2FA requirement?", opts: ["They are given a 30-day grace period", "They are removed from the organization and lose access to its repositories", "They can only access public repositories", "They are billed extra"], ans: 1, exp: "When you require the use of two-factor authentication for your organization, all accounts that don't use 2FA is removed from the organization and lose access to its repositories." },
+  { cat: "2FA Rules", q: "Are bot accounts exempt from being removed if they lack 2FA when it is enforced?", opts: ["Yes, bots are always exempt", "No, accounts that are affected include bot accounts", "Yes, but only if they are enterprise-owned", "No, but they are only suspended, not removed"], ans: 1, exp: "Accounts that are affected include bot accounts." },
+  { cat: "2FA Rules", q: "Where do you navigate to enforce 2FA for an organization?", opts: ["Your org’s People tab", "Your org’s Security settings", "The Enterprise global dashboard", "The individual repository settings"], ans: 1, exp: "Enforcing 2FA: 1. Navigate to your org’s Security settings." },
+  { cat: "2FA Rules", q: "What should be done before checking the 'Require two-factor authentication' box to prevent issues?", opts: ["Delete all bot accounts manually", "Communicate the requirement in advance to prevent loss of access", "Downgrade all members to outside collaborators", "Disable SAML SSO temporarily"], ans: 1, exp: "Communicate the requirement in advance to prevent loss of access." },
+
+  // ── 2FA TYPES & AUDIT (32–40) ────────────────────────────────────────
+  { cat: "2FA Types", q: "Which 2FA method is described as the 'Most secure method'?", opts: ["TOTP Apps", "SMS", "Security Keys", "Email verification"], ans: 2, exp: "Security Keys: Most secure method." },
+  { cat: "2FA Types", q: "What physical form do Security Keys typically take?", opts: ["Printed QR codes", "Physical USB or NFC devices", "Smartphones only", "Biometric scanners"], ans: 1, exp: "Physical USB or NFC devices that prevent phishing." },
+  { cat: "2FA Types", q: "What is a prerequisite before setting up a Security Key in GitHub?", opts: ["Purchasing a GitHub Enterprise license", "Requires prior setup with TOTP or SMS", "Installing the GitHub Mobile app", "Generating an SSH key"], ans: 1, exp: "Requires prior setup with TOTP(Time-based one-time passwords) or SMS(Short Message Service)." },
+  { cat: "2FA Types", q: "Which 2FA method is 'Recommended' by the text and works offline?", opts: ["Security Keys", "SMS", "TOTP Apps", "Email codes"], ans: 2, exp: "TOTP Apps: Recommended. Generates time-based one-time passwords, supports backup, and works offline." },
+  { cat: "2FA Types", q: "What does TOTP stand for?", opts: ["Token-oriented temporary passcodes", "Time-based one-time passwords", "Two-out-of-three protocols", "Temporary offline tracking passwords"], ans: 1, exp: "TOTP(Time-based one-time passwords)" },
+  { cat: "2FA Types", q: "Which 2FA method is considered the 'Least secure' and should only be used if others aren't viable?", opts: ["Security Keys", "TOTP Apps", "SMS", "GitHub Mobile"], ans: 2, exp: "SMS: Least secure. Should only be used where TOTP isn't viable." },
+  { cat: "2FA Types", q: "Where do Security Keys store credentials?", opts: ["In the GitHub cloud", "Locally on the device", "In the user's browser cache", "In the organization's IdP"], ans: 1, exp: "Note: Security keys store credentials locally and never expose secrets." },
+  { cat: "2FA Types", q: "Which specific security key standard does GitHub recommend?", opts: ["OAuth 2.0", "SAML 2.0", "FIDO2/U2F keys", "RSA 2048"], ans: 2, exp: "GitHub recommends FIDO2/U2F keys." },
+  { cat: "2FA Types", q: "To audit 2FA compliance, where do you navigate after going to 'Your organizations -> select org'?", opts: ["The Settings tab", "The Security tab", "The People tab", "The Audit Log tab"], ans: 2, exp: "Go to Your organizations -> select org -> People tab." }
+];
+
+const catColorMap = { 
+  "Basics":"cat-basics",
+  "SAML Org":"cat-saml-org",
+  "SAML Ent":"cat-saml-ent",
+  "SSO Comp":"cat-sso-comp",
+  "2FA Rules":"cat-2fa-rules",
+  "2FA Types":"cat-2fa-types"
+};
+
+let answered = 0, correct = 0, currentFilter = 'all';
+
+function renderAll() {
+  const container = document.getElementById('quiz-container');
+  container.innerHTML = '';
+  const filtered = currentFilter === 'all' ? questions : questions.filter(q => q.cat === currentFilter);
+  filtered.forEach((q, idx) => {
+    const globalIdx = questions.indexOf(q);
+    container.appendChild(buildCard(q, globalIdx, idx + 1));
+  });
+}
+
+function buildCard(q, globalIdx, displayNum) {
+  const card = document.createElement('div');
+  card.className = 'q-card';
+  card.id = `q-${globalIdx}`;
+  card.style.animationDelay = `${(displayNum - 1) * 0.03}s`;
+
+  const catClass = catColorMap[q.cat] || 'cat-basics';
+  const letters = ['A','B','C','D'];
+
+  card.innerHTML = `
+    <div class="q-header">
+      <div class="q-num">${String(displayNum).padStart(2,'0')}</div>
+      <div class="q-text">${q.q}</div>
+      <span class="q-category ${catClass}">${q.cat}</span>
+    </div>
+    <div class="options" id="opts-${globalIdx}">
+      ${q.opts.map((opt, i) => `
+        <button class="option" onclick="selectAnswer(${globalIdx},${i})" id="opt-${globalIdx}-${i}">
+          <span class="option-letter">${letters[i]}</span>
+          <span>${opt}</span>
+        </button>`).join('')}
+    </div>
+    <div class="answer-reveal" id="exp-${globalIdx}">
+      <strong>✓ Answer: ${letters[q.ans]}. ${q.opts[q.ans]}</strong><br>${q.exp}
+    </div>`;
+  return card;
+}
+
+function selectAnswer(qIdx, selectedIdx) {
+  const q = questions[qIdx];
+  const optsDivButtons = document.querySelectorAll(`#opts-${qIdx} .option`);
+  const expDiv = document.getElementById(`exp-${qIdx}`);
+  if (expDiv.classList.contains('show')) return; // already answered
+
+  answered++;
+  const isCorrect = selectedIdx === q.ans;
+  if (isCorrect) correct++;
+
+  optsDivButtons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add('correct');
+    else if (i === selectedIdx && !isCorrect) btn.classList.add('wrong');
+  });
+
+  expDiv.classList.add('show');
+  updateStats();
+}
+
+function updateStats() {
+  document.getElementById('answered-count').textContent = answered;
+  document.getElementById('correct-count').textContent = correct;
+  const pct = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+  document.getElementById('score-pct').textContent = pct + '%';
+  document.getElementById('score-live').textContent = `${correct} / ${answered}`;
+  document.getElementById('progress-fill').style.width = `${(answered / questions.length) * 100}%`;
+}
+
+function revealAll() {
+  questions.forEach((q, idx) => {
+    const expDiv = document.getElementById(`exp-${idx}`);
+    if (!expDiv) return;
+    const optsBtns = document.querySelectorAll(`#opts-${idx} .option`);
+    optsBtns.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.ans) btn.classList.add('correct');
+    });
+    expDiv.classList.add('show');
+  });
+}
+
+function resetAll() {
+  answered = 0; correct = 0;
+  updateStats();
+  renderAll();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAll();
+}
+
+renderAll();
+</script>
+</body>
+</html>
